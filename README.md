@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # TourPlanner
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.4.
@@ -57,3 +58,6 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+=======
+# TourPlanner
+>>>>>>> 04b92e61d78fb93b778936ecd61401244811f16d
