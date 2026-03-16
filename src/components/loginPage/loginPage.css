@@ -1,0 +1,7 @@
+.loginPage {
+  display: flex;
+  justify-content: flex-end;   /* Inhalt nach rechts */
+  align-items: center;         /* vertikal zentrieren */
+  padding: 10px 20px;
+  background-color: rgb(218, 230, 212);
+}
