@@ -1,5 +1,5 @@
 import { Component, computed, signal } from "@angular/core";
-import { ToursListComponent } from "../toursList/toursList";
+import { TourList } from "../tour-list/tour-list";
 
 // ViewModel
 @Component({
@@ -7,7 +7,6 @@ import { ToursListComponent } from "../toursList/toursList";
     standalone: true,
     templateUrl: './myToursPage.html',
     styleUrls: ['./myToursPage.css'],
-    imports: [ToursListComponent],
 })
 
 export class MyToursPageComponent {

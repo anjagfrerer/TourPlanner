@@ -3,14 +3,14 @@
  * angezeigt werden sollen
  */
 import { Routes } from '@angular/router';
-import { ToursPageComponent } from '../components/toursPage/toursPage';
+import { ToursPage } from '../components/tours-page/tours-page';
 import { TourLogsPageComponent } from '../components/tourLogsPage/tourLogsPage';
 import { MyToursPageComponent } from '../components/myToursPage/myToursPage';
 import { StatsPageComponent } from '../components/statsPage/statsPage';
-import { TourDetailComponent } from '../components/tourDetail/tourDetail';
+import { TourDetailComponent } from '../components/tour-detail-page/tour-detail-page';
 
 export const routes: Routes = [
- { path: '', component: ToursPageComponent }, // Pfad leer http://localhost:4200/
+ { path: '', component: ToursPage }, // Pfad leer http://localhost:4200/
  { path: 'tourLogs', component: TourLogsPageComponent }, // http://localhost:4200/tourLogs
  { path: 'myTours', component: MyToursPageComponent },
  { path: 'stats', component: StatsPageComponent },

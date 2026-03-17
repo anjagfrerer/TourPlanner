@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet, RouterModule } from '@angular/router';
 import { SidebarComponent } from "../components/sidebar/sidebar";
-import { ToursPageComponent } from "../components/toursPage/toursPage";
+import { ToursPage } from "../components/tours-page/tours-page";
 import { HeaderComponent } from "../components/header/header";
 
 /**
@@ -9,7 +9,7 @@ import { HeaderComponent } from "../components/header/header";
  */
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterModule, SidebarComponent, ToursPageComponent, HeaderComponent ],
+  imports: [RouterOutlet, RouterModule, SidebarComponent, ToursPage, HeaderComponent ],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
