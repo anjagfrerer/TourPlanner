@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet, RouterModule } from '@angular/router';
 import { SidebarComponent } from "../components/sidebar/sidebar";
-import { ToursPageComponent } from "../components/toursPage/toursPage";
+import { ToursPageComponent } from "../components/Tour/toursPage/toursPage";
 import { HeaderComponent } from "../components/header/header";
 
 /**

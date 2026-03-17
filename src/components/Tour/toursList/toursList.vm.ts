@@ -1,5 +1,4 @@
 import { computed, Injectable, signal } from "@angular/core";
-import { Tour } from "../../app/models/tour.model";
 
 @Injectable()
 export class ToursListViewModel {

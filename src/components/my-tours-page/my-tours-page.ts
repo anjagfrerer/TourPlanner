@@ -1,12 +1,11 @@
 import { Component, computed, signal } from "@angular/core";
-import { ToursListComponent } from "../toursList/toursList";
+import { ToursListComponent } from "../Tour/toursList/toursList";
 
 // ViewModel
 @Component({
-    selector: 'myToursPage',
+    selector: 'my-tours-page',
     standalone: true,
-    templateUrl: './myToursPage.html',
-    styleUrls: ['./myToursPage.css'],
+    templateUrl: './my-tours-page.html',
     imports: [ToursListComponent],
 })
 

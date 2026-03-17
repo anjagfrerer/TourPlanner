@@ -3,11 +3,11 @@
  * angezeigt werden sollen
  */
 import { Routes } from '@angular/router';
-import { ToursPageComponent } from '../components/toursPage/toursPage';
-import { TourLogsPageComponent } from '../components/tourLogsPage/tourLogsPage';
-import { MyToursPageComponent } from '../components/myToursPage/myToursPage';
-import { StatsPageComponent } from '../components/statsPage/statsPage';
-import { TourDetailComponent } from '../components/tourDetail/tourDetail';
+import { ToursPageComponent } from '../components/Tour/toursPage/toursPage';
+import { TourLogsPageComponent } from '../components/TourLog/tour-logs-page/tour-logs-page';
+import { MyToursPageComponent } from '../components/my-tours-page/my-tours-page';
+import { StatsPageComponent } from '../components/stats-page/stats-page';
+import { TourDetailComponent } from '../components/Tour/tourDetail/tourDetail';
 
 export const routes: Routes = [
  { path: '', component: ToursPageComponent }, // Pfad leer http://localhost:4200/

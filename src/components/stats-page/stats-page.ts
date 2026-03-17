@@ -2,10 +2,9 @@ import { Component, computed, signal } from "@angular/core";
 
 // ViewModel
 @Component({
-    selector: 'statsPage',
+    selector: 'stats-page',
     standalone: true,
-    templateUrl: './statsPage.html',
-    styleUrls: ['./statsPage.css'],
+    templateUrl: './stats-page.html'
 })
 
 export class StatsPageComponent {
