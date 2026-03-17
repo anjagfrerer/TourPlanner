@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, input } from "@angular/core";
 import { StarRatingViewModel } from "./star-rating.vm";
 
 @Component({
@@ -9,4 +9,5 @@ import { StarRatingViewModel } from "./star-rating.vm";
 
 export class StarRating {
     vm = inject(StarRatingViewModel);
+    stars = input.required<number>();
 }

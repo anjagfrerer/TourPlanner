@@ -1,12 +1,12 @@
-<div class="flex bg-primary2 rounded-md text-stone-850 w-full p-2.5 gap-4">
-    <div class="flex bg-primary w-14 sm:w-16 rounded-md items-center justify-center">ICON</div>
+<div class="flex bg-primary2 rounded-md text-stone-850 w-full p-2.5 gap-4 hover:cursor-pointer use hover:scale-101">
+    <div class="flex bg-primary w-14 sm:w-16 rounded-md items-center justify-center">{{tour().transportType}}</div>
     <div class="flex flex-col justify-between">
         <div class="flex gap-4 items-center">
-            <h2 class="text-xl font-semibold">Tour 1</h2>
-            <star-rating></star-rating>
+            <h2 class="text-xl font-semibold">{{tour().name}}</h2>
+            <star-rating [stars] = vm.rating()></star-rating>
         </div>
         <div>
-            <span class="text-xs">5:00 | 220km</span>
+            <span class="text-xs"> {{tour().estimatedTime}} |  {{tour().distance}}km</span>
             <!--<ul> tag liste
                 <li>
                     <tag></tag>
