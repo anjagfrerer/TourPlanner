@@ -2,10 +2,8 @@ import { Component, computed, signal } from "@angular/core";
 
 // ViewModel
 @Component({
-    selector: 'tourDetail',
-    standalone: true,
-    templateUrl: './tourDetail.html',
-    styleUrls: ['./tourDetail.css'],
+    selector: 'tour-detail',
+    templateUrl: './tour-detail-page.html',
 })
 
 export class TourDetailComponent {
