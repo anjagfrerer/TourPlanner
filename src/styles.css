@@ -3,9 +3,12 @@
 @import "tailwindcss";
 
 @theme {
-    --font-sans: "Poppins", sans-serif;
-    --color-primary: #9AA572;
-    --color-secondary: #283618;
-    --color-accent: #BC6C25;
-    --color-background: #FEFAE0;
+  --font-sans: "Poppins", sans-serif;
+  --color-primary: #606c38;
+  --color-primary2: #9AA672;
+  --color-secondary: #283618;
+  --color-accent: #bc6c25;
+  --color-success: #aad576;
+  --color-warning: #F4A259;
+  --color-error: #bc4749;
 }

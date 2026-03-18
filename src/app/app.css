@@ -14,6 +14,7 @@
 }
 
 .content {
+  background-color: #fefae0;
   grid-column: 2;
   padding: 2vw;
   padding-left: 3vw;
