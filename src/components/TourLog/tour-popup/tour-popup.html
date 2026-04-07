@@ -1,136 +1,62 @@
-<section class="min-h-screen bg-gray-100 p-6">
-  <h1 class="mb-4 text-2xl font-bold">Meine Tour</h1>
+@if (vm.isModalOpen()) {
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+  <div class="w-full max-w-2xl rounded-2xl bg-white p-6 shadow-xl text-black">
+    
+    <div class="mb-4 flex items-center justify-between border-b pb-2">
+      <h2 class="text-xl font-semibold">
+        {{ vm.tourLog().tourLogId !== 0 ? 'Log bearbeiten' : 'Neuen Log anlegen' }}
+      </h2>
+      <button type="button" (click)="vm.closeModal()" class="text-gray-500 hover:text-red-500 text-2xl px-2">✕</button>
+    </div>
 
-  <button
-    (click)="vm.openModal()"
-    class="rounded-xl bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-  >
-    Tourlog hinzufügen
-  </button>
-
-  <div
-    *ngIf="vm.isModalOpen"
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-  >
-    <div class="w-full max-w-2xl rounded-2xl bg-white p-6 shadow-xl">
-      <div class="mb-4 flex items-center justify-between">
-        <h2 class="text-xl font-semibold">Neuen Tourlog anlegen</h2>
-        <button
-          type="button"
-          (click)="vm.closeModal()"
-          class="text-gray-500 hover:text-gray-700"
-        >
-          ✕
-        </button>
+    <form (ngSubmit)="vm.saveTourLog()" class="space-y-4">
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium">Datum</label>
+          <input type="date" name="date" [(ngModel)]="vm.tourLog().date" class="w-full border rounded-xl p-2" required />
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Uhrzeit</label>
+          <input type="time" name="time" [(ngModel)]="vm.tourLog().time" class="w-full border rounded-xl p-2" required />
+        </div>
       </div>
 
-      <form (ngSubmit)="vm.saveTourLog()" class="space-y-4">
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div>
-            <label class="mb-1 block text-sm font-medium">Datum</label>
-            <input
-              type="date"
-              name="date"
-              [(ngModel)]="vm.tourLog.date"
-              class="w-full rounded-xl border px-3 py-2"
-              required
-            />
-          </div>
-
-          <div>
-            <label class="mb-1 block text-sm font-medium">Uhrzeit</label>
-            <input
-              type="time"
-              name="time"
-              [(ngModel)]="vm.tourLog.time"
-              class="w-full rounded-xl border px-3 py-2"
-              required
-            />
-          </div>
-
-          <div>
-            <label class="mb-1 block text-sm font-medium">Bewertung (0–5)</label>
-            <input
-              type="number"
-              name="rating"
-              [(ngModel)]="vm.tourLog.rating"
-              min="0"
-              max="5"
-              step="1"
-              class="w-full rounded-xl border px-3 py-2"
-              required
-            />
-          </div>
-
-          <div>
-            <label class="mb-1 block text-sm font-medium">Difficulty (0–10)</label>
-            <input
-              type="number"
-              name="difficulty"
-              [(ngModel)]="vm.tourLog.difficulty"
-              min="0"
-              max="10"
-              step="1"
-              class="w-full rounded-xl border px-3 py-2"
-              required
-            />
-          </div>
-
-          <div>
-            <label class="mb-1 block text-sm font-medium">Total Distance (km)</label>
-            <input
-              type="number"
-              name="totalDistanceKm"
-              [(ngModel)]="vm.tourLog.totalDistanceKm"
-              min="0"
-              step="0.01"
-              class="w-full rounded-xl border px-3 py-2"
-              required
-            />
-          </div>
-
-          <div>
-            <label class="mb-1 block text-sm font-medium">Total Time (min)</label>
-            <input
-              type="number"
-              name="totalTimeMin"
-              [(ngModel)]="vm.tourLog.totalTimeMin"
-              min="0"
-              step="1"
-              class="w-full rounded-xl border px-3 py-2"
-              required
-            />
-          </div>
-        </div>
-
+      <div class="grid grid-cols-2 gap-4">
         <div>
-          <label class="mb-1 block text-sm font-medium">Kommentar</label>
-          <textarea
-            name="comment"
-            [(ngModel)]="vm.tourLog.comment"
-            rows="5"
-            class="w-full rounded-xl border px-3 py-2"
-            placeholder="Wie war die Tour?"
-          ></textarea>
+          <label class="block text-sm font-medium">Rating (1-5 Sterne)</label>
+          <input type="number" name="rating" [(ngModel)]="vm.tourLog().rating" min="1" max="5" class="w-full border rounded-xl p-2" required />
         </div>
-
-        <div class="flex justify-end gap-2 pt-2">
-          <button
-            type="button"
-            (click)="vm.closeModal()"
-            class="rounded-xl border px-4 py-2"
-          >
-            Abbrechen
-          </button>
-
-          <button
-            type="submit"
-            class="rounded-xl bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-          >
-            Speichern
-          </button>
+        <div>
+          <label class="block text-sm font-medium">Schwierigkeit (1-10)</label>
+          <input type="number" name="difficulty" [(ngModel)]="vm.tourLog().difficulty" min="1" max="10" class="w-full border rounded-xl p-2" required />
         </div>
-      </form>
-    </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium">Distanz (km)</label>
+          <input type="number" step="0.1" name="totalDistanceKm" [(ngModel)]="vm.tourLog().totalDistanceKm" class="w-full border rounded-xl p-2" required />
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Dauer (Minuten)</label>
+          <input type="number" name="totalTimeMin" [(ngModel)]="vm.tourLog().totalTimeMin" class="w-full border rounded-xl p-2" required />
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium">Kommentar</label>
+        <textarea name="comment" [(ngModel)]="vm.tourLog().comment" rows="3" class="w-full border rounded-xl p-2"></textarea>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-4 border-t">
+        <button type="button" (click)="vm.closeModal()" class="px-4 py-2 border rounded-xl hover:bg-gray-100 transition-colors">
+          Abbrechen
+        </button>
+        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-colors">
+          {{ vm.tourLog().tourLogId !== 0 ? 'Änderungen speichern' : 'Erstellen' }}
+        </button>
+      </div>
+    </form>
   </div>
-</section>
+</div>
+}

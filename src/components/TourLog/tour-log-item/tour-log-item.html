@@ -1,30 +1,63 @@
+@if (vm.tourLog(); as log) {
 <section class="tour-log-item text-[clamp(0.5rem,5vw,1rem)]">
-    <div class="text-white rounded-2xl bg-secondary p-4 m-7">
-      <div class="grid grid-cols-[minmax(200px,15%)_1fr]">
-        <div class="">
-          <div class="grid grid-cols-[minmax(50px,15%)_1fr]">
-            <div>
-              <img class="invert brightness-0 w-15" src="assets/profileIcon.svg" alt="profileIcon">
-            </div>
-            <div>
-              <div class="grid grid-rows-[50%_50%]">
-                <div>Susan Bolt</div>
-                <div class="italic text-sm">13.01.2026 | 20:25</div>
+  <div class="text-white rounded-2xl bg-secondary p-4 m-7">
+    <div class="grid grid-cols-[minmax(200px,15%)_1fr]">
+      
+      <div class="flex flex-col gap-2">
+        <div class="grid grid-cols-[minmax(50px,15%)_1fr] items-center gap-2">
+          <div>
+            <img class="invert brightness-0 w-12" src="assets/profileIcon.svg" alt="profileIcon">
+          </div>
+          <div>
+            <div class="flex flex-col">
+              <div class="font-bold">{{ log.author }}</div>
+              <div class="italic text-xs opacity-80">
+                {{ log.date }} | {{ log.time }}
               </div>
             </div>
           </div>
-          <star-rating [stars] = vm.rating()></star-rating>
-          <div>Difficulty: 2/10</div>
-          <div>Total Distance: 2 km</div>
-          <div>Total Time: 32 min</div>
         </div>
-        <div class="">
-Die Wandertour war insgesamt sehr angenehm und abwechslungsreich. Die Strecke war gut ausgeschildert und bot schöne Ausblicke auf die umliegende Landschaft. Besonders gefallen hat mir die ruhige Atmosphäre und die Natur entlang des Weges. Der Schwierigkeitsgrad war moderat und auch für weniger geübte Wanderer gut machbar. Insgesamt eine empfehlenswerte Tour, die ich jederzeit wieder machen würde.        </div>
-    </div>
-    <div class="flex justify-end pt-2">
-        <div class="inline-block text-black bg-accent rounded-xl px-4 py-2 hover:opacity-80 cursor-pointer transition">
-            Visit Tour →
+        
+        <star-rating [stars]="vm.rating()"></star-rating>
+        
+        <div class="text-sm space-y-1">
+          <div class="flex items-center gap-1">
+            <span class="font-semibold text-accent">Difficulty:</span> 
+            {{ log.difficulty }}/10
+          </div>
+          <div class="flex items-center gap-1">
+            <span class="font-semibold text-accent">Distance:</span> 
+            {{ log.totalDistanceKm }} km
+          </div>
+          <div class="flex items-center gap-1">
+            <span class="font-semibold text-accent">Time:</span> 
+            {{ log.totalTimeMin }} min
+          </div>
         </div>
+      </div>
+      
+      <div class="pl-6 border-l border-white/20 italic whitespace-pre-wrap">
+        "{{ log.comment }}"
+      </div>
     </div>
+
+    <div class="flex justify-end items-center pt-4 gap-4">
+      <button (click)="vm.deleteLog()" class="hover:scale-110 transition-transform cursor-pointer" title="Löschen">
+        <img class="w-6" src="assets/deleteIcon.svg" alt="deleteIcon">
+      </button>
+      
+      <button (click)="vm.editLog()" class="hover:scale-110 transition-transform cursor-pointer" title="Bearbeiten">
+        <img class="w-6" src="assets/editIcon.svg" alt="editIcon">
+      </button>
+      
+      <button 
+        class="text-black bg-accent rounded-xl px-5 py-2 font-bold hover:bg-white transition-colors cursor-pointer" 
+        (click)="vm.visitTour()">
+        Visit Tour →
+      </button>
     </div>
+  </div>
 </section>
+} @else {
+  <div class="p-8 text-center opacity-50">Log-Daten werden geladen...</div>
+}

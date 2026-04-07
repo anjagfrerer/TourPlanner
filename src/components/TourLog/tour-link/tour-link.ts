@@ -1,4 +1,5 @@
-import { Component, computed, signal } from "@angular/core";
+import { Component, computed, inject, input, signal } from "@angular/core";
+import { Router } from '@angular/router';
 
 // ViewModel
 @Component({
@@ -8,4 +9,11 @@ import { Component, computed, signal } from "@angular/core";
 })
 
 export class TourLinkComponent {
+    router = inject(Router)
+    tourId = input<string>();
+
+    visitTour() {
+        if (!this.tourId) return;
+        this.router.navigate(['/tour', this.tourId]);
+    }
 }

@@ -14,7 +14,7 @@ export const routes: Routes = [
  { path: 'tourLogs', component: TourLogsPageComponent }, // http://localhost:4200/tourLogs
  { path: 'myTours', component: MyToursPageComponent },
  { path: 'stats', component: StatsPageComponent },
- { path: 'tourDetail', component: TourDetailComponent }, // derzeit statisch
+ { path: 'tour/:id', component: TourDetailComponent },
  { path: '**', redirectTo: '' },
 ];
 

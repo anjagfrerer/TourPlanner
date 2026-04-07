@@ -1,8 +1,11 @@
-<!-- View -->
 <section class="tourLogsPage">
-    <h1 class="text-3xl font-medium text-black mb-6 text-center">My Tour Logs</h1>
-    <tour-log-item [tourLog]="tourLogs[0]"></tour-log-item>
-    <tour-log-item [tourLog]="tourLogs[1]"></tour-log-item>
-    <tour-log-item [tourLog]="tourLogs[2]"></tour-log-item>
-    <!--<app-tour-popup></app-tour-popup>-->
+  <h1 class="text-3xl font-medium text-black mb-6 text-center">My Tour Logs</h1>
+  
+  <div class="flex flex-col">
+    @for (log of tourLogService.logs(); track log.tourLogId) {
+      <tour-log-item [tourLog]="log"></tour-log-item>
+    }
+  </div>
+
+  <app-tour-popup></app-tour-popup>
 </section>
