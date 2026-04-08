@@ -1,5 +1,5 @@
 import { signal, Injectable } from "@angular/core";
-import { Tour } from "../../app/models/tour.model";
+import { Tour } from "../../../app/models/tour.model";
 
 @Injectable()
 export class TourCardViewModel{

@@ -1,7 +1,7 @@
 import { Component, inject, input, effect } from "@angular/core";
-import { StarRating } from "../star-rating/star-rating";
+import { StarRating } from "../../star-rating/star-rating";
 import { TourCardViewModel } from "./tour-card.vm";
-import { Tour } from "../../app/models/tour.model";
+import { Tour } from "../../../app/models/tour.model";
 
 @Component({
     selector: 'tour-card',

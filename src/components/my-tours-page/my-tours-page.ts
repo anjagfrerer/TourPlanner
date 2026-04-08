@@ -1,5 +1,4 @@
 import { Component, computed, signal } from "@angular/core";
-import { TourList } from "../tour-list/tour-list";
 
 // ViewModel
 @Component({

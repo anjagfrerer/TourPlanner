@@ -18,7 +18,14 @@ export class TourService {
     {"id":10,"name":"City Lights Tour","description":"Experience the vibrant nightlife of the town","from":"Salzburg","to":"Salzburg","transportType":"Biking","distance":258.63,"estimatedTime":"03:15","routeInformation":null}
     ]);
 
+  //TODO: CRUD Methods fertig
+  addTour(){}
+
   getTours() {
     return this.tours;
   }
+
+  updateTour(){}
+
+  deleteTour(){}
 }
