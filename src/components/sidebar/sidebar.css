@@ -2,7 +2,7 @@
   margin: 0;
   padding: 0;
   width: 200px;
-  background-color: #cacaca;
+  background-color: #FFFDF3;
   position: fixed;
   height: 100%;
   overflow: auto;
@@ -24,7 +24,7 @@
 
 /* Links on mouse-over */
 .sidebar a:hover:not(.active) {
-  background-color: #555;
+  background-color: #283618;
   color: white;
 }
 
