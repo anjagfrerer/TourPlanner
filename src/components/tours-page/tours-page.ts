@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { TourList } from "../tour-list/tour-list";
+import { TourList } from "./tour-list/tour-list";
 
 // ViewModel
 @Component({
