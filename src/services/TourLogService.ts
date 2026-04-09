@@ -48,10 +48,9 @@ export class TourLogService {
   public readonly activeLogForEdit = this.logToEdit.asReadonly();
 
   getLogsByTourId(tourId: number) {
-  return computed(() =>
-    this.logs().filter(log => log.tourId === tourId)
-  );
-}
+    return computed(() =>
+      this.logs().filter(log => log.tourId === tourId));
+  }
 
   // Startet den Edit-Prozess
   startEdit(log: TourLog) {
@@ -77,5 +76,24 @@ export class TourLogService {
 
   deleteTourLog(tourLogId: number) {
     this.logs.set(this.logs().filter(log => log.tourLogId !== tourLogId));
+  }
+
+  getEmptyLog(tourId: number = 0): TourLog {
+    return {
+      tourLogId: 0,
+      tourId: tourId,
+      author: '',
+      date: new Date().toISOString().split('T')[0],
+      time: '',
+      rating: 0,
+      difficulty: 0,
+      totalDistanceKm: 0,
+      totalTimeMin: 0,
+      comment: ''
+    };
+  }
+
+  startNewLog(tourId: number) {
+    this.logToEdit.set(this.getEmptyLog(tourId));
   }
 }

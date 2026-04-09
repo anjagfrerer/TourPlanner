@@ -7,24 +7,26 @@ export class TourPopupViewModel {
   private service = inject(TourLogService);
   
   isModalOpen = signal(false);
-  tourLog = signal<TourLog>(this.createEmptyTourLog());
+  tourLog = signal<TourLog>(this.service.getEmptyLog());
 
   constructor() {
-    // Effekt: Wenn im Service ein Log zum Editieren gesetzt wird, kopiere es hierher
     effect(() => {
       const logFromService = this.service.activeLogForEdit();
       if (logFromService) {
-        this.tourLog.set({ ...logFromService }); // Kopie erstellen (Immutability!)
+        this.tourLog.set({ ...logFromService }); 
         this.isModalOpen.set(true);
+      } else {
+        this.isModalOpen.set(false);
       }
     });
   }
 
+  /** 
   openModalForNew() {
     this.service.clearEdit();
     this.tourLog.set(this.createEmptyTourLog());
     this.isModalOpen.set(true);
-  }
+  }*/
 
   saveTourLog(): void {
     const currentData = this.tourLog();
@@ -37,14 +39,6 @@ export class TourPopupViewModel {
   }
 
   closeModal(): void {
-    this.isModalOpen.set(false);
     this.service.clearEdit();
-  }
-
-  private createEmptyTourLog(): TourLog {
-    return { 
-      tourLogId: 0, tourId: 1, author: 'Anja', date: '', time: '', 
-      rating: 0, difficulty: 0, totalDistanceKm: 0, totalTimeMin: 0, comment: '' 
-    };
   }
 }

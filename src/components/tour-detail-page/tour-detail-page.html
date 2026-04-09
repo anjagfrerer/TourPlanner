@@ -44,7 +44,7 @@
         <h3 class="font-bold text-lg">Tour logs</h3>
         <div class="flex items-center gap-1">
             <span class="text-xs">Add Tour Log to this Tour</span>
-            <button class="bg-olive-400 rounded-full p-1 hover:cursor-pointer">
+            <button type="submit" (click)="vm.openAddLogPopup()" class="bg-olive-400 rounded-full p-1 hover:cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#000">
                     <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
                 </svg>
@@ -60,4 +60,5 @@
             }
         }
     </div>
+    <app-tour-popup></app-tour-popup>
 </section>

@@ -10,7 +10,11 @@ export class TourDetailPageViewModel {
     private tourService = inject(TourService);
     private tourLogService = inject(TourLogService);
     selectedTour = signal<Tour | null>(null);
-    tourLogs = signal<TourLog[]>([]);
+    tourLogs = computed(() => {
+        const tour = this.selectedTour();
+        if (!tour) return [];
+        return this.tourLogService.getLogsByTourId(tour.id)();
+    });
     
     loadTourById(id: number) {
         const loadedTour = this.tourService.getTourById(id);
@@ -18,8 +22,9 @@ export class TourDetailPageViewModel {
         this.selectedTour.set(loadedTour);
     }
 
-    loadTourLogByTourId(id: number){
-        const tourLogsByTourId = this.tourLogService.getLogsByTourId(id);
-        this.tourLogs.set(tourLogsByTourId());
+    openAddLogPopup() {
+        const currentTour = this.selectedTour()
+        if(!currentTour) return;
+        this.tourLogService.startNewLog(currentTour.id)
     }
 }

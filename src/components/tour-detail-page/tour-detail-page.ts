@@ -5,12 +5,13 @@ import { BackButton } from "../back-button/back-button";
 import { TourLogsItemComponent } from "../TourLog/tour-log-item/tour-log-item"
 import { TourDetailPageViewModel } from "./tour-detail-page.vm"
 import { MapFacade } from "../../services/MapFacade";
+import { TourPopupComponent } from "../TourLog/tour-popup/tour-popup";
 
 // ViewModel
 @Component({
     selector: 'tour-detail',
     templateUrl: './tour-detail-page.html',
-    imports: [StarRating, BackButton, TourLogsItemComponent],
+    imports: [StarRating, BackButton, TourLogsItemComponent, TourPopupComponent],
     providers: [TourDetailPageViewModel]
 })
 
@@ -25,7 +26,6 @@ export class TourDetailComponent implements OnInit {
        //const lng = 16.3738;
 
        this.vm.loadTourById(tourId);
-       this.vm.loadTourLogByTourId(tourId);
        //this.mapFacade.initMap("map");
        //this.mapFacade.addMarker(lat, lng);
     }
