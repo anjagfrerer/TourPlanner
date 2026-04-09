@@ -1,9 +1,9 @@
 .layout {
   display: grid;
   grid-template-columns: 200px 1fr;
-  grid-template-rows: 60px 1fr; /* Feste Header-Höhe */
-  height: 100vh;                /* Genau 100% der Fensterhöhe */
-  overflow: hidden;             /* Verhindert das Scrollen der ganzen Seite */
+  grid-template-rows: 60px 1fr;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .header {

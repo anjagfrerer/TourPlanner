@@ -1,4 +1,9 @@
-@if (vm.tourLog(); as log) {
+<!-- ruft Signal im VM ab, das das aktuelle TourLog enthält
+ as log -> speichert den Wert temporär in log, damit man ihn
+ im HTML öfter verwenden kann;
+ wenn vm.tourLog() nicht null ist, wird der folgende Block
+ gerendert -->
+ @if (vm.tourLog(); as log) {
 <section class="tour-log-item text-[clamp(0.5rem,5vw,1rem)]">
   <div class="text-white rounded-2xl bg-secondary p-4 m-7">
     <div class="grid grid-cols-[minmax(200px,15%)_1fr]">
@@ -58,6 +63,7 @@
     </div>
   </div>
 </section>
+<!-- Ladezustand -->
 } @else {
   <div class="p-8 text-center opacity-50">Log-Daten werden geladen...</div>
 }

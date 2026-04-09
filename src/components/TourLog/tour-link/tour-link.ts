@@ -9,11 +9,11 @@ import { Router } from '@angular/router';
 })
 
 export class TourLinkComponent {
-    router = inject(Router)
-    tourId = input<string>();
+    router = inject(Router) /* gibt mir das bereits vorhandene Router-Objekt */
+    tourId = input.required<number>();
 
     visitTour() {
-        if (!this.tourId) return;
-        this.router.navigate(['/tour', this.tourId]);
+        if (!this.tourId()) return;
+        this.router.navigate(['/tour', this.tourId()]);
     }
 }

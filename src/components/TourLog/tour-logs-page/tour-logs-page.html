@@ -2,7 +2,9 @@
   <h1 class="text-3xl font-medium text-black mb-6 text-center tracking-tighter">Tour Logs</h1>
   
   <div class="flex flex-col">
+    <!-- track: identifiziere jedes Element anhand von log.tourLogId -->
     @for (log of tourLogService.logs(); track log.tourLogId) {
+      <!-- property binding, Platzhalter in Child Component, gibt Child eine Dateiinstanz -->
       <tour-log-item [tourLog]="log"></tour-log-item>
     }
   </div>

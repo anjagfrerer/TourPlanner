@@ -1,9 +1,11 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { TourLog } from '../app/models/tour-log.model';
 
+/** Angular erstellt ein Singleton dieser Klasse global;
+providedIn: 'root'-> service ist in der gesamten App verfügbar.*/
 @Injectable({ providedIn: 'root' })
 export class TourLogService {
-  // Signal initialisieren
+  // Signal
   logs = signal<TourLog[]>([
     {
       tourLogId: 1,
@@ -43,22 +45,27 @@ export class TourLogService {
     }
   ]);
 
-  // Hilfs-Signal: Welcher Log wird gerade editiert?
+  // welcher Log wird gerade editiert; Edit Formular kann auf dieses Signal reagieren
   private logToEdit = signal<TourLog | null>(null);
+  // Das Edit Formular darf zuerst nur lesen und nicht gleich ändern, damit nix kaputt wird
+  // diesen Wert für Edit-Popup
   public readonly activeLogForEdit = this.logToEdit.asReadonly();
 
-  getLogsByTourId(tourId: number) {
+ getLogsByTourId(tourId: number) {
   return computed(() =>
     this.logs().filter(log => log.tourId === tourId)
   );
 }
 
-  // Startet den Edit-Prozess
+  // startet Edit Prozess
+  // UI reagiert automatisch; Popup geht auf
   startEdit(log: TourLog) {
     this.logToEdit.set(log);
   }
 
-  // Bricht den Edit-Prozess ab
+  // bricht Edit Prozess ab
+  // Signal wird zurückgesetzt
+  // Popup Komponente weiß jetzt: kein Log in Bearbeitung
   clearEdit() {
     this.logToEdit.set(null);
   }
@@ -70,6 +77,7 @@ export class TourLogService {
     );
   }
 
+  // Methode fügt neuen TourLog hinzu mit eindeutiger ID
   addTourLog(newLog: TourLog) {
     const id = Math.max(0, ...this.logs().map(l => l.tourLogId)) + 1;
     this.logs.update(current => [...current, { ...newLog, tourLogId: id }]);

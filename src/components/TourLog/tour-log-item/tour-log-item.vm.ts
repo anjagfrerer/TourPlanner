@@ -6,23 +6,32 @@ import { TourLogService } from '../../../services/TourLogService';
 
 @Injectable()
 export class TourLogItemViewModel {
+  // Aktueller TourLog, Startwert = null
   public tourLog = signal<TourLog | null>(null);
+  // Holt globalen Service
   private service = inject(TourLogService)
+  // Referenz auf Logs aus Service (derzeit Dummy)
   logs = this.service.logs
-  constructor(private router: Router) {}
+  // Holt globalen Router
+  public router = inject(Router)
 
+  // Holt Rating aus aktuellem TourLog, Fallback auf 0
   rating() {
     return this.tourLog()?.rating ?? 0;
   }
 
+  // Setzt aktuellen TourLog
   setTourLog(tourLog: TourLog) {
     this.tourLog.set(tourLog);
   }
 
   deleteLog() {
-    const currentLog = this.tourLog(); // Hol den Wert aus dem Signal
+    // Hol den Wert aus dem Signal
+    const currentLog = this.tourLog();
     if (currentLog) {
-      this.service.deleteTourLog(currentLog.tourLogId);
+      if (confirm('Möchtest du diesen Eintrag wirklich unwiderruflich löschen?')) {
+        this.service.deleteTourLog(currentLog.tourLogId);
+      }
     } else {
       console.error("Kein Log zum Löschen ausgewählt");
     }
@@ -31,18 +40,20 @@ export class TourLogItemViewModel {
  editLog() {
     const currentLog = this.tourLog();
     if (currentLog) {
-      this.service.startEdit(currentLog); // Informiert den Service
+      // startEdit, weil noch keine Änderungen
+      this.service.startEdit(currentLog);
     }
   }
 
   visitTour() {
     const log = this.tourLog()
+    // Wenn log nicht null/undefined ist, greife auf tourId zu; sonst gib undefined zurück
     if (!log?.tourId) {
       alert('Keine Tour zu diesem Log gefunden.');
       return;
     }
 
-    // navigiere dynamisch zur TourDetail-Seite
+    // navigiere zur TourDetail-Seite
     this.router.navigate(['/tour', log.tourId]);
   }
 }

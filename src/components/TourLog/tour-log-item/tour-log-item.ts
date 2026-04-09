@@ -10,21 +10,26 @@ import { TourLog } from "../../../app/models/tour-log.model";
     standalone: true,
     templateUrl: './tour-log-item.html',
     imports: [StarRating],
+    //Jede Komponente bekommt eigene ViewModel-Instanz
     providers: [TourLogItemViewModel]
 })
 
 export class TourLogsItemComponent {
+  // holt das VM ohne Konstruktor
   vm = inject(TourLogItemViewModel);
-  // Das ist dein Signal-Input
+  // Signal-Input, Zugriff über this.tourLog(), Pflichtfeld
   tourLog = input.required<TourLog>();
 
+  // Beim Erstellen der Komponente
   constructor() {
-    // Jedes Mal, wenn sich tourLog() ändert, aktualisieren wir das VM
+    // Jedes Mal, wenn sich tourLog() ändert, wird das hier aufgerufen
     effect(() => {
+      // übergibt aktuellen tourLog() Wert an VM
       this.vm.setTourLog(this.tourLog());
     });
   }
 
+  // Leitet Event an VM weiter, glaube aber unnötig hier
   visitTour() {
     this.vm.visitTour();
   }

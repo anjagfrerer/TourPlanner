@@ -1,7 +1,7 @@
 .header {
   display: flex;
-  justify-content: flex-end;   /* Inhalt nach rechts */
-  align-items: center;         /* vertikal zentrieren */
+  justify-content: flex-end; /* Inhalt nach rechts */
+  align-items: center; /* vertikal zentrieren */
   height: 60px;
   
   /* Sticky Header */
