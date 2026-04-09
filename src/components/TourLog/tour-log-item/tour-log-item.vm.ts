@@ -22,7 +22,9 @@ export class TourLogItemViewModel {
   deleteLog() {
     const currentLog = this.tourLog(); // Hol den Wert aus dem Signal
     if (currentLog) {
-      this.service.deleteTourLog(currentLog.tourLogId);
+      if (window.confirm("Möchtest du diese Tour wirklich löschen?")) {
+        this.service.deleteTourLog(currentLog.tourLogId);
+      }
     } else {
       console.error("Kein Log zum Löschen ausgewählt");
     }

@@ -32,10 +32,10 @@ export class TourService {
     "author": "null"
   });
 
-  addTour(tour: Tour){
-    
-    this.tours.update(currentTours => [...currentTours, tour]);
-  }
+  addTour(newTour: Tour) {
+      const id = Math.max(0, ...this.tours().map(l => l.id)) + 1;
+      this.tours.update(current => [...current, { ...newTour, id: id }]);
+    }
 
   getAllTours() {
     return this.tours;
@@ -62,5 +62,48 @@ export class TourService {
     this.tours.update(currentTours =>
       currentTours.filter(tour => tour.id !== id)
     );
+  }
+  
+  // Anjas Teil mit Add Tour
+
+  // Hilfs-Signal: Welche Tour wird gerade editiert?
+  private tourToEdit = signal<Tour | null>(null);
+  public readonly activeTourForEdit = this.tourToEdit.asReadonly();
+
+  // Startet den Edit-Prozess
+  startEdit(tour: Tour) {
+    this.tourToEdit.set(tour);
+  }
+
+  // Bricht den Edit-Prozess ab
+  clearEdit() {
+    this.tourToEdit.set(null);
+  }
+
+  // Speichert die Änderungen im Array
+  updateTour(updatedTour: Tour) {
+    this.tours.update(currentTours => 
+      currentTours.map(tour => tour.id === updatedTour.id ? updatedTour : tour)
+    );
+  }
+
+  getEmptyTour(): Tour {
+    return {
+      id: 0,
+      name: '',
+      description: '',
+      from: '',
+      to: '',
+      transportType: '',
+      distance: 0,
+      estimatedTime: '',
+      routeInformation: null,
+      rating: 0,
+      author: ''
+    };
+  }
+
+  startNewTour() {
+    this.tourToEdit.set(this.getEmptyTour());
   }
 }

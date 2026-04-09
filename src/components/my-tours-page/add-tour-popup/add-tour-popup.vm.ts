@@ -1,19 +1,21 @@
 import { effect, inject, Injectable, signal } from '@angular/core';
 import { TourLog } from '../../../app/models/tour-log.model';
 import { TourLogService } from '../../../services/TourLogService';
+import { TourService } from '../../../services/TourService';
+import { Tour } from '../../../app/models/tour.model';
 
 @Injectable()
-export class TourPopupViewModel {
-  private service = inject(TourLogService);
+export class AddTourPopupViewModel {
+  private service = inject(TourService);
   
   isModalOpen = signal(false);
-  tourLog = signal<TourLog>(this.service.getEmptyLog());
+  tour = signal<Tour>(this.service.getEmptyTour());
 
   constructor() {
     effect(() => {
-      const logFromService = this.service.activeLogForEdit();
-      if (logFromService) {
-        this.tourLog.set({ ...logFromService }); 
+      const tourFromService = this.service.activeTourForEdit();
+      if (tourFromService) {
+        this.tour.set({ ...tourFromService }); 
         this.isModalOpen.set(true);
       } else {
         this.isModalOpen.set(false);
@@ -28,12 +30,12 @@ export class TourPopupViewModel {
     this.isModalOpen.set(true);
   }*/
 
-  saveTourLog(): void {
-    const currentData = this.tourLog();
-    if (currentData.tourLogId > 0) {
-      this.service.updateTourLog(currentData);
+  saveTour(): void {
+    const currentData = this.tour();
+    if (currentData.id > 0) {
+      this.service.updateTour(currentData);
     } else {
-      this.service.addTourLog(currentData);
+      this.service.addTour(currentData);
     }
     this.closeModal();
     window.alert('Erfolgreich gespeichert!');
