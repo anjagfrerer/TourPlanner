@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, computed } from '@angular/core';
 import { TourLog } from '../app/models/tour-log.model';
 
 @Injectable({ providedIn: 'root' })
@@ -46,6 +46,12 @@ export class TourLogService {
   // Hilfs-Signal: Welcher Log wird gerade editiert?
   private logToEdit = signal<TourLog | null>(null);
   public readonly activeLogForEdit = this.logToEdit.asReadonly();
+
+  getLogsByTourId(tourId: number) {
+  return computed(() =>
+    this.logs().filter(log => log.tourId === tourId)
+  );
+}
 
   // Startet den Edit-Prozess
   startEdit(log: TourLog) {

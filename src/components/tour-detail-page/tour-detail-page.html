@@ -5,13 +5,13 @@
         <back-button height=32 width=32></back-button>
         <div class="flex flex-col bg-primary2 rounded-md text-stone-850 mt-6 mb-6 p-6 md:p-10 gap-4">
             <div class="flex gap-4 md:gap-8 w-full">
-                <div class="flex bg-primary w-14 sm:w-16 rounded-md items-center justify-center">TYPE</div>
+                <div class="flex bg-primary w-14 sm:w-16 rounded-md items-center justify-center">{{vm.selectedtour()?.transportType}}</div>
                 <div class="flex flex-col justify-between">
                     <div class="flex items-center gap-3">
-                        <h3 class="text-xs md:text-xl">Titel</h3>
+                        <h3 class="text-xs md:text-xl">{{vm.selectedtour()?.name}}</h3>
                         <star-rating [stars]=3></star-rating>
                     </div>
-                    <span class="text-xs"> 5:00h | 23km</span>
+                    <span class="text-xs"> {{vm.selectedtour()?.estimatedTime}}h | {{vm.selectedtour()?.distance}}km</span>
                 </div>
             </div>
             <div class="flex justify-center">
@@ -19,25 +19,24 @@
             </div>
             <div>
                 <p class="font-bold text-xs md:text-base">Description:</p>
-                <p class="text-xs">Description</p>
+                <p class="text-xs">{{vm.selectedtour()?.description}}</p>
             </div>
         </div>
     </div>
 
     <!-- COMMENT SECTION -->
-     <div class="flex justify-between">
+    <div class="flex justify-between">
         <h3 class="font-bold text-lg">Tour logs</h3>
         <div class="flex items-center gap-1">
             <span class="text-xs">Add Tour Log to this Tour</span>
-            <button class="bg-olive-400 rounded-full p-1">
+            <button class="bg-olive-400 rounded-full p-1 hover:cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#000">
                     <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
                 </svg>
             </button>
         </div>
-     </div>
-     <!--@for (log of tourlogs; track log) {
-        <tour-log-item tourLog=log></tour-log-item>
+    </div>
+    <!--@for (log of tourlogs(); track log) {
+        <tour-log-item [tourLog]=log></tour-log-item>
     }-->
-
 </section>

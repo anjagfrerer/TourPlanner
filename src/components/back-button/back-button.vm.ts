@@ -1,6 +1,11 @@
-import { Injectable, signal } from "@angular/core";
+import { inject, Injectable, signal } from "@angular/core";
+import { Location } from '@angular/common';
 
 @Injectable()
 export class BackButtonViewModel {
-    //Route back logic    
+    location = inject(Location);
+    
+    prev() {
+        this.location.back();
+    }
 }
