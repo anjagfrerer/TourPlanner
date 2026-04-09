@@ -1,5 +1,20 @@
 <div class="flex bg-primary2 rounded-md text-stone-850 w-full p-2.5 gap-4 hover:cursor-pointer hover:scale-101" [routerLink]="['/tour', tour().id]">
-    <div class="flex bg-primary w-14 md:w-16 rounded-md items-center justify-center">{{tour().transportType}}</div>
+    <div class="flex bg-primary rounded-md items-center justify-center p-2">
+        @switch (tour().transportType){
+            @case ("Vacation") {
+                <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#FFF"><path d="M500-120v-440q-14-18-34.5-29T420-600q-25 0-45.5 10.5T340-560h-80q0-117 81.5-198.5T540-840q117 0 198.5 81.5T820-560h-80q-14-19-34.5-29.5T660-600q-25 0-45.5 11T580-560v440h-80Zm33-520h14q23-19 52.5-29.5T661-680q11 0 21.5 1.5T704-675q-27-39-70-62t-94-23q-51 0-94 23t-70 62q11-2 21.5-3.5T419-680q32 0 61.5 10.5T533-640Zm107 520v-240h240v240h-80v-160h-80v160h-80Zm-480 0v-122q-18-5-30-19t-14-34L80-680h25q23 0 40.5 16t19.5 39l24 265h171q33 0 56.5 23.5T440-280v40h-40v120h-60v-120H220v120h-60Zm380-520Z"/></svg>
+            }
+            @case ("Running") {
+                <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#FFF"><path d="m216-160-56-56 384-384H440v80h-80v-160h233q16 0 31 6t26 17l120 119q27 27 66 42t84 16v80q-62 0-112.5-19T718-476l-40-42-88 88 90 90-262 151-40-69 172-99-68-68-266 265Zm-96-280v-80h200v80H120ZM40-560v-80h200v80H40Zm739-80q-33 0-57-23.5T698-720q0-33 24-56.5t57-23.5q33 0 57 23.5t24 56.5q0 33-24 56.5T779-640Zm-659-40v-80h200v80H120Z"/></svg>
+            }
+            @case ("Biking") {
+                <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#FFF"><path d="M428-520h-70 150-80ZM200-200q-83 0-141.5-58.5T0-400q0-83 58.5-141.5T200-600h464l-80-80H440v-80h143q16 0 30.5 6t25.5 17l139 139q78 6 130 63t52 135q0 83-58.5 141.5T760-200q-83 0-141.5-58.5T560-400q0-18 2.5-35.5T572-470L462-360h-66q-14 70-69 115t-127 45Zm560-80q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35Zm-560 0q38 0 68.5-22t43.5-58H200v-80h112q-13-36-43.5-58T200-520q-50 0-85 35t-35 85q0 50 35 85t85 35Zm198-160h30l80-80H358q15 17 25 37t15 43Z"/></svg>
+            }
+            @case ("Hiking") {
+                <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#FFF"><path d="m280-40 123-622q6-29 27-43.5t44-14.5q23 0 42.5 10t31.5 30l40 64q18 29 46.5 52.5T700-529v-71h60v560h-60v-406q-48-11-89-35t-71-59l-24 120 84 80v300h-80v-240l-84-80-72 320h-84Zm17-395-85-16q-16-3-25-16.5t-6-30.5l30-157q6-32 34-50.5t60-12.5l46 9-54 274Zm186.5-328.5Q460-787 460-820t23.5-56.5Q507-900 540-900t56.5 23.5Q620-853 620-820t-23.5 56.5Q573-740 540-740t-56.5-23.5Z"/></svg>
+            }
+        } 
+    </div>
     <div class="flex flex-col justify-between">
         <div class="flex gap-4 items-center">
             <h2 class="text-xl font-semibold">{{tour().name}}</h2>
