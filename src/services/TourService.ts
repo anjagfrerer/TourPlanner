@@ -49,14 +49,14 @@ export class TourService {
     return this.tours().filter(tour => tour.author === author) ?? null;
   }
 
-  updateTour(tour: Tour){
+  /*updateTour(updatedTour: Tour){
     this.tours.update(currentTours =>
       currentTours.map(tour =>
-        tour.id === tour.id ? tour : tour
+        tour.id === updatedTour.id ? tour : tour
       )
     );
 
-  }
+  }*/
 
   deleteTour(id: number){
     this.tours.update(currentTours =>
