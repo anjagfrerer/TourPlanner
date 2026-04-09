@@ -64,23 +64,19 @@ export class TourService {
     );
   }
   
-  // Anjas Teil mit Add Tour
+  // Add Tour
 
-  // Hilfs-Signal: Welche Tour wird gerade editiert?
   private tourToEdit = signal<Tour | null>(null);
   public readonly activeTourForEdit = this.tourToEdit.asReadonly();
 
-  // Startet den Edit-Prozess
   startEdit(tour: Tour) {
     this.tourToEdit.set(tour);
   }
 
-  // Bricht den Edit-Prozess ab
   clearEdit() {
     this.tourToEdit.set(null);
   }
 
-  // Speichert die Änderungen im Array
   updateTour(updatedTour: Tour) {
     this.tours.update(currentTours => 
       currentTours.map(tour => tour.id === updatedTour.id ? updatedTour : tour)

@@ -20,31 +20,30 @@ export class TourLogItemViewModel {
   }
 
   deleteLog() {
-    const currentLog = this.tourLog(); // Hol den Wert aus dem Signal
+    const currentLog = this.tourLog();
     if (currentLog) {
-      if (window.confirm("Möchtest du diese Tour wirklich löschen?")) {
+      if (window.confirm("Are you sure you want to delete this tour?")) {
         this.service.deleteTourLog(currentLog.tourLogId);
       }
     } else {
-      console.error("Kein Log zum Löschen ausgewählt");
+      console.error("No log selected for deletion");
     }
   }
 
  editLog() {
     const currentLog = this.tourLog();
     if (currentLog) {
-      this.service.startEdit(currentLog); // Informiert den Service
+      this.service.startEdit(currentLog);
     }
   }
 
   visitTour() {
     const log = this.tourLog()
     if (!log?.tourId) {
-      alert('Keine Tour zu diesem Log gefunden.');
+      alert('No tour found for this log.');
       return;
     }
 
-    // navigiere dynamisch zur TourDetail-Seite
     this.router.navigate(['/tour', log.tourId]);
   }
 }

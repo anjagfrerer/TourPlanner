@@ -3,7 +3,6 @@ import { TourLog } from '../app/models/tour-log.model';
 
 @Injectable({ providedIn: 'root' })
 export class TourLogService {
-  // Signal initialisieren
   logs = signal<TourLog[]>([
     {
       tourLogId: 1,
@@ -43,7 +42,7 @@ export class TourLogService {
     }
   ]);
 
-  // Hilfs-Signal: Welcher Log wird gerade editiert?
+  // welcher log grad bearbeitet wird
   private logToEdit = signal<TourLog | null>(null);
   public readonly activeLogForEdit = this.logToEdit.asReadonly();
 
@@ -52,17 +51,16 @@ export class TourLogService {
       this.logs().filter(log => log.tourId === tourId));
   }
 
-  // Startet den Edit-Prozess
+  // edit prozess starten
   startEdit(log: TourLog) {
     this.logToEdit.set(log);
   }
 
-  // Bricht den Edit-Prozess ab
+  // edit prozess abbrechen
   clearEdit() {
     this.logToEdit.set(null);
   }
 
-  // Speichert die Änderungen im Array
   updateTourLog(updatedLog: TourLog) {
     this.logs.update(currentLogs => 
       currentLogs.map(log => log.tourLogId === updatedLog.tourLogId ? updatedLog : log)
