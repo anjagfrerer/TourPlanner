@@ -39,8 +39,12 @@
         </div>
     </div>
     <div class="flex flex-col">
-        @for (log of vm.tourLogs(); track log) {
-        <tour-log-item [tourLog]="log"></tour-log-item>
+        @if (!vm.tourLogs().length) {
+            <p class="flex justify-center font-light mt-8">No logs added yet</p>
+        } @else {
+            @for (log of vm.tourLogs(); track log) {
+                <tour-log-item [tourLog]="log"></tour-log-item>
+            }
         }
     </div>
 </section>
