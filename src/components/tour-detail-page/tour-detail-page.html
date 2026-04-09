@@ -31,9 +31,7 @@
                     <span class="text-xs"> {{vm.selectedTour()?.estimatedTime}}h | {{vm.selectedTour()?.distance}}km</span>
                 </div>
             </div>
-            <div class="flex justify-center">
-                MAP PLACEHOLDER
-            </div>
+            <div id="map" class="flex justify-center items-center w-full h-64 rounded-md text-xs border overflow-hidden"> map placeholder</div>
             <div>
                 <p class="font-bold text-xs md:text-base">Description:</p>
                 <p class="text-xs">{{vm.selectedTour()?.description}}</p>

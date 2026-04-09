@@ -3,11 +3,9 @@ import {ActivatedRoute} from '@angular/router';
 import { StarRating } from "../star-rating/star-rating";
 import { BackButton } from "../back-button/back-button";
 import { TourLogsItemComponent } from "../TourLog/tour-log-item/tour-log-item"
-import { TourLog } from "../../app/models/tour-log.model";
-import { Tour } from "../../app/models/tour.model";
-import { TourLogService } from "../../services/TourLogService";
-import { TourService } from "../../services/TourService";
 import { TourDetailPageViewModel } from "./tour-detail-page.vm"
+import { MapFacade } from "../../services/MapFacade";
+
 // ViewModel
 @Component({
     selector: 'tour-detail',
@@ -18,11 +16,17 @@ import { TourDetailPageViewModel } from "./tour-detail-page.vm"
 
 export class TourDetailComponent implements OnInit {
     private activatedRoute = inject(ActivatedRoute);
+    private mapFacade = inject(MapFacade);
     vm = inject(TourDetailPageViewModel);
 
     ngOnInit(){
        const tourId : number = Number(this.activatedRoute.snapshot.paramMap.get('id'));
+       const lat = 48.2082;
+       const lng = 16.3738;
+
        this.vm.loadTourById(tourId);
        this.vm.loadTourLogByTourId(tourId);
+       this.mapFacade.initMap("map");
+       this.mapFacade.addMarker(lat, lng);
     }
 }
