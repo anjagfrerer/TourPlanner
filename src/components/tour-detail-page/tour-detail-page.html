@@ -28,7 +28,7 @@
                             <star-rating [stars]="tour.rating"></star-rating>
                         }
                     </div>
-                    <span class="text-xs"> {{vm.selectedTour()?.estimatedTime}}h | {{vm.selectedTour()?.distance}}km</span>
+                    <span class="text-xs"> {{vm.selectedTour()?.from}} - {{vm.selectedTour()?.to}} | {{vm.selectedTour()?.distance}}km | {{vm.selectedTour()?.estimatedTime}}h </span>
                 </div>
             </div>
             <div id="map" class="flex justify-center items-center w-full h-64 rounded-md text-xs border overflow-hidden"> map placeholder</div>

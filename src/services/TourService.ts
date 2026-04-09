@@ -31,8 +31,10 @@ export class TourService {
     "rating": 0
   });
 
-  //TODO: CRUD Methods fertig
-  addTour(){}
+  addTour(tour: Tour){
+    
+    this.tours.update(currentTours => [...currentTours, tour]);
+  }
 
   getAllTours() {
     return this.tours;
@@ -42,7 +44,18 @@ export class TourService {
     return this.tours().find(tour => tour.id === id) ?? null;
   }
 
-  updateTour(){}
+  updateTour(tour: Tour){
+    this.tours.update(currentTours =>
+      currentTours.map(tour =>
+        tour.id === tour.id ? tour : tour
+      )
+    );
 
-  deleteTour(){}
+  }
+
+  deleteTour(id: number){
+    this.tours.update(currentTours =>
+      currentTours.filter(tour => tour.id !== id)
+    );
+  }
 }

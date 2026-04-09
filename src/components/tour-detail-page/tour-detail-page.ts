@@ -16,17 +16,17 @@ import { MapFacade } from "../../services/MapFacade";
 
 export class TourDetailComponent implements OnInit {
     private activatedRoute = inject(ActivatedRoute);
-    private mapFacade = inject(MapFacade);
+    //private mapFacade = inject(MapFacade);
     vm = inject(TourDetailPageViewModel);
 
     ngOnInit(){
        const tourId : number = Number(this.activatedRoute.snapshot.paramMap.get('id'));
-       const lat = 48.2082;
-       const lng = 16.3738;
+       //const lat = 48.2082;
+       //const lng = 16.3738;
 
        this.vm.loadTourById(tourId);
        this.vm.loadTourLogByTourId(tourId);
-       this.mapFacade.initMap("map");
-       this.mapFacade.addMarker(lat, lng);
+       //this.mapFacade.initMap("map");
+       //this.mapFacade.addMarker(lat, lng);
     }
 }
