@@ -7,7 +7,8 @@ export interface Tour {
     transportType: string,
     distance: number,
     estimatedTime: string,
-    routeInformation: null
+    routeInformation: null,
+    rating: number
     /* Model aus Testgründen geändert 
     - muss dann wieder rückgängig gemacht werden
     

@@ -3,7 +3,7 @@
     <div class="flex flex-col justify-between">
         <div class="flex gap-4 items-center">
             <h2 class="text-xl font-semibold">{{tour().name}}</h2>
-            <star-rating [stars] = vm.rating()></star-rating>
+            <star-rating [stars]=tour().rating></star-rating>
         </div>
         <div>
             <span class="text-xs"> {{tour().estimatedTime}} |  {{tour().distance}}km</span>

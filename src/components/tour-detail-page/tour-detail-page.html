@@ -5,13 +5,15 @@
         <back-button height=32 width=32></back-button>
         <div class="flex flex-col bg-primary2 rounded-md text-stone-850 mt-6 mb-6 p-6 md:p-10 gap-4">
             <div class="flex gap-4 md:gap-8 w-full">
-                <div class="flex bg-primary w-14 sm:w-16 rounded-md items-center justify-center">{{vm.selectedtour()?.transportType}}</div>
+                <div class="flex bg-primary w-14 sm:w-16 rounded-md items-center justify-center">{{vm.selectedTour()?.transportType}}</div>
                 <div class="flex flex-col justify-between">
                     <div class="flex items-center gap-3">
-                        <h3 class="text-xs md:text-xl">{{vm.selectedtour()?.name}}</h3>
-                        <star-rating [stars]=3></star-rating>
+                        <h3 class="text-xs md:text-xl">{{vm.selectedTour()?.name}}</h3>
+                        @if (vm.selectedTour(); as tour) {
+                            <star-rating [stars]="tour.rating"></star-rating>
+                        }
                     </div>
-                    <span class="text-xs"> {{vm.selectedtour()?.estimatedTime}}h | {{vm.selectedtour()?.distance}}km</span>
+                    <span class="text-xs"> {{vm.selectedTour()?.estimatedTime}}h | {{vm.selectedTour()?.distance}}km</span>
                 </div>
             </div>
             <div class="flex justify-center">
@@ -19,7 +21,7 @@
             </div>
             <div>
                 <p class="font-bold text-xs md:text-base">Description:</p>
-                <p class="text-xs">{{vm.selectedtour()?.description}}</p>
+                <p class="text-xs">{{vm.selectedTour()?.description}}</p>
             </div>
         </div>
     </div>
@@ -36,7 +38,9 @@
             </button>
         </div>
     </div>
-    <!--@for (log of tourlogs(); track log) {
-        <tour-log-item [tourLog]=log></tour-log-item>
-    }-->
+    <div class="flex flex-col">
+        @for (log of vm.tourLogs(); track log) {
+        <tour-log-item [tourLog]="log"></tour-log-item>
+        }
+    </div>
 </section>

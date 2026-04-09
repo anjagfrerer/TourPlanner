@@ -23,5 +23,6 @@ export class TourDetailComponent implements OnInit {
     ngOnInit(){
        const tourId : number = Number(this.activatedRoute.snapshot.paramMap.get('id'));
        this.vm.loadTourById(tourId);
+       this.vm.loadTourLogByTourId(tourId);
     }
 }
