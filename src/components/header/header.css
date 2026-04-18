@@ -2,6 +2,11 @@
   display: flex;
   justify-content: flex-end;   /* Inhalt nach rechts */
   align-items: center;         /* vertikal zentrieren */
-  padding: 10px 20px;
-  background-color: rgb(218, 230, 212);
+  height: 60px;
+  
+  /* Sticky Header */
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
 }

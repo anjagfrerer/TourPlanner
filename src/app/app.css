@@ -1,8 +1,9 @@
 .layout {
   display: grid;
   grid-template-columns: 200px 1fr;
-  grid-template-rows: auto 1fr;
-  min-height: 100vh;
+  grid-template-rows: 60px 1fr; /* Feste Header-Höhe */
+  height: 100vh;                /* Genau 100% der Fensterhöhe */
+  overflow: hidden;             /* Verhindert das Scrollen der ganzen Seite */
 }
 
 .header {
@@ -11,10 +12,15 @@
 
 .sidebar {
   grid-column: 1;
+  overflow-y: auto;
 }
 
 .content {
+  background-color: #FFFDF3;
   grid-column: 2;
-  padding: 20px;
+  padding: 2vw;
+  padding-left: 3vw;
+  padding-right: 3vw;
   min-width: 0;
+  overflow-y: auto;
 }

@@ -2,7 +2,7 @@
   margin: 0;
   padding: 0;
   width: 200px;
-  background-color: #cacaca;
+  background-color: #FFFDF3;
   position: fixed;
   height: 100%;
   overflow: auto;
@@ -16,19 +16,19 @@
   text-decoration: none;
 }
 
-/* Active/current link */
+/* current link */
 .sidebar a.active {
   background-color: #8baa76;
   color: white;
 }
 
-/* Links on mouse-over */
+/* mouse-over */
 .sidebar a:hover:not(.active) {
-  background-color: #555;
+  background-color: #283618;
   color: white;
 }
 
-/* Page content. The value of the margin-left property should match the value of the sidebar's width property */
+/* content */
 div.content {
   margin-left: 200px;
   padding: 1px 16px;

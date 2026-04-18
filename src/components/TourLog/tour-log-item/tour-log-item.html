@@ -1,0 +1,63 @@
+@if (vm.tourLog(); as log) {
+<section class="tour-log-item text-[clamp(0.5rem,5vw,1rem)]">
+  <div class="text-white rounded-2xl bg-secondary p-4 m-7">
+    <div class="grid grid-cols-[minmax(200px,15%)_1fr]">
+      
+      <div class="flex flex-col gap-2">
+        <div class="grid grid-cols-[minmax(50px,15%)_1fr] items-center gap-2">
+          <div>
+            <img class="invert brightness-0 w-12" src="assets/profileIcon.svg" alt="profileIcon">
+          </div>
+          <div>
+            <div class="flex flex-col">
+              <div class="font-bold">{{ log.author }}</div>
+              <div class="italic text-xs opacity-80">
+                {{ log.date }} | {{ log.time }}
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <star-rating [stars]="vm.rating()"></star-rating>
+        
+        <div class="text-sm space-y-1">
+          <div class="flex items-center gap-1">
+            <span class="font-semibold text-accent">Difficulty:</span> 
+            {{ log.difficulty }}/10
+          </div>
+          <div class="flex items-center gap-1">
+            <span class="font-semibold text-accent">Distance:</span> 
+            {{ log.totalDistanceKm }} km
+          </div>
+          <div class="flex items-center gap-1">
+            <span class="font-semibold text-accent">Time:</span> 
+            {{ log.totalTimeMin }} min
+          </div>
+        </div>
+      </div>
+      
+      <div class="pl-6 border-l border-white/20 italic whitespace-pre-wrap">
+        {{ log.comment }}
+      </div>
+    </div>
+
+    <div class="flex justify-end items-center pt-4 gap-4">
+      <button (click)="vm.deleteLog()" class="hover:scale-110 transition-transform cursor-pointer" title="Löschen">
+        <img class="w-6" src="assets/deleteIcon.svg" alt="deleteIcon">
+      </button>
+      
+      <button (click)="vm.editLog()" class="hover:scale-110 transition-transform cursor-pointer" title="Bearbeiten">
+        <img class="w-6" src="assets/editIcon.svg" alt="editIcon">
+      </button>
+      
+      <button 
+        class="text-black bg-accent rounded-xl px-5 py-2 font-bold hover:bg-white transition-colors cursor-pointer" 
+        (click)="vm.visitTour()">
+        Visit Tour →
+      </button>
+    </div>
+  </div>
+</section>
+} @else {
+  <div class="p-8 text-center opacity-50">Loading log data...</div>
+}

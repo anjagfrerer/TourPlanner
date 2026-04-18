@@ -1,0 +1,19 @@
+<!-- View -->
+<section class="my-tours-page">
+    <h1 class="text-4xl font-bold text-gray-900 mb-6">My Tours</h1>
+    <div class="flex justify-end items-center gap-2 pr-20">
+  <span class="text-xs">Add Tour</span>
+  <button 
+    type="button"
+    (click)="vm.openAddLogPopup()"
+    class="bg-olive-400 rounded-full p-1 hover:cursor-pointer">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#000">
+      <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
+    </svg>
+
+  </button>
+</div>
+    <tour-list ></tour-list>
+    <add-tour-popup></add-tour-popup>
+</section>
