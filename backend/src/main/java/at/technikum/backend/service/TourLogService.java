@@ -5,6 +5,7 @@ import at.technikum.backend.model.TourLog;
 import at.technikum.backend.repository.TourLogRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,21 +18,23 @@ public class TourLogService {
         this.repository = repository;
     }
 
-    // Receives a DTO from the Controller, converts it to an Entity, saves it, and returns the result as a DTO again
     public TourLogDto save(TourLogDto dto) {
-        // 1. Map DTO to Entity (Prepare for Storage)
         TourLog entity = mapToEntity(dto);
-        // 2. Save in the "dumb" list repository
         TourLog savedEntity = repository.save(entity);
-        // 3. Map back to DTO (Return to Frontend)
         return mapToDto(savedEntity);
     }
 
-    // Gets all logs and converts them to DTOs
     public List<TourLogDto> findAll() {
-        return repository.findAll().stream()
-                .map(this::mapToDto)
-                .collect(Collectors.toList());
+        List<TourLogDto> allTourLogDtos = new ArrayList<>();
+        for(TourLog tourLog : repository.findAll()) {
+            allTourLogDtos.add(this.mapToDto(tourLog));
+        }
+        return allTourLogDtos;
+    }
+
+    public TourLogDto update(Long id, TourLogDto dto) {
+        dto.setTourLogId(id);
+        return save(dto);
     }
 
     public TourLogDto getById(Long id) {

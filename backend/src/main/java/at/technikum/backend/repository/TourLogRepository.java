@@ -11,7 +11,6 @@ import java.util.concurrent.atomic.AtomicLong;
 @Repository
 public class TourLogRepository {
     private static final List<TourLog> tourLogs = new ArrayList<>();
-    // automatische IDs
     private static final AtomicLong idGenerator = new AtomicLong(1);
 
     public TourLog save(TourLog tourLog) {

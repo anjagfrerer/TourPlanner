@@ -32,8 +32,8 @@ public class TourLogController {
     }
 
     @PutMapping("/{id}")
-    public TourLogDto update(@RequestBody TourLogDto tourLogDto) {
-        return tourLogService.save(tourLogDto);
+    public TourLogDto update(@PathVariable Long id, @RequestBody TourLogDto tourLogDto) {
+        return tourLogService.update(id, tourLogDto);
     }
 
     @DeleteMapping("/{id}")
