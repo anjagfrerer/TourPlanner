@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 
 //TODO: Switch up Entities for actual DTOs
@@ -21,12 +22,12 @@ public class TourController {
 
     @GetMapping
     public List<Tour> getAllTours() {
-        return tourService.getTours();
+        return tourService.getAllTours();
     }
 
     @GetMapping("/{id}")
-    public Tour getTour(@PathVariable int id) {
-        return tourService.getTourById(id).get();
+    public Tour getTour(@PathVariable UUID id) {
+        return tourService.getTourById(id);
     }
 
     @PostMapping
@@ -35,7 +36,7 @@ public class TourController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteTour(@PathVariable int id) {
+    public void deleteTour(@PathVariable UUID id) {
         tourService.deleteTourById(id);
     }
 }

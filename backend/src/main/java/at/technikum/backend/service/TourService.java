@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
-//TODO: Swap methods for JPA methods
 @Service
 public class TourService {
     private final TourRepository tourRepository;
@@ -23,20 +23,14 @@ public class TourService {
         tourRepository.save(tour);
     }
 
-    public Optional<Tour> getTourById(int tourId) {
-        return tourRepository.findById(tourId);
-    }
-
-    public List<Tour> getTours() {
+    public List<Tour> getAllTours(){
         return tourRepository.findAll();
     }
-
-    public void deleteTourById(int tourId){
-        tourRepository.deleteById(tourId);
+    public Tour getTourById(UUID id){
+        return tourRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Tour not found"));
     }
 
-    public void updateTour(Tour tour) {
-        tourRepository.deleteById(tour.getId());
-        tourRepository.save(tour);
+    public void deleteTourById(UUID id){
+        tourRepository.deleteById(id);
     }
 }
