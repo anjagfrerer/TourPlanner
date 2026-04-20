@@ -10,12 +10,14 @@ import java.util.UUID;
 
 
 //TODO: Switch up Entities for actual DTOs
-//TODO: IDs are Long not int
 @RestController
 @RequestMapping("/tour")
-@RequiredArgsConstructor
 public class TourController {
     private final TourService tourService;
+
+    public TourController(TourService tourService) {
+        this.tourService = tourService;
+    }
 
     @GetMapping
     public List<Tour> getAllTours() {
