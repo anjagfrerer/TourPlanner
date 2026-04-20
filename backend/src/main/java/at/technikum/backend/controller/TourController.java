@@ -9,8 +9,9 @@ import java.util.List;
 
 
 //TODO: Switch up Entities for actual DTOs
+//TODO: IDs are Long not int
 @RestController
-@RequestMapping("/api/tour")
+@RequestMapping("/tour")
 public class TourController {
     private final TourService tourService;
 
