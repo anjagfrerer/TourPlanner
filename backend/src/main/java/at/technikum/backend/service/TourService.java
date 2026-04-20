@@ -25,6 +25,7 @@ public class TourService {
     public List<Tour> getAllTours(){
         return tourRepository.findAll();
     }
+
     public Tour getTourById(UUID id){
         return tourRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Tour not found"));
     }
