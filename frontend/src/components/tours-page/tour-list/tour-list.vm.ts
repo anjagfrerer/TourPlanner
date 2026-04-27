@@ -11,6 +11,11 @@ export class TourListViewModel {
         const allTours = this.tourService.getAllTours();
         this.tours.set(allTours());
     }
+    
+     /* 
+    loadTours() {
+        this.tourService.getAllTours();
+    }*/
 
     loadToursByAuthor(author: string) {
         const toursByAuthor = this.tourService.getToursByAuthor(author);

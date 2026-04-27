@@ -8,8 +8,9 @@ export class MyToursPageViewModel {
     //tours = signal<Tour[] | null>(null);
     selectedTour = signal<Tour | null>(null);
 
+    //HERE TO FIX THE READ-DATA-FROM-BACKEND ISSUE
     tours = computed(() => {
-    const allTours = this.tourService.getAllTours()(); // Signal auslesen
+    const allTours = this.tourService.getAllTours()(); // Signal auslesen 
     return allTours.filter(tour => tour.author === "Anja");
 });
     

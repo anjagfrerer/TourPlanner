@@ -1,9 +1,12 @@
-import { Injectable, signal, computed } from "@angular/core";
+import { Injectable, signal, inject } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
 import { Tour } from "../app/models/tour.model";
 
 @Injectable({ providedIn: 'root' })
 export class TourService {
-  
+  private http = inject(HttpClient);
+  private readonly apiUrl = 'http://localhost:8080/api/tour';
+
   //Statisches Tour "Repo"
   private tours = signal<Tour[]>([
     {"id":1,"name":"Coastal Getaway Tour","description":"Embark on a culinary journey through local markets","from":"Sankt Pölten","to":"Graz","transportType":"Vacation","distance":12.5,"estimatedTime":"01:30","routeInformation":null, "rating": 4, "author": "Lili"},
@@ -40,6 +43,12 @@ export class TourService {
   getAllTours() {
     return this.tours;
   }
+
+  /* FIX THIS
+  getAllTours() {
+    this.http.get<Tour[]>(this.baseAPIUrl).subscribe(data =>{this.tours.set(data);});
+  }
+  */
 
   getTourById(id: number) : Tour | null {
     return this.tours().find(tour => tour.id === id) ?? null;
