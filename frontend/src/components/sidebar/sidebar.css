@@ -1,0 +1,36 @@
+.sidebar {
+  margin: 0;
+  padding: 0;
+  width: 200px;
+  background-color: #FFFDF3;
+  position: fixed;
+  height: 100%;
+  overflow: auto;
+}
+
+/* Sidebar links */
+.sidebar a {
+  display: block;
+  color: black;
+  padding: 16px;
+  text-decoration: none;
+}
+
+/* current link */
+.sidebar a.active {
+  background-color: #8baa76;
+  color: white;
+}
+
+/* mouse-over */
+.sidebar a:hover:not(.active) {
+  background-color: #283618;
+  color: white;
+}
+
+/* content */
+div.content {
+  margin-left: 200px;
+  padding: 1px 16px;
+  height: 1000px;
+}
