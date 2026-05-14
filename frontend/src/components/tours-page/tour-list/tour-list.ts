@@ -14,9 +14,8 @@ import { Tour } from "../../../app/models/tour.model";
 export class TourList implements OnInit{
     vm = inject(TourListViewModel);
     activatedRoute = inject(ActivatedRoute);
-
-    ngOnInit(): void {
-        //const link : string = this.activatedRoute.snapshot.url[0]?.path ?? null;
+    
+    ngOnInit() {
         this.vm.loadTours();
     }
 }
