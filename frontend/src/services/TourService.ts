@@ -7,7 +7,7 @@ import { Observable } from "rxjs";
 @Injectable({ providedIn: 'root' })
 export class TourService {
   private http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:8080/tour/';
+  private readonly apiUrl = "http://localhost:8080/tour";
   private readonly _tourStatus = signal<LoadingState>('idle');
 
   getAllTours() {
