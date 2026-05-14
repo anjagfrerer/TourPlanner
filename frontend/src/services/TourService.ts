@@ -11,4 +11,8 @@ export class TourService {
   getAllTours() : Observable<Tour[]> {
     return this.http.get<Tour[]>(this.apiUrl);
   }
+
+  getTourById(id : string) : Observable<Tour> {
+    return this.http.get<Tour>(`${this.apiUrl}/${id}`);
+  }
 }

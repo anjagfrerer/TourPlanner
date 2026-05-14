@@ -1,5 +1,12 @@
+enum TransportType {
+    BIKING,
+    HIKING,
+    RUNNING,
+    VACATION
+}
+
 export interface Tour {
-    id: number,
+    id: string,
     name: string,
     description: string,
     startLocation: string,
@@ -10,9 +17,4 @@ export interface Tour {
     routeInformation: null,
     rating: number,
     author: string
-    /* Model aus Testgründen geändert 
-    - muss dann wieder rückgängig gemacht werden
-    
-    estimatedTime: number,
-    routeInformation: string,*/
 }

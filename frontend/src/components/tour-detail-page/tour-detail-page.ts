@@ -21,11 +21,11 @@ export class TourDetailComponent implements OnInit {
     vm = inject(TourDetailPageViewModel);
 
     ngOnInit(){
-       const tourId : number = Number(this.activatedRoute.snapshot.paramMap.get('id'));
+       const tourId : string = this.activatedRoute.snapshot.paramMap.get('id') ?? "";
        //const lat = 48.2082;
        //const lng = 16.3738;
 
-       //this.vm.loadTourById(tourId);
+       this.vm.loadTourById(tourId);
        //this.mapFacade.initMap("map");
        //this.mapFacade.addMarker(lat, lng);
     }
