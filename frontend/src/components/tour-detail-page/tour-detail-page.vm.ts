@@ -10,13 +10,13 @@ export class TourDetailPageViewModel {
     private tourService = inject(TourService);
     private tourLogService = inject(TourLogService);
     selectedTour = signal<Tour | null>(null);
-    tourLogs = computed(() => {
+    /*tourLogs = computed(() => {
         const tour = this.selectedTour();
         if (!tour) return [];
         return this.tourLogService.getLogsByTourId(tour.id)();
-    });
+    });*/
     
-    loadTourById(id: number) {
+    /*loadTourById(id: number) {
         const loadedTour = this.tourService.getTourById(id);
         //DEBUG console.log("getTourById(id) triggered: "+ id);
         this.selectedTour.set(loadedTour);
@@ -26,5 +26,5 @@ export class TourDetailPageViewModel {
         const currentTour = this.selectedTour()
         if(!currentTour) return;
         this.tourLogService.startNewLog(currentTour.id)
-    }
+    }*/
 }

@@ -8,7 +8,7 @@ import { Tour } from '../../../app/models/tour.model';
 export class AddTourPopupViewModel {
   private service = inject(TourService);
   
-  isModalOpen = signal(false);
+  /*isModalOpen = signal(false);
   tour = signal<Tour>(this.service.getEmptyTour());
 
   constructor() {
@@ -21,7 +21,7 @@ export class AddTourPopupViewModel {
         this.isModalOpen.set(false);
       }
     });
-  }
+  }*/
 
   /** 
   openModalForNew() {
@@ -30,7 +30,7 @@ export class AddTourPopupViewModel {
     this.isModalOpen.set(true);
   }*/
 
-  saveTour(): void {
+  /*saveTour(): void {
     const currentData = this.tour();
     if (currentData.id > 0) {
       this.service.updateTour(currentData);
@@ -43,5 +43,5 @@ export class AddTourPopupViewModel {
 
   closeModal(): void {
     this.service.clearEdit();
-  }
+  }*/
 }

@@ -25,7 +25,7 @@ export class TourDetailComponent implements OnInit {
        //const lat = 48.2082;
        //const lng = 16.3738;
 
-       this.vm.loadTourById(tourId);
+       //this.vm.loadTourById(tourId);
        //this.mapFacade.initMap("map");
        //this.mapFacade.addMarker(lat, lng);
     }

@@ -28,7 +28,7 @@
                             <star-rating [stars]="tour.rating"></star-rating>
                         }
                     </div>
-                    <span class="text-xs"> {{vm.selectedTour()?.from}} - {{vm.selectedTour()?.to}} | {{vm.selectedTour()?.distance}}km | {{vm.selectedTour()?.estimatedTime}}h </span>
+                    <span class="text-xs"> {{vm.selectedTour()?.startLocation}} - {{vm.selectedTour()?.destinationLocation}} | {{vm.selectedTour()?.distance}}km | {{vm.selectedTour()?.estimatedTime}}h </span>
                 </div>
             </div>
             <div id="map" class="flex justify-center items-center w-full h-64 rounded-md text-xs border overflow-hidden"> map placeholder</div>
@@ -39,7 +39,7 @@
         </div>
     </div>
 
-    <!-- COMMENT SECTION -->
+    <!-- COMMENT SECTION 
     <div class="flex justify-between">
         <h3 class="font-bold text-lg">Tour logs</h3>
         <div class="flex items-center gap-1">
@@ -50,8 +50,8 @@
                 </svg>
             </button>
         </div>
-    </div>
-    <div class="flex flex-col">
+    </div>-->
+    <!--<div class="flex flex-col">
         @if (!vm.tourLogs().length) {
             <p class="flex justify-center font-light mt-8">No logs added yet</p>
         } @else {
@@ -59,6 +59,6 @@
                 <tour-log-item [tourLog]="log"></tour-log-item>
             }
         }
-    </div>
+    </div>-->
     <app-tour-popup></app-tour-popup>
 </section>

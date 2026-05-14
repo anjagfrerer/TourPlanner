@@ -8,17 +8,11 @@ export class TourListViewModel {
     tours = signal<Tour[]>([]);
 
     loadTours() {
-        const allTours = this.tourService.getAllTours();
-        this.tours.set(allTours());
+       this.tourService.getAllTours();
     }
-    
-     /* 
-    loadTours() {
-        this.tourService.getAllTours();
-    }*/
 
-    loadToursByAuthor(author: string) {
+    /*loadToursByAuthor(author: string) {
         const toursByAuthor = this.tourService.getToursByAuthor(author);
         this.tours.set(toursByAuthor ?? []);
-    }
+    }*/
 }
