@@ -9,14 +9,15 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Tour {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     UUID id;
     String name;
     String description;
-    String from;
-    String to;
+    String startLocation;
+    String destinationLocation;
     TransportType transportType;
     Double distance;
     String estimatedTime;

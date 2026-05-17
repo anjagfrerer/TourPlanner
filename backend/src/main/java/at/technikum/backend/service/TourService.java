@@ -1,5 +1,6 @@
 package at.technikum.backend.service;
 
+import at.technikum.backend.dto.TourResponse;
 import at.technikum.backend.model.Tour;
 import at.technikum.backend.repository.TourRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -18,8 +19,8 @@ public class TourService {
         this.tourRepository = tourRepository;
     }
 
-    public void addTour(Tour tour){
-        tourRepository.save(tour);
+    public Tour addTour(Tour tour){
+        return tourRepository.save(tour);
     }
 
     public List<Tour> getAllTours(){
