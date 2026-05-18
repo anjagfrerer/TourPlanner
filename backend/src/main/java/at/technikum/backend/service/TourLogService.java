@@ -1,77 +1,88 @@
 package at.technikum.backend.service;
 
-import at.technikum.backend.dto.TourLogDto;
+import at.technikum.backend.dto.request.RequestTourLogDto;
+import at.technikum.backend.dto.response.ResponseTourLogDto;
+import at.technikum.backend.model.Tour;
 import at.technikum.backend.model.TourLog;
 import at.technikum.backend.repository.TourLogRepository;
+import at.technikum.backend.repository.TourRepository;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class TourLogService {
 
-    private final TourLogRepository repository;
+    private final TourLogRepository tourLogRepository;
+    private final TourLogMapper mapper;
+    private final TourRepository tourRepository;
 
-    public TourLogService(TourLogRepository repository) {
-        this.repository = repository;
+    @Transactional
+    public ResponseTourLogDto save(UUID tourId, RequestTourLogDto requestTourLogDto) {
+        Tour tour = tourRepository.findById(tourId).orElseThrow(() -> new RuntimeException("Tour not found"));
+        TourLog entity = mapper.toEntity(requestTourLogDto);
+        entity.setTour(tour);
+        TourLog savedEntity = tourLogRepository.save(entity);
+        return mapper.toResponseDto(savedEntity);
     }
 
-    public TourLogDto save(TourLogDto dto) {
-        TourLog entity = mapToEntity(dto);
-        TourLog savedEntity = repository.save(entity);
-        return mapToDto(savedEntity);
+    @Transactional(readOnly = true)
+    public List<ResponseTourLogDto> findAll(UUID tourId) {
+        Tour tour = tourRepository.findById(tourId).orElseThrow(() -> new RuntimeException("Tour not found"));
+        return tourLogRepository.findByTour_Id(tourId)
+                .stream()
+                .map(mapper::toResponseDto)
+                .toList();
     }
 
-    public List<TourLogDto> findAll() {
-        List<TourLogDto> allTourLogDtos = new ArrayList<>();
-        for(TourLog tourLog : repository.findAll()) {
-            allTourLogDtos.add(this.mapToDto(tourLog));
+    @Transactional(readOnly = true)
+    public ResponseTourLogDto getById(UUID tourId, UUID tourLogId) {
+        TourLog tourLog = findAndValidateLog(tourLogId, tourId);
+        return mapper.toResponseDto(tourLog);
+    }
+
+    @Transactional
+    public ResponseTourLogDto update(UUID tourId, UUID tourLogId, RequestTourLogDto requestTourLogDto) {
+        TourLog existingTourLog = findAndValidateLog(tourId, tourLogId);
+
+        existingTourLog.setAuthor(requestTourLogDto.getAuthor());
+        existingTourLog.setDate(requestTourLogDto.getDate());
+        existingTourLog.setTime(requestTourLogDto.getTime());
+        existingTourLog.setRating(requestTourLogDto.getRating());
+        existingTourLog.setDifficulty(requestTourLogDto.getDifficulty());
+        existingTourLog.setTotalDistanceKm(requestTourLogDto.getTotalDistanceKm());
+        existingTourLog.setTotalTimeMin(requestTourLogDto.getTotalTimeMin());
+        existingTourLog.setComment(requestTourLogDto.getComment());
+
+        return mapper.toResponseDto(tourLogRepository.save(existingTourLog));
+    }
+
+    public TourLog findAndValidateLog(UUID tourId, UUID tourLogId) {
+        // Schauen, ob ein log mit dieser tourLogId existiert
+        TourLog log = tourLogRepository.findById(tourLogId).orElseThrow(() -> new EntityNotFoundException("Log not found"));
+        // Schauen, ob diese tour zu diesem log gehört
+        if(!log.getTour().getId().equals(tourId)) {
+            throw new IllegalArgumentException("Log does not belong to that specific tour");
         }
-        return allTourLogDtos;
+        return log;
     }
 
-    public TourLogDto update(Long id, TourLogDto dto) {
-        dto.setTourLogId(id);
-        return save(dto);
-    }
-
-    public TourLogDto getById(Long id) {
-        return mapToDto(repository.getById(id));
-    }
-
-    public void delete(Long id) {
-        repository.deleteById(id);
-    }
-
-    private TourLog mapToEntity(TourLogDto dto) {
-        TourLog tourLog = new TourLog();
-        tourLog.setTourLogId(dto.getTourLogId());
-        tourLog.setTourId(dto.getTourId());
-        tourLog.setAuthor(dto.getAuthor());
-        tourLog.setDate(dto.getDate());
-        tourLog.setTime(dto.getTime());
-        tourLog.setRating(dto.getRating());
-        tourLog.setDifficulty(dto.getDifficulty());
-        tourLog.setTotalDistanceKm(dto.getTotalDistanceKm());
-        tourLog.setTotalTimeMin(dto.getTotalTimeMin());
-        tourLog.setComment(dto.getComment());
-        return tourLog;
-    }
-
-    private TourLogDto mapToDto(TourLog tourLog) {
-        TourLogDto dto = new TourLogDto();
-        dto.setTourLogId(tourLog.getTourLogId());
-        dto.setTourId(tourLog.getTourId());
-        dto.setAuthor(tourLog.getAuthor());
-        dto.setDate(tourLog.getDate());
-        dto.setTime(tourLog.getTime());
-        dto.setRating(tourLog.getRating());
-        dto.setDifficulty(tourLog.getDifficulty());
-        dto.setTotalDistanceKm(tourLog.getTotalDistanceKm());
-        dto.setTotalTimeMin(tourLog.getTotalTimeMin());
-        dto.setComment(tourLog.getComment());
-        return dto;
+    @Transactional
+    public ResponseTourLogDto delete(UUID tourId, UUID tourLogId) {
+        TourLog tourLog = findAndValidateLog(tourId, tourLogId);
+        tourLogRepository.delete(tourLog);
+        return mapper.toResponseDto(tourLog);
     }
 }

@@ -1,13 +1,8 @@
-package at.technikum.backend.model;
+package at.technikum.backend.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,17 +10,13 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.UUID;
 
-@Data // Getter & Setter
-@Entity
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TourLog {
+public class ResponseTourLogDto {
 
-    @Id
     private UUID tourLogId;
-    @ManyToOne
-    @JoinColumn(name = "tour_id")
-    private Tour tour;
+    private UUID tourId;
     private String author;
     private LocalDate date;
     private LocalTime time;
@@ -34,5 +25,4 @@ public class TourLog {
     private Double totalDistanceKm;
     private Integer totalTimeMin;
     private String comment;
-
 }
