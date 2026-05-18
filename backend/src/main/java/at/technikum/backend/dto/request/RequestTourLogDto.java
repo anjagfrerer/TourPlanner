@@ -1,9 +1,8 @@
-package at.technikum.backend.dto;
+package at.technikum.backend.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,13 +12,10 @@ import java.time.LocalTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TourLogDto {
+public class RequestTourLogDto {
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long tourLogId;
-
-    @NotNull(message = "Tour ID is mandatory")
-    private Long tourId;
+    //@NotNull(message = "Tour ID is mandatory")
+    //private Long tourId;
 
     @NotBlank(message = "Author cannot be empty")
     private String author;

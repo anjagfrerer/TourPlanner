@@ -15,8 +15,8 @@ public class Tour {
     UUID id;
     String name;
     String description;
-    String from;
-    String to;
+    String fromLocation;
+    String toLocation;
     TransportType transportType;
     Double distance;
     String estimatedTime;
