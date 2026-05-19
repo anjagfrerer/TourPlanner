@@ -1,29 +1,28 @@
 package at.technikum.backend.service;
 
-import at.technikum.backend.dto.UserRegistrationDto;
-import at.technikum.backend.model.User;
+import at.technikum.backend.entity.User;
 import at.technikum.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public User registerUser(UserRegistrationDto dto) {
-        User user = new User();
-        user.setUsername(dto.getUsername());
-
-        user.setPassword(passwordEncoder.encode(dto.getPassword()));
-
-        return userRepository.save(user);
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 
-    public User findUserByUsername(String username) {
-        return userRepository.findByUsername(username).orElse(null);
+    public User register(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
     }
 }

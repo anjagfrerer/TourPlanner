@@ -1,4 +1,4 @@
-package at.technikum.backend.model;
+package at.technikum.backend.entity;
 
 import at.technikum.backend.constants.TransportType;
 import jakarta.persistence.*;
@@ -25,5 +25,7 @@ public class Tour {
     @JoinColumn(name = "tour_route_information")
     Route routeInformation;
     Integer rating;
-    String createdBy;
+    @ManyToOne
+    @JoinColumn(name = "created_by_id")
+    User createdBy;
 }

@@ -1,4 +1,4 @@
-package at.technikum.backend.model;
+package at.technikum.backend.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

@@ -1,11 +1,8 @@
 package at.technikum.backend.mapper;
 
-import at.technikum.backend.dto.TourRequest;
 import at.technikum.backend.dto.TourResponse;
-import at.technikum.backend.model.Tour;
-import at.technikum.backend.repository.TourRepository;
+import at.technikum.backend.entity.Tour;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.Mapping;
 
 @Component
 public class TourMapper {

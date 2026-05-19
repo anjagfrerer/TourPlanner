@@ -2,8 +2,6 @@ package at.technikum.backend.controller;
 
 import at.technikum.backend.dto.request.RequestTourLogDto;
 import at.technikum.backend.dto.response.ResponseTourLogDto;
-import at.technikum.backend.model.TourLog;
-import at.technikum.backend.service.TourLogMapper;
 import at.technikum.backend.service.TourLogService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/tours/{tourId}/logs")
+@RequestMapping("/tour/{tourId}/logs")
 public class TourLogController {
 
     private final TourLogService tourLogService;

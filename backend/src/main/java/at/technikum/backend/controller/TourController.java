@@ -1,12 +1,12 @@
 package at.technikum.backend.controller;
 
-import at.technikum.backend.dto.TourRequest;
 import at.technikum.backend.dto.TourResponse;
+import at.technikum.backend.entity.User;
 import at.technikum.backend.mapper.TourMapper;
-import at.technikum.backend.model.Tour;
+import at.technikum.backend.entity.Tour;
 import at.technikum.backend.service.TourService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,9 +34,9 @@ public class TourController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TourResponse addTour(@RequestBody Tour tour) {
-        Tour addedTour = tourService.addTour(tour);
-        return mapper.toTourResponse(addedTour);
+    public TourResponse addTour(@RequestBody Tour tour, @AuthenticationPrincipal User user) {
+        tour.setCreatedBy(user);
+        return mapper.toTourResponse(tourService.addTour(tour));
     }
 
     @GetMapping("/{id}")

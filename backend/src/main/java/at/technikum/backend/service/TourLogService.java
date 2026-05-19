@@ -2,22 +2,15 @@ package at.technikum.backend.service;
 
 import at.technikum.backend.dto.request.RequestTourLogDto;
 import at.technikum.backend.dto.response.ResponseTourLogDto;
-import at.technikum.backend.model.Tour;
-import at.technikum.backend.model.TourLog;
+import at.technikum.backend.entity.Tour;
+import at.technikum.backend.entity.TourLog;
 import at.technikum.backend.repository.TourLogRepository;
 import at.technikum.backend.repository.TourRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 

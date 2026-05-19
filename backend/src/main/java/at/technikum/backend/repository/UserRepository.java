@@ -1,6 +1,6 @@
 package at.technikum.backend.repository;
 
-import at.technikum.backend.model.User;
+import at.technikum.backend.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

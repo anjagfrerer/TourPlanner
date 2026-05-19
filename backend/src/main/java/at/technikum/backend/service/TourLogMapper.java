@@ -2,7 +2,7 @@ package at.technikum.backend.service;
 
 import at.technikum.backend.dto.request.RequestTourLogDto;
 import at.technikum.backend.dto.response.ResponseTourLogDto;
-import at.technikum.backend.model.TourLog;
+import at.technikum.backend.entity.TourLog;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
