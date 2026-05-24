@@ -1,6 +1,6 @@
 export interface TourLog {
-  tourLogId: number,
-  tourId: number;
+  tourLogId: string,
+  tourId: string;
   author: string,
   date: string;          // z. B. 2026-03-17
   time: string;          // z. B. 14:30

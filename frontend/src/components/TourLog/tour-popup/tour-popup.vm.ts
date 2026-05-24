@@ -21,22 +21,28 @@ export class TourPopupViewModel {
     });
   }
 
-  /** 
-  openModalForNew() {
-    this.service.clearEdit();
-    this.tourLog.set(this.createEmptyTourLog());
-    this.isModalOpen.set(true);
-  }*/
-
-  saveTourLog(): void {
+  async saveTourLog(): Promise<void> {
     const currentData = this.tourLog();
-    if (currentData.tourLogId > 0) {
-      this.service.updateTourLog(currentData);
-    } else {
-      this.service.addTourLog(currentData);
+    const tourId = currentData.tourId;
+
+    if (!tourId) {
+      window.alert('No Tour available!');
+      return;
     }
-    this.closeModal();
-    window.alert('Erfolgreich gespeichert!');
+
+    try {
+      if(!currentData.tourLogId) {
+        await this.service.addTourLog(tourId, currentData);
+      } else {
+        await this.service.updateTourLog(tourId, currentData);
+      }
+
+      this.closeModal();
+      window.alert('Successfully saved!');
+    } catch (error: any) {
+      console.error('Failed to save TourLog:', error);
+    window.alert('Failed to save TourLog. Please try again.');
+    }
   }
 
   closeModal(): void {
