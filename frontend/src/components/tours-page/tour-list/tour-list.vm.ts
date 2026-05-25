@@ -7,25 +7,25 @@ import { finalize, Observable } from "rxjs";
 @Injectable()
 export class TourListViewModel {
     private tourService = inject(TourService);
-    private readonly tourStatus = signal<LoadingState>('idle');
+    private readonly _tourStatus = signal<LoadingState>('idle');
     tours = signal<Tour[]>([]);
 
     loadTours(){
-        this.tourStatus.set("loading");
+        this._tourStatus.set("loading");
 
         this.tourService.getAllTours()
         .pipe(
             finalize(() => {
-                this.tourStatus.set("idle");
+                this._tourStatus.set("idle");
             })
         )
         .subscribe({
             next: (response) => {
                 this.tours.set(response);
-                this.tourStatus.set("success");
+                this._tourStatus.set("success");
             },
             error: (err) => {
-                this.tourStatus.set("error");
+                this._tourStatus.set("error");
                 console.error(err);
             } 
         });
