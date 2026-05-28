@@ -17,4 +17,5 @@ public interface TourLogMapper {
     // Entity -> ResponseTourLogDto
     @Mapping(source = "tour.id", target = "tourId")
     ResponseTourLogDto toResponseDto(TourLog entity);
+
 }
