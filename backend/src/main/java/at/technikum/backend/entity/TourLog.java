@@ -1,9 +1,6 @@
 package at.technikum.backend.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,7 +20,9 @@ public class TourLog {
     @ManyToOne
     @JoinColumn(name = "tour_id")
     private Tour tour;
-    private String author;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "author_id")
+    private User author;
     private LocalDate date;
     private LocalTime time;
     private Integer rating;

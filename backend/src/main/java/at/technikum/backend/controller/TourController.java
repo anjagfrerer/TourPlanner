@@ -16,7 +16,7 @@ import java.util.UUID;
 //TODO: Switch up Entities for actual DTOs
 @RestController
 @RequestMapping("/tour")
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:4200")
 public class TourController {
     private final TourService tourService;
     private final TourMapper mapper;

@@ -1,4 +1,4 @@
-package at.technikum.backend.service;
+package at.technikum.backend.mapper;
 
 import at.technikum.backend.dto.request.RequestTourLogDto;
 import at.technikum.backend.dto.response.ResponseTourLogDto;
@@ -12,10 +12,12 @@ public interface TourLogMapper {
     // RequestTourLogDto -> Entity
     @Mapping(target = "tourLogId", ignore = true)
     @Mapping(target = "tour", ignore = true)
+    @Mapping(target = "author", ignore = true)
     TourLog toEntity(RequestTourLogDto dto);
 
     // Entity -> ResponseTourLogDto
     @Mapping(source = "tour.id", target = "tourId")
+    @Mapping(source = "author.username", target = "author")
     ResponseTourLogDto toResponseDto(TourLog entity);
 
 }
