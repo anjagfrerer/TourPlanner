@@ -30,6 +30,9 @@ export class TourDetailPageViewModel {
                 console.log(response);
                 this.selectedTour.set(response);
                 this.tourStatus.set("success");
+
+                // von Anja hinzugefügt um Logs zu laden zur Tour
+                this.tourLogService.getLogsByTourId(response.id);
             },
             error: (err) => {
                 this.tourStatus.set("error");
@@ -39,21 +42,22 @@ export class TourDetailPageViewModel {
     }
     
 
-    /*tourLogs = computed(() => {
+    tourLogs = computed(() => {
         const tour = this.selectedTour();
         if (!tour) return [];
-        return this.tourLogService.getLogsByTourId(tour.id)();
-    });*/
+        return this.tourLogService.logs(); // .logs() statt ._logs verwenden!
+    });
     
     /*loadTourById(id: number) {
         const loadedTour = this.tourService.getTourById(id);
         //DEBUG console.log("getTourById(id) triggered: "+ id);
         this.selectedTour.set(loadedTour);
-    }
+    }**/
 
+    // von Anja wieder *un*-auskommentiert
     openAddLogPopup() {
         const currentTour = this.selectedTour()
         if(!currentTour) return;
         this.tourLogService.startNewLog(currentTour.id)
-    }*/
+    }
 }

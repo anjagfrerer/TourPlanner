@@ -16,11 +16,12 @@ import java.util.UUID;
 public class TourLog {
 
     @Id
+    @GeneratedValue(strategy = jakarta.persistence.GenerationType.UUID)
     private UUID tourLogId;
     @ManyToOne
     @JoinColumn(name = "tour_id")
     private Tour tour;
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "author_id")
     private User author;
     private LocalDate date;

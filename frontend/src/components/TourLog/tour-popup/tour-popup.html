@@ -4,7 +4,7 @@
     
     <div class="mb-4 flex items-center justify-between border-b pb-2">
       <h2 class="text-xl font-semibold">
-        {{ vm.tourLog().tourLogId != null ? 'Edit Log' : 'Create new Log' }}
+        {{ vm.tourLog().tourLogId ? 'Edit Log' : 'Create new Log' }}
       </h2>
       <button type="button" (click)="vm.closeModal()" class="text-gray-500 hover:text-red-500 text-2xl px-2">✕</button>
     </div>
@@ -53,7 +53,7 @@
           Cancel
         </button>
         <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-colors">
-          {{ vm.tourLog().tourLogId !== null ? 'Save changes' : 'Create Log' }}
+          {{ vm.tourLog().tourLogId ? 'Save changes' : 'Create Log' }}
         </button>
       </div>
     </form>
