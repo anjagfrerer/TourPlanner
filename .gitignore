@@ -25,3 +25,6 @@ frontend/out-tsc/
 *.log
 .DS_Store
 Thumbs.db
+
+# --- Lokale Umgebungsvariablen für unterschiedliche Ports ---
+.env

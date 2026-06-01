@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -17,8 +18,11 @@ public class RequestTourLogDto {
     //@NotNull(message = "Tour ID is mandatory")
     //private Long tourId;
 
-    @NotBlank(message = "Author cannot be empty")
-    private String author;
+    //@NotBlank(message = "Author cannot be empty")
+    //private String author;
+
+    @NotNull(message = "Tour ID is mandatory")
+    private UUID tourId;
 
     @NotNull(message = "Date is required")
     private LocalDate date;

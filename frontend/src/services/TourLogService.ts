@@ -22,6 +22,7 @@ export class TourLogService {
       const serverLogs = await firstValueFrom(
         this.http.get<TourLog[]>(`${this.apiUrl}/${tourId}/logs`)
       );
+      this._logs.set(serverLogs);
     } catch(error: any) {
       console.error(`Failed to load Logs of this Tour ${tourId}:`, error);
     }
@@ -60,7 +61,7 @@ export class TourLogService {
   async deleteTourLog(tourId: string, tourLogId: string): Promise<void> {
     try {
       const response = await firstValueFrom(
-        this.http.delete<TourLog>(`${this.apiUrl}/${tourId}/tours/${tourLogId}`)
+        this.http.delete<TourLog>(`${this.apiUrl}/${tourId}/logs/${tourLogId}`)
       );
       this._logs.update(current => current.filter(log => log.tourLogId !== tourLogId));
     } catch (error) {
