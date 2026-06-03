@@ -1,0 +1,6 @@
+export const TRANSPORT_TYPES = {
+  BIKING: 'BIKING',
+  HIKING: 'HIKING',
+  RUNNING: 'RUNNING',
+  VACATION: 'VACATION',
+} as const;

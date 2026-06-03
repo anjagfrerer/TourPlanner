@@ -1,21 +1,22 @@
-package at.technikum.backend.model;
+package at.technikum.backend.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.UUID;
 
-@Data // Getter & Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TourLog {
+public class ResponseTourLogDto {
 
-    private Long tourLogId;
-    private Long tourId;
+    private UUID tourLogId;
+    private UUID tourId;
     private String author;
     private LocalDate date;
     private LocalTime time;

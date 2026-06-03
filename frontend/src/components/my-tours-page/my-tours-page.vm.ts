@@ -9,19 +9,19 @@ export class MyToursPageViewModel {
     selectedTour = signal<Tour | null>(null);
 
     //HERE TO FIX THE READ-DATA-FROM-BACKEND ISSUE
-    tours = computed(() => {
-    const allTours = this.tourService.getAllTours()(); // Signal auslesen 
-    return allTours.filter(tour => tour.author === "Anja");
-});
+    //tours = computed(() => {
+    //const allTours = this.tourService.getAllTours()(); // Signal auslesen 
+    //return allTours.filter(tour => tour.author === "Anja");
+//});
     
-    loadTourById(id: number) {
+    /*loadTourById(id: number) {
         const loadedTour = this.tourService.getTourById(id);
         //DEBUG console.log("getTourById(id) triggered: "+ id);
         this.selectedTour.set(loadedTour);
-    }
+    }*/
     
     openAddLogPopup() {
-        const currentTour = this.selectedTour()
-        this.tourService.startNewTour()
+        //const currentTour = this.selectedTour()
+        //this.tourService.startNewTour()
     }
 }

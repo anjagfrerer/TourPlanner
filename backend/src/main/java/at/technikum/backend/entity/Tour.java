@@ -1,4 +1,4 @@
-package at.technikum.backend.model;
+package at.technikum.backend.entity;
 
 import at.technikum.backend.constants.TransportType;
 import jakarta.persistence.*;
@@ -9,14 +9,15 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Tour {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     UUID id;
     String name;
     String description;
-    String from;
-    String to;
+    String startLocation;
+    String destinationLocation;
     TransportType transportType;
     Double distance;
     String estimatedTime;
@@ -24,5 +25,7 @@ public class Tour {
     @JoinColumn(name = "tour_route_information")
     Route routeInformation;
     Integer rating;
-    String createdBy;
+    @ManyToOne
+    @JoinColumn(name = "created_by_id")
+    User createdBy;
 }

@@ -6,10 +6,11 @@ import { TourLogService } from '../../../services/TourLogService';
 
 @Injectable()
 export class TourLogItemViewModel {
+  private readonly service = inject(TourLogService)
+  private readonly router = inject(Router);
+
   public tourLog = signal<TourLog | null>(null);
-  private service = inject(TourLogService)
   logs = this.service.logs
-  constructor(private router: Router) {}
 
   rating() {
     return this.tourLog()?.rating ?? 0;
@@ -19,11 +20,17 @@ export class TourLogItemViewModel {
     this.tourLog.set(tourLog);
   }
 
-  deleteLog() {
+  async deleteLog(): Promise<void> {
     const currentLog = this.tourLog();
     if (currentLog) {
       if (window.confirm("Are you sure you want to delete this tour?")) {
-        this.service.deleteTourLog(currentLog.tourLogId);
+        try {
+          await this.service.deleteTourLog(currentLog.tourId, currentLog.tourLogId);
+          window.alert('Successfully deleted log!');
+        } catch (error) {
+          console.error("Failed to delete Log:", error);
+          window.alert('Failed to delete Log. Please try again.');
+        }
       }
     } else {
       console.error("No log selected for deletion");

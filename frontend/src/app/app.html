@@ -1,7 +1,17 @@
-<div class="layout">
+<div class="layout" [class.no-sidebar]="router.url === '/login' || router.url === '/register'">
   <header class="header"></header>
-  <sidebar class="sidebar"></sidebar>
+
+  @if (router.url !== "/login" && router.url !== "/register") {
+    <sidebar class="sidebar"></sidebar>
+  }
+
   <main class="content">
-    <router-outlet></router-outlet>
+    @if (router.url === '/') {
+      <banner class="content-banner"></banner>
+    }
+
+    <section class="content-body">
+      <router-outlet></router-outlet>
+    </section>
   </main>
 </div>

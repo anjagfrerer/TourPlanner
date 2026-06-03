@@ -1,54 +1,72 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject, Optional } from '@angular/core';
 import { TourLog } from '../app/models/tour-log.model';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class TourLogService {
-  logs = signal<TourLog[]>([
-    {
-      tourLogId: 1,
-      tourId: 1,
-      author: 'Anja',
-      date: '2026-03-17',
-      time: '14:30',
-      rating: 4,
-      difficulty: 6,
-      totalDistanceKm: 12.5,
-      totalTimeMin: 90,
-      comment: 'Nice tour, a bit tiring'
-    },
-    {
-      tourLogId: 2,
-      tourId: 2,
-      author: 'Anja2',
-      date: '2026-03-18',
-      time: '10:00',
-      rating: 5,
-      difficulty: 4,
-      totalDistanceKm: 8,
-      totalTimeMin: 60,
-      comment: 'Easy and relaxing'
-    },
-    {
-      tourLogId: 3,
-      tourId: 3,
-      author: 'Anja3',
-      date: '2026-03-19',
-      time: '09:30',
-      rating: 3,
-      difficulty: 5,
-      totalDistanceKm: 10,
-      totalTimeMin: 70,
-      comment: 'Moderate hike'
-    }
-  ]);
 
-  // welcher log grad bearbeitet wird
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = "http://localhost:8080/tour"
+
+  // Zustand im Frontend
+  private readonly _logs = signal<TourLog[]>([]);
+  public readonly logs = this._logs.asReadonly();
+
+  // welcher log grad bearbeitet wird  
   private logToEdit = signal<TourLog | null>(null);
   public readonly activeLogForEdit = this.logToEdit.asReadonly();
 
-  getLogsByTourId(tourId: number) {
-    return computed(() =>
-      this.logs().filter(log => log.tourId === tourId));
+  async getLogsByTourId(tourId: string): Promise<void> {
+    try {
+      const serverLogs = await firstValueFrom(
+        this.http.get<TourLog[]>(`${this.apiUrl}/${tourId}/logs`)
+      );
+      this._logs.set(serverLogs);
+    } catch(error: any) {
+      console.error(`Failed to load Logs of this Tour ${tourId}:`, error);
+    }
+  }
+
+  async updateTourLog(tourId: string, updatedLog: TourLog): Promise<void> {
+    try {
+      const response = await firstValueFrom(
+        this.http.put<TourLog>(`${this.apiUrl}/${tourId}/logs/${updatedLog.tourLogId}`, updatedLog)
+      );
+
+      this._logs.update(currentLogs => 
+        currentLogs.map(log => {
+          if (log.tourLogId === response.tourLogId) {
+            return response;
+          }
+          return log;
+        })
+      );
+    } catch(error: any) {
+      console.error('Failed to update TourLog:', error);
+    }
+  }
+
+  async addTourLog(tourId: string, newLog: Omit<TourLog, 'tourLogId'>): Promise<void> {
+    try {
+      const response = await firstValueFrom(
+        this.http.post<TourLog>(`${this.apiUrl}/${tourId}/logs`, newLog)
+      );
+      this._logs.update(current => [...current, response]);
+    } catch(error: any) {
+      console.error('Failed to create TourLog:', error);
+    }
+  }
+
+  async deleteTourLog(tourId: string, tourLogId: string): Promise<void> {
+    try {
+      const response = await firstValueFrom(
+        this.http.delete<TourLog>(`${this.apiUrl}/${tourId}/logs/${tourLogId}`)
+      );
+      this._logs.update(current => current.filter(log => log.tourLogId !== tourLogId));
+    } catch (error) {
+      console.error('Failed to delete TourLog:', error);
+    }
   }
 
   // edit prozess starten
@@ -60,25 +78,15 @@ export class TourLogService {
   clearEdit() {
     this.logToEdit.set(null);
   }
+  
 
-  updateTourLog(updatedLog: TourLog) {
-    this.logs.update(currentLogs => 
-      currentLogs.map(log => log.tourLogId === updatedLog.tourLogId ? updatedLog : log)
-    );
+  startNewLog(tourId: string) {
+    this.logToEdit.set(this.getEmptyLog(tourId));
   }
 
-  addTourLog(newLog: TourLog) {
-    const id = Math.max(0, ...this.logs().map(l => l.tourLogId)) + 1;
-    this.logs.update(current => [...current, { ...newLog, tourLogId: id }]);
-  }
-
-  deleteTourLog(tourLogId: number) {
-    this.logs.set(this.logs().filter(log => log.tourLogId !== tourLogId));
-  }
-
-  getEmptyLog(tourId: number = 0): TourLog {
+  getEmptyLog(tourId: string = ''): TourLog {
     return {
-      tourLogId: 0,
+      tourLogId: '', // Leer, da UUID vom Backend generiert wird
       tourId: tourId,
       author: '',
       date: new Date().toISOString().split('T')[0],
@@ -89,9 +97,5 @@ export class TourLogService {
       totalTimeMin: 0,
       comment: ''
     };
-  }
-
-  startNewLog(tourId: number) {
-    this.logToEdit.set(this.getEmptyLog(tourId));
   }
 }

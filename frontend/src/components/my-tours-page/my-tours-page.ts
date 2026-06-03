@@ -17,6 +17,6 @@ export class MyToursPageComponent implements OnInit{
     author = signal<string>("Anja");
 
     ngOnInit(){
-        this.vm.tours();
+        //this.vm.tours();
     }
 }

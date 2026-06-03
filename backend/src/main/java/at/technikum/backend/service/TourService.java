@@ -1,13 +1,11 @@
 package at.technikum.backend.service;
 
-import at.technikum.backend.model.Tour;
+import at.technikum.backend.entity.Tour;
 import at.technikum.backend.repository.TourRepository;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -18,8 +16,8 @@ public class TourService {
         this.tourRepository = tourRepository;
     }
 
-    public void addTour(Tour tour){
-        tourRepository.save(tour);
+    public Tour addTour(Tour tour){
+        return tourRepository.save(tour);
     }
 
     public List<Tour> getAllTours(){
