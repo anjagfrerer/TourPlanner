@@ -17,7 +17,7 @@ export class TourDetailPageViewModel {
 
     readonly transportTypeConst = TRANSPORT_TYPES;
 
-    loadTourById(id : string){
+    loadTourById(id : string) {
         if(!id.length) return;
 
         this.tourStatus.set("loading");
@@ -27,12 +27,10 @@ export class TourDetailPageViewModel {
             })
         ).subscribe({
             next: (response) => {
-                console.log(response);
                 this.selectedTour.set(response);
-                this.tourStatus.set("success");
-
                 // von Anja hinzugefügt um Logs zu laden zur Tour
                 this.tourLogService.getLogsByTourId(response.id);
+                this.tourStatus.set("success");
             },
             error: (err) => {
                 this.tourStatus.set("error");
