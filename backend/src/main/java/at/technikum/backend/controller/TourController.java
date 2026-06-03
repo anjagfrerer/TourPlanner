@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-
-//TODO: Switch up Entities for actual DTOs
 @RestController
 @RequestMapping("/tour")
 @CrossOrigin(origins = "http://localhost:4200")
