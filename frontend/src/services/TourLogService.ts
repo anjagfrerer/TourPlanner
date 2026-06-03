@@ -2,6 +2,7 @@ import { Injectable, signal, computed, inject, Optional } from '@angular/core';
 import { TourLog } from '../app/models/tour-log.model';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import { AuthService } from './AuthService';
 
 @Injectable({ providedIn: 'root' })
 export class TourLogService {
@@ -27,6 +28,17 @@ export class TourLogService {
       console.error(`Failed to load Logs of this Tour ${tourId}:`, error);
     }
   }
+
+  async getAllTourLogsByUser(): Promise<void> {
+  try {
+    const allServerLogs = await firstValueFrom(
+      this.http.get<TourLog[]>("http://localhost:8080/tourlogs")
+    );
+    this._logs.set(allServerLogs);
+  } catch(error: any) {
+    console.error("Failed to load TourLogs:", error);
+  }
+}
 
   async updateTourLog(tourId: string, updatedLog: TourLog): Promise<void> {
     try {

@@ -15,5 +15,9 @@ import { TourLogService } from "../../../services/TourLogService";
 })
 
 export class TourLogsPageComponent {
-  public tourLogService = inject(TourLogService)
+  public readonly tourLogService = inject(TourLogService)
+
+  constructor() {
+    this.tourLogService.getAllTourLogsByUser();
+  }
 }
