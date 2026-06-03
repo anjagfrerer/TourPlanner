@@ -1,10 +1,3 @@
-enum TransportType {
-    BIKING,
-    HIKING,
-    RUNNING,
-    VACATION
-}
-
 export interface Tour {
     id: string,
     name: string,

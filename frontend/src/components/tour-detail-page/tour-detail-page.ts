@@ -6,7 +6,6 @@ import { TourLogsItemComponent } from "../TourLog/tour-log-item/tour-log-item"
 import { TourDetailPageViewModel } from "./tour-detail-page.vm"
 import { Map } from "./map/map";
 import { TourPopupComponent } from "../TourLog/tour-popup/tour-popup";
-import { Tour } from "../../app/models/tour.model";
 
 // ViewModel
 @Component({
