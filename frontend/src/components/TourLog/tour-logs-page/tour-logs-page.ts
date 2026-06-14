@@ -1,10 +1,11 @@
-import { Component, computed, inject, signal } from "@angular/core";
+import { Component, computed, inject, signal, OnInit } from "@angular/core";
 import { TourPopupComponent } from "../tour-popup/tour-popup";
 import { TourLogsItemComponent } from "../tour-log-item/tour-log-item";
 import { TourLog } from "../../../app/models/tour-log.model";
 import { TourLogItemViewModel } from "../tour-log-item/tour-log-item.vm";
 import { CommonModule } from "@angular/common";
 import { TourLogService } from "../../../services/TourLogService";
+import { TourLogsViewModel } from "./tour-logs-page.vm";
 
 // ViewModel
 @Component({
@@ -15,9 +16,9 @@ import { TourLogService } from "../../../services/TourLogService";
 })
 
 export class TourLogsPageComponent {
-  public readonly tourLogService = inject(TourLogService)
+  public readonly vm = inject(TourLogsViewModel)
 
-  constructor() {
-    this.tourLogService.getAllTourLogsByUser();
+  ngOnInit() {
+        this.vm.getAllTourLogsByUser();
   }
 }

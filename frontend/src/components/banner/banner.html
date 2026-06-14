@@ -1,4 +1,7 @@
 <section class="banner">
   <img src="assets/banner.png" alt="" class="banner-image" />
 </section>
-  <search-input></search-input>
+
+@if (router.url !== '/stats') {
+  <search-input (searchChanged)="handleSearch($event)"></search-input>
+}
