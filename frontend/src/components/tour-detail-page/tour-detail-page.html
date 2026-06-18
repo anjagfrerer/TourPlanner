@@ -33,7 +33,7 @@
             </div>
             
             <!-- MAP -->
-            <map [tour] = vm.selectedTour()></map>
+            <map [routeInformation] = "vm.selectedTour()?.routeInformation"></map>
             
             <div>
                 <p class="font-bold text-xs md:text-base">Description:</p>

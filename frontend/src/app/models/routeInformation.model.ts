@@ -1,8 +1,8 @@
 export interface routeInformation {
     viewport: [number, number],
     startLat: number,
-    startLng: number,
-    destinationLat: number,
-    destinationLng: number,
+    startLong: number,
+    endLat: number,
+    endLong: number,
     route: [[number, number]]
 }

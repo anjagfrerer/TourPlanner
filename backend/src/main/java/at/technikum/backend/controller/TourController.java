@@ -1,6 +1,6 @@
 package at.technikum.backend.controller;
 
-import at.technikum.backend.dto.TourResponse;
+import at.technikum.backend.dto.response.TourResponse;
 import at.technikum.backend.entity.User;
 import at.technikum.backend.mapper.TourMapper;
 import at.technikum.backend.entity.Tour;
@@ -14,7 +14,6 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/tour")
-@CrossOrigin(origins = "http://localhost:4200")
 public class TourController {
     private final TourService tourService;
     private final TourMapper mapper;

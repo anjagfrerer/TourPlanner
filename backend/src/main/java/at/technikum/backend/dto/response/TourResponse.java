@@ -1,4 +1,4 @@
-package at.technikum.backend.dto;
+package at.technikum.backend.dto.response;
 
 import java.util.UUID;
 
