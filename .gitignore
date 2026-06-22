@@ -28,3 +28,11 @@ Thumbs.db
 
 # --- Lokale Umgebungsvariablen für unterschiedliche Ports ---
 .env
+
+# Angular cache
+frontend/.angular/
+
+# Dependency directories
+frontend/node_modules/
+
+backend/target/

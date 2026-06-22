@@ -4,6 +4,7 @@ import at.technikum.backend.entity.TourLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,4 +12,5 @@ import java.util.UUID;
 public interface TourLogRepository extends JpaRepository<TourLog, UUID> {
     List<TourLog> findByTour_Id(UUID tourId);
     TourLog findByTourLogId(UUID tourLogId);
+    List<TourLog> findAllByAuthor_Username(String username);
 }

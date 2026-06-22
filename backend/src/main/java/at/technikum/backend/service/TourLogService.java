@@ -5,12 +5,14 @@ import at.technikum.backend.dto.response.ResponseTourLogDto;
 import at.technikum.backend.entity.Tour;
 import at.technikum.backend.entity.TourLog;
 import at.technikum.backend.entity.User;
+import at.technikum.backend.exceptions.*;
 import at.technikum.backend.mapper.TourLogMapper;
 import at.technikum.backend.repository.TourLogRepository;
 import at.technikum.backend.repository.TourRepository;
 import at.technikum.backend.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.apache.juli.logging.LogConfigurationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,8 +30,8 @@ public class TourLogService {
 
     @Transactional
     public ResponseTourLogDto save(UUID tourId, RequestTourLogDto requestTourLogDto, String username) {
-        Tour tour = tourRepository.findById(tourId).orElseThrow(() -> new RuntimeException("Tour not found"));
-        User currentUser = userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        Tour tour = tourRepository.findById(tourId).orElseThrow(() -> new TourNotFoundException(tourId));
+        User currentUser = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         TourLog entity = mapper.toEntity(requestTourLogDto);
         entity.setTour(tour);
         entity.setAuthor(currentUser);
@@ -39,8 +41,16 @@ public class TourLogService {
 
     @Transactional(readOnly = true)
     public List<ResponseTourLogDto> findAll(UUID tourId) {
-        Tour tour = tourRepository.findById(tourId).orElseThrow(() -> new RuntimeException("Tour not found"));
+        Tour tour = tourRepository.findById(tourId).orElseThrow(() -> new TourNotFoundException(tourId));
         return tourLogRepository.findByTour_Id(tourId)
+                .stream()
+                .map(mapper::toResponseDto)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ResponseTourLogDto> findAllByUsername(String username) {
+        return tourLogRepository.findAllByAuthor_Username(username)
                 .stream()
                 .map(mapper::toResponseDto)
                 .toList();
@@ -58,7 +68,7 @@ public class TourLogService {
 
         //darf der Nutze überhaupt bearbeiten?
         if(!existingTourLog.getAuthor().getUsername().equals(username)) {
-            throw new IllegalArgumentException("User not allowed to update this Log!");
+            throw new UnauthorizedAccessException();
         }
         //existingTourLog.setAuthor(requestTourLogDto.getAuthor());
         existingTourLog.setDate(requestTourLogDto.getDate());
@@ -74,10 +84,10 @@ public class TourLogService {
 
     public TourLog findAndValidateLog(UUID tourId, UUID tourLogId) {
         // Schauen, ob ein log mit dieser tourLogId existiert
-        TourLog log = tourLogRepository.findById(tourLogId).orElseThrow(() -> new EntityNotFoundException("Log not found"));
+        TourLog log = tourLogRepository.findById(tourLogId).orElseThrow(() -> new LogNotFoundException(tourLogId));
         // Schauen, ob diese tour zu diesem log gehört
         if(!log.getTour().getId().equals(tourId)) {
-            throw new IllegalArgumentException("Log does not belong to that specific tour");
+            throw new LogTourMismatchException(tourId, tourLogId);
         }
         return log;
     }
@@ -86,7 +96,7 @@ public class TourLogService {
     public ResponseTourLogDto delete(UUID tourId, UUID tourLogId, String username) {
         TourLog tourLog = findAndValidateLog(tourId, tourLogId);
         if(!tourLog.getAuthor().getUsername().equals(username)) {
-            throw new IllegalArgumentException("User not allowed to delete this Log!");
+            throw new UnauthorizedAccessException();
         }
         tourLogRepository.delete(tourLog);
         return mapper.toResponseDto(tourLog);

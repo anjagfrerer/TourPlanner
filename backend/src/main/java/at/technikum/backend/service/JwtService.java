@@ -24,17 +24,15 @@ public class JwtService {
     }
 
     private String createToken(Map<String, Object> claims, String email) {
-        // In JJWT 0.12.x nutzt man .claims() anstatt .setClaims() und signWith ohne den Algorithm-Parameter
         return Jwts.builder()
                 .claims(claims)
                 .subject(email)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
-                .signWith(getSignKey()) // Der Algorithmus (HS256) wird automatisch aus der Schlüssellänge ermittelt!
+                .signWith(getSignKey())
                 .compact();
     }
 
-    // JJWT 0.12.x erwartet hier spezifisch ein 'SecretKey'-Objekt anstatt eines allgemeinen 'Key'
     private SecretKey getSignKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET);
         return Keys.hmacShaKeyFor(keyBytes);
@@ -53,13 +51,12 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-    // HIER WAR DER HAUPTFEHLER: In JJWT 0.12.x heißt es '.parser()' statt '.parserBuilder()'
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
-                .verifyWith(getSignKey()) // '.setSigningKey()' wurde durch '.verifyWith()' ersetzt
+                .verifyWith(getSignKey())
                 .build()
-                .parseSignedClaims(token) // '.parseClaimsJws()' wurde durch '.parseSignedClaims()' ersetzt
-                .getPayload();            // '.getBody()' wurde durch '.getPayload()' ersetzt
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
     private Boolean isTokenExpired(String token) {
