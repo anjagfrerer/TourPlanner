@@ -1,3 +1,7 @@
-<div class="bg-accent rounded-2xl cursor-pointer p-4">
-    <input class="bg-white rounded-2xl" type="text">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<div class="ml-auto w-[20vw] min-w-[200px] flex items-center gap-2 bg-accent rounded-4xl p-2 m-5 text-center">
+    <input #searchInput (keydown.enter)="onSearch(searchInput.value)" class="bg-white rounded-4xl p-2 w-full" type="text" w-50 placeholder="Tour">
+    <span (click)="onSearch(searchInput.value)" class="material-icons text-white select-none cursor-pointer">search</span>
+    <span class="material-icons text-white select-none pr-1 cursor-pointer">filter_alt</span>
 </div>
