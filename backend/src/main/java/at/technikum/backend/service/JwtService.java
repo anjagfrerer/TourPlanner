@@ -4,8 +4,10 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
@@ -13,7 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-@Component
+@Service
+@Slf4j   // automatisch Variable logger
 public class JwtService {
 
     public static final String SECRET = "5367566859703373367639792F423F452848284D6251655468576D5A71347437";
@@ -24,13 +27,16 @@ public class JwtService {
     }
 
     private String createToken(Map<String, Object> claims, String email) {
-        return Jwts.builder()
+        log.info("BL: Generating new JWT token for user '{}'", email);
+        String token = Jwts.builder()
                 .claims(claims)
                 .subject(email)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
                 .signWith(getSignKey())
                 .compact();
+        log.info("BL: JWT token successfully generated for '{}'", email);
+        return token;
     }
 
     private SecretKey getSignKey() {
@@ -64,7 +70,32 @@ public class JwtService {
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        log.info("BL: Validating JWT token for user '{}'", userDetails.getUsername());
+
+        try {
+            final String username = extractUsername(token);
+            boolean isExpired = isTokenExpired(token);
+            boolean usernameMatches = username.equals(userDetails.getUsername());
+
+            if (isExpired) {
+                log.warn("BL: Token validation failed. The token for user '{}' has expired", userDetails.getUsername());
+                return false;
+            }
+
+            if (!usernameMatches) {
+                // bei z.B. token wechsel im browser (mehrere tabs) oder "hacker" angemeldet und versucht mit anderem token daten zu stehlen
+                log.warn("BL: Token validation failed. Token username '{}' does not match authenticated user '{}'",
+                        username, userDetails.getUsername());
+                return false;
+            }
+
+            log.info("BL: JWT token is valid for user '{}'", userDetails.getUsername());
+            return true;
+
+        } catch (Exception e) {
+            // bei z.B. SignatureException, wenn was verändert wurde oder auch wenn z.B. Zeichen abhandengekommen sind
+            log.warn("BL: Token validation crashed. Invalid or corrupted JWT token provided. Reason: {}", e.getMessage());
+            return false;
+        }
     }
 }
