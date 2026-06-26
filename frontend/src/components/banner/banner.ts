@@ -6,8 +6,8 @@ import { Router } from "@angular/router";
 @Component({
   selector: 'banner',
   templateUrl: './banner.html',
-  imports: [SearchInput],
-  styleUrl: './banner.css'
+  styleUrls: ['./banner.css'],
+  imports: [SearchInput]
 })
 export class BannerComponent {
   private searchService = inject(SearchService);
