@@ -6,13 +6,13 @@ import { Router } from "@angular/router";
 @Component({
   selector: 'banner',
   templateUrl: './banner.html',
-  imports: [SearchInput],
-  styleUrl: './banner.css'
+  styleUrls: ['./banner.css'],
+  imports: [SearchInput]
 })
 export class BannerComponent {
   private searchService = inject(SearchService);
   public router = inject(Router);
-
+  
   handleSearch(text: string): void {
     this.searchService.searchTerm.set(text);
   }
