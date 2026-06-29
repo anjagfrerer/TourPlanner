@@ -56,7 +56,7 @@
             <p class="flex justify-center font-light mt-8">No logs added yet</p>
         } @else {
             @for (log of vm.tourLogs(); track log) {
-                <tour-log-item [tourLog]="log"></tour-log-item>
+                <tour-log-item [tourLog]="log" [hideTourContext]="true"></tour-log-item>
             }
         }
     </div>

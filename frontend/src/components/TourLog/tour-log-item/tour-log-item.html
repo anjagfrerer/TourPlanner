@@ -22,22 +22,33 @@
         
         <div class="text-sm space-y-1">
           <div class="flex items-center gap-1">
-            <span class="font-semibold text-accent">Difficulty:</span> 
-            {{ log.difficulty }}/10
+            <span class="font-semibold text-accent">Difficulty:</span> {{ log.difficulty }}/10
           </div>
           <div class="flex items-center gap-1">
-            <span class="font-semibold text-accent">Distance:</span> 
-            {{ log.totalDistanceKm }} km
+            <span class="font-semibold text-accent">Distance:</span> {{ log.totalDistanceKm }} km
           </div>
           <div class="flex items-center gap-1">
-            <span class="font-semibold text-accent">Time:</span> 
-            {{ log.totalTimeMin }} min
+            <span class="font-semibold text-accent">Time:</span> {{ log.totalTimeMin }} min
           </div>
         </div>
       </div>
       
-      <div class="pl-6 border-l border-white/20 italic whitespace-pre-wrap">
-        {{ log.comment }}
+      <div class="pl-6 border-l border-white/20 italic whitespace-pre-wrap flex flex-col gap-3">
+        
+        @if (!hideTourContext()) {
+          <div class="flex items-center gap-2 not-italic">
+            <div class="flex bg-accent text-secondary rounded-full p-1 items-center justify-center w-7 h-7">
+              <span class="material-icons text-xs select-none">
+                {{ vm.tourIcon() }}
+              </span>
+            </div>
+            <span class="text-xs font-semibold text-accent opacity-90">
+              {{ vm.selectedTour()?.name ?? 'Tour' }}
+            </span>
+          </div>
+        }
+
+        <div>{{ log.comment }}</div>
       </div>
     </div>
 
@@ -50,11 +61,13 @@
         <img class="w-6" src="assets/editIcon.svg" alt="editIcon">
       </button>
       
-      <button 
-        class="text-black bg-accent rounded-xl px-5 py-2 font-bold hover:bg-white transition-colors cursor-pointer" 
-        (click)="vm.visitTour()">
-        Visit Tour →
-      </button>
+      @if (!hideTourContext()) {
+        <button 
+          class="text-black bg-accent rounded-xl px-5 py-2 font-bold hover:bg-white transition-colors cursor-pointer" 
+          (click)="vm.visitTour()">
+          Visit Tour →
+        </button>
+      }
     </div>
   </div>
 </section>

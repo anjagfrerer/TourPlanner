@@ -1,16 +1,26 @@
-import { signal, Injectable, inject } from "@angular/core";
+import { signal, Injectable, inject, computed } from "@angular/core";
 import { TourLog } from "../../../app/models/tour-log.model";
 import { Router } from '@angular/router';
 import { TourLogService } from '../../../services/TourLogService';
+import { TourService } from "../../../services/TourService";
+import { TRANSPORT_TYPES } from "../../../app/constants/transport-type.enum";
 
 
 @Injectable()
 export class TourLogItemViewModel {
   private readonly service = inject(TourLogService)
   private readonly router = inject(Router);
+  private readonly tourService = inject(TourService)
 
   public tourLog = signal<TourLog | null>(null);
-  logs = this.service.logs
+  logs = this.service.logs;
+
+  // Selektierte Tour abfragen
+  public selectedTour = computed(() => {
+    const log = this.tourLog();
+    if (!log || !log.tourId) return null;
+    return this.tourService.tours().find(t => t.id === log.tourId) || null;
+  });
 
   rating() {
     return this.tourLog()?.rating ?? 0;
@@ -52,5 +62,34 @@ export class TourLogItemViewModel {
     }
 
     this.router.navigate(['/tour', log.tourId]);
+  }
+
+  // Icon
+  public tourIcon = computed(() => {
+    const log = this.tourLog();
+    if (!log) return 'route';
+
+    const tour = this.tourService.tours().find(t => t.id === log.tourId);
+    const type = tour?.transportType;
+  
+    if (!type) return 'route';
+
+    switch (type) {
+      case TRANSPORT_TYPES.BIKING: 
+        return 'directions_bike';
+      case TRANSPORT_TYPES.HIKING: 
+        return 'hiking';
+      case TRANSPORT_TYPES.RUNNING: 
+        return 'directions_run';
+      case TRANSPORT_TYPES.VACATION: 
+        return 'luggage';
+      default: 
+        return 'route';
+    }
+  });
+
+  // Daten im Cache
+  init() {
+    this.tourService.loadToursIfEmpty();
   }
 }
