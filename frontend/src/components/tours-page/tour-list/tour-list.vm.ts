@@ -12,7 +12,10 @@ export class TourListViewModel {
     private tourService = inject(TourService);
     private readonly _tourStatus = signal<LoadingState>('idle');
     private readonly searchService = inject(SearchService);
-    tours = signal<Tour[]>([]);
+    
+    //tours = signal<Tour[]>([]);
+    // von Anja geändert: damit es eine single source of truth gibt und die daten aus dem service geladen werden
+    public readonly tours = this.tourService.tours;
 
     loadTours(){
         this._tourStatus.set("loading");
@@ -25,7 +28,6 @@ export class TourListViewModel {
         )
         .subscribe({
             next: (response) => {
-                this.tours.set(response);
                 this._tourStatus.set("success");
             },
             error: (err) => {

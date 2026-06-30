@@ -1,13 +1,15 @@
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <div class="layout" [class.no-sidebar]="router.url === '/login' || router.url === '/register'">
   <header class="header"></header>
 
   @if (router.url !== "/login" && router.url !== "/register") {
-    <sidebar class="sidebar"></sidebar>
+  <sidebar class="sidebar"></sidebar>
   }
 
   <main class="content">
-    @if (router.url === '/' || router.url === '/tours' || router.url === '/tourLogs' || router.url === '/myTours' || router.url === '/stats') {
-      <banner class="content-banner"></banner>
+    @if (router.url === '/' || router.url === '/tours' || router.url === '/tourLogs' || router.url === '/myTours' ||
+    router.url === '/stats') {
+    <banner class="content-banner"></banner>
     }
 
     <section class="content-body">
