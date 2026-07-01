@@ -1,7 +1,7 @@
 import { effect, inject, Injectable, signal } from '@angular/core';
 import { TourLog } from '../../../app/models/tour-log.model';
-import { TourLogService } from '../../../services/TourLogService';
-import { TourService } from '../../../services/TourService';
+import { TourLogService } from '../../../services/tourlog.service';
+import { TourService } from '../../../services/tour.service';
 import { Tour } from '../../../app/models/tour.model';
 
 @Injectable()

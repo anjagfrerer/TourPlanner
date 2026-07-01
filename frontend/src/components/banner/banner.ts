@@ -1,6 +1,6 @@
 import { Component, inject } from "@angular/core";
 import { SearchInput } from "../search/search-input";
-import { SearchService } from "../../services/SearchService";
+import { SearchService } from "../../services/search.service";
 import { Router } from "@angular/router";
 
 @Component({

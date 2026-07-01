@@ -1,5 +1,5 @@
 import { inject, Inject, Injectable, signal } from "@angular/core";
-import { TourService } from "../../../services/TourService";
+import { TourService } from "../../../services/tour.service";
 import { ActivatedRoute } from "@angular/router";
 import { TRANSPORT_TYPES } from "../../../app/constants/transport-type.enum";
 

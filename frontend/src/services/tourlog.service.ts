@@ -2,7 +2,7 @@ import { Injectable, signal, computed, inject, Optional } from '@angular/core';
 import { TourLog } from '../app/models/tour-log.model';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { AuthService } from './AuthService';
+import { AuthService } from './auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class TourLogService {

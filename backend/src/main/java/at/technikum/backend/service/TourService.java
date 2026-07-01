@@ -1,6 +1,7 @@
 package at.technikum.backend.service;
 
 import at.technikum.backend.entity.Tour;
+import at.technikum.backend.exceptions.TourNotFoundException;
 import at.technikum.backend.repository.TourRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class TourService {
     }
 
     public Tour getTourById(UUID id){
-        return tourRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Tour not found"));
+        return tourRepository.findById(id).orElseThrow(()->new TourNotFoundException(id));
     }
 
     public void deleteTourById(UUID id){

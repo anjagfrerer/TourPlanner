@@ -4,7 +4,7 @@ import { TourLogsItemComponent } from "../tour-log-item/tour-log-item";
 import { TourLog } from "../../../app/models/tour-log.model";
 import { TourLogItemViewModel } from "../tour-log-item/tour-log-item.vm";
 import { CommonModule } from "@angular/common";
-import { TourLogService } from "../../../services/TourLogService";
+import { TourLogService } from "../../../services/tourlog.service";
 import { TourLogsViewModel } from "./tour-logs-page.vm";
 
 // ViewModel

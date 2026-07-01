@@ -1,12 +1,12 @@
 import { signal, Injectable, inject, computed, OnInit } from "@angular/core";
-import { TourLogService } from "../../services/TourLogService";
-import { TourService } from "../../services/TourService";
+import { TourLogService } from "../../services/tourlog.service";
+import { TourService } from "../../services/tour.service";
 import { Tour } from "../../app/models/tour.model";
 import { TourLog } from "../../app/models/tour-log.model";
 import { LoadingState } from "../../app/models/loading-state.model";
 import { finalize } from "rxjs";
 import { TRANSPORT_TYPES } from "../../app/constants/transport-type.enum";
-import { ExportService } from "../../services/ExportService";
+import { ExportService } from "../../services/export.service";
 
 
 @Injectable()

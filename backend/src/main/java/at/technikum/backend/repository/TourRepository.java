@@ -8,4 +8,3 @@ import java.util.*;
 @Repository
 public interface TourRepository extends JpaRepository<Tour,UUID> {
 }
-
