@@ -2,11 +2,12 @@ import { Injectable, signal, inject } from "@angular/core";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Tour } from "../app/models/tour.model";
 import { Observable, tap } from "rxjs";
+import { environment } from '../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class TourService {
   private http = inject(HttpClient);
-  private readonly apiUrl = "http://localhost:8080/tour";
+  private readonly apiUrl = `${environment.apiUrl}/tour`;
 
   // von Anja hinzugefügt: Zentraler Zustand für das gesamte Frontend
   private readonly _tours = signal<Tour[]>([]);
