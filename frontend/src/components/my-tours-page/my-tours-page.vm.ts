@@ -1,7 +1,7 @@
 import { computed, Injectable, signal, inject } from "@angular/core";
 import { Tour } from "../../app/models/tour.model";
-import { TourService } from "../../services/TourService";
-import { ExportService } from "../../services/ExportService";
+import { TourService } from "../../services/tour.service";
+import { ExportService } from "../../services/export.service";
 
 @Injectable()
 export class MyToursPageViewModel {

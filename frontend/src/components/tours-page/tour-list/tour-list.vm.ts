@@ -1,9 +1,10 @@
 import { Injectable, inject, signal, Signal, computed } from "@angular/core";
-import { TourService } from "../../../services/TourService";
+import { TourService } from "../../../services/tour.service";
 import { Tour } from "../../../app/models/tour.model";
 import { LoadingState } from "../../../app/models/loading-state.model";
-import { finalize, Observable } from "rxjs";
-import { SearchService } from "../../../services/SearchService";
+import { debounceTime, distinctUntilChanged, finalize, Observable, switchMap } from "rxjs";
+import { SearchService } from "../../../services/search.service";
+import { toObservable } from "@angular/core/rxjs-interop";
 
 @Injectable({
     providedIn: 'root' // von Anja: im gesamten Projekt als Singelton verfügbar
@@ -16,7 +17,7 @@ export class TourListViewModel {
     //tours = signal<Tour[]>([]);
     // von Anja geändert: damit es eine single source of truth gibt und die daten aus dem service geladen werden
     public readonly tours = this.tourService.tours;
-
+    
     loadTours(){
         this._tourStatus.set("loading");
 
@@ -73,5 +74,4 @@ export class TourListViewModel {
 
         return result;
     });
-    
 }

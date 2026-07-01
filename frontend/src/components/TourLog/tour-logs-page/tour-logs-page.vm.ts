@@ -1,10 +1,10 @@
 import { Injectable, inject, signal, Signal, computed } from "@angular/core";
-import { TourService } from "../../../services/TourService";
+import { TourService } from "../../../services/tour.service";
 import { Tour } from "../../../app/models/tour.model";
 import { LoadingState } from "../../../app/models/loading-state.model";
 import { finalize, Observable } from "rxjs";
-import { TourLogService } from "../../../services/TourLogService";
-import { SearchService } from "../../../services/SearchService";
+import { TourLogService } from "../../../services/tourlog.service";
+import { SearchService } from "../../../services/search.service";
 
 @Injectable({
   providedIn: 'root' // von Anja: im gesamten Projekt als Singelton verfügbar

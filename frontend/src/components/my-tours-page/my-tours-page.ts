@@ -2,7 +2,7 @@ import { Component, computed, inject, OnInit, signal } from "@angular/core";
 import { TourList } from "../tours-page/tour-list/tour-list";
 import { MyToursPageViewModel } from "./my-tours-page.vm";
 import { AddTourPopupComponent } from "./add-tour-popup/add-tour-popup";
-import { TourService } from "../../services/TourService";
+import { TourService } from "../../services/tour.service";
 
 // ViewModel
 @Component({

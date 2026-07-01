@@ -1,8 +1,8 @@
 import { signal, Injectable, inject, computed } from "@angular/core";
 import { TourLog } from "../../../app/models/tour-log.model";
 import { Router } from '@angular/router';
-import { TourLogService } from '../../../services/TourLogService';
-import { TourService } from "../../../services/TourService";
+import { TourLogService } from '../../../services/tourlog.service';
+import { TourService } from "../../../services/tour.service";
 import { TRANSPORT_TYPES } from "../../../app/constants/transport-type.enum";
 
 

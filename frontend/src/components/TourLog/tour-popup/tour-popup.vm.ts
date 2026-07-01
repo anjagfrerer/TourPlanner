@@ -1,6 +1,6 @@
 import { effect, inject, Injectable, signal } from '@angular/core';
 import { TourLog } from '../../../app/models/tour-log.model';
-import { TourLogService } from '../../../services/TourLogService';
+import { TourLogService } from '../../../services/tourlog.service';
 
 @Injectable()
 export class TourPopupViewModel {
