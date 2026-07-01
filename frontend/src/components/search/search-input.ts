@@ -3,12 +3,11 @@ import { Component, output, signal, computed } from "@angular/core";
 @Component({
     selector: 'search-input',
     templateUrl: './search-input.html',
-    styleUrls: ['./search-input.css'],
     standalone: true
 })
 export class SearchInput {
     searchChanged = output<string>();
-    filterChanged = output<any>(); 
+    filterChanged = output<any>();
 
     isDropdownOpen = signal<boolean>(false);
     

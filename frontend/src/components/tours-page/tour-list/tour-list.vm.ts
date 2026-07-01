@@ -44,7 +44,12 @@ export class TourListViewModel {
         let result = this.tours();
 
         if(search) {
-            result = result.filter(tour => tour.name.toLowerCase().includes(search));
+            result = result.filter(tour => tour.name.toLowerCase().includes(search) ||
+            tour.author?.toLowerCase().includes(search) ||
+            tour.description?.toLowerCase().includes(search) ||
+            tour.destinationLocation?.toLowerCase().includes(search) ||
+            tour.startLocation?.toLowerCase().includes(search)
+        );
         }
 
         if(filters.transport) {
