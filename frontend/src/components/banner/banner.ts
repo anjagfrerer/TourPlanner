@@ -16,4 +16,9 @@ export class BannerComponent {
   handleSearch(text: string): void {
     this.searchService.searchTerm.set(text);
   }
+
+  handleFilter(filters: any): void {
+    this.searchService.activeFilters.set(filters);
+  }
+  
 }

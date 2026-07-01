@@ -16,7 +16,11 @@ export class TourLogsItemComponent {
   vm = inject(TourLogItemViewModel);
   tourLog = input.required<TourLog>();
 
+  // wenn true ist, Icon, Tourname und Button ausblenden
+  hideTourContext = input<boolean>(false);
+
   constructor() {
+    this.vm.init(); // <-- Touren-Cache prüfen
     effect(() => {
       this.vm.setTourLog(this.tourLog());
     });

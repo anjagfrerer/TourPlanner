@@ -6,19 +6,21 @@ import { TourLog } from "../../app/models/tour-log.model";
 import { LoadingState } from "../../app/models/loading-state.model";
 import { finalize } from "rxjs";
 import { TRANSPORT_TYPES } from "../../app/constants/transport-type.enum";
+import { ExportService } from "../../services/ExportService";
 
 
 @Injectable()
 export class TourDetailPageViewModel {
     private tourService = inject(TourService);
     private tourLogService = inject(TourLogService);
+    private exportService = inject(ExportService);
     private readonly tourStatus = signal<LoadingState>('idle'); // Maybe globalize and reusable??
     selectedTour = signal<Tour | null>(null);
 
     readonly transportTypeConst = TRANSPORT_TYPES;
 
-    loadTourById(id : string){
-        if(!id.length) return;
+    loadTourById(id: string) {
+        if (!id.length) return;
 
         this.tourStatus.set("loading");
         this.tourService.getTourById(id).pipe(
@@ -37,17 +39,17 @@ export class TourDetailPageViewModel {
             error: (err) => {
                 this.tourStatus.set("error");
                 console.error(err);
-            } 
+            }
         });
     }
-    
+
 
     tourLogs = computed(() => {
         const tour = this.selectedTour();
         if (!tour) return [];
-        return this.tourLogService.logs(); // .logs() statt ._logs verwenden!
+        return this.tourLogService.logs();
     });
-    
+
     /*loadTourById(id: number) {
         const loadedTour = this.tourService.getTourById(id);
         //DEBUG console.log("getTourById(id) triggered: "+ id);
@@ -57,7 +59,17 @@ export class TourDetailPageViewModel {
     // von Anja wieder *un*-auskommentiert
     openAddLogPopup() {
         const currentTour = this.selectedTour()
-        if(!currentTour) return;
+        if (!currentTour) return;
         this.tourLogService.startNewLog(currentTour.id)
+    }
+
+    // von Anja: exportieren
+    exportTour() {
+        const currentTour = this.selectedTour();
+        if (currentTour) {
+            this.exportService.exportTourAsJson(currentTour);
+        } else {
+            console.warn("Es ist keine Tour zum Exportieren ausgewählt.");
+        }
     }
 }

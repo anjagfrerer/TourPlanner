@@ -1,19 +1,27 @@
 <!-- View -->
 <section class="my-tours-page">
-    <h1 class="text-4xl font-bold text-gray-900 mb-6">My Tours</h1>
-    <div class="flex justify-end items-center gap-2 pr-20">
-  <span class="text-xs">Add Tour</span>
-  <button 
-    type="button"
-    (click)="vm.openAddLogPopup()"
-    class="bg-olive-400 rounded-full p-1 hover:cursor-pointer">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#000">
-      <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
-    </svg>
+  <h1 class="text-4xl font-bold text-gray-900 mb-6">My Tours</h1>
+  <div class="flex justify-end items-center gap-2">
+    <span class="text-xs">Add Tour</span>
+    <button type="button" (click)="vm.openAddLogPopup()" class="bg-olive-400 rounded-full p-1 hover:cursor-pointer">
 
-  </button>
-</div>
-    <tour-list></tour-list>
-    <add-tour-popup></add-tour-popup>
+      <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#000">
+        <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" />
+      </svg>
+
+    </button>
+
+    <span class="text-xs">Import Tour</span>
+    <!-- $event: Datenpaket, dass der Browser verpackt und schickt, wenn hier ein change passiert -->
+    <!-- dort stehen dann so infos drinnen wie timeStamp, value (hier path vom json), files (hier alle ausgewählten json dateien mit mb größe) -->
+    <input type="file" id="tour-file-upload" accept=".json" (change)="vm.onFileSelected($event)" hidden />
+    <label for="tour-file-upload"
+      class="bg-olive-400 rounded-full p-1 hover:cursor-pointer flex items-center justify-center">
+      <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#000">
+        <path d="M440-200v-366L310-436l-56-57 226-227 226 227-56 57-130-130v366h-80Zm-240 80v-80h560v80H200Z" />
+      </svg>
+    </label>
+  </div>
+  <tour-list></tour-list>
+  <add-tour-popup></add-tour-popup>
 </section>

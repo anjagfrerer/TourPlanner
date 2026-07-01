@@ -12,7 +12,10 @@ export class TourListViewModel {
     private tourService = inject(TourService);
     private readonly _tourStatus = signal<LoadingState>('idle');
     private readonly searchService = inject(SearchService);
-    tours = signal<Tour[]>([]);
+    
+    //tours = signal<Tour[]>([]);
+    // von Anja geändert: damit es eine single source of truth gibt und die daten aus dem service geladen werden
+    public readonly tours = this.tourService.tours;
 
     loadTours(){
         this._tourStatus.set("loading");
@@ -25,7 +28,6 @@ export class TourListViewModel {
         )
         .subscribe({
             next: (response) => {
-                this.tours.set(response);
                 this._tourStatus.set("success");
             },
             error: (err) => {
@@ -38,13 +40,33 @@ export class TourListViewModel {
     // von Anja für Suche:
     filteredTours = computed(() => {
         const search = this.searchService.searchTerm().toLowerCase().trim();
-        const allTours = this.tours();
+        const filters = this.searchService.activeFilters();
+        let result = this.tours();
 
-        if(!search) return allTours;
+        if(search) {
+            result = result.filter(tour => tour.name.toLowerCase().includes(search));
+        }
 
-        return allTours.filter( tour =>
-            tour.name.toLowerCase().includes(search)
-        );
+        if(filters.transport) {
+            result = result.filter(tour => tour.transportType === filters.transport);
+        }
+
+        if(filters.ratings && filters.ratings.length > 0) {
+            result = result.filter(tour => filters.ratings.includes(tour.rating));
+        }
+
+        if(filters.maxDistance) {
+            result = result.filter(tour => tour.distance <= filters.maxDistance);
+        }
+
+        if (filters.maxDuration) {
+            result = result.filter(tour => {
+                const durationAsNumber = parseInt(tour.estimatedTime, 10) || 0;
+                return durationAsNumber <= filters.maxDuration;
+            });
+        }
+
+        return result;
     });
     
 }

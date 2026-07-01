@@ -3,6 +3,8 @@ package at.technikum.backend.controller;
 import at.technikum.backend.dto.response.ResponseTourLogDto;
 import at.technikum.backend.entity.User;
 import at.technikum.backend.service.TourLogService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,6 +18,7 @@ import java.util.List;
 public class GlobalTourLogController {
 
     private final TourLogService tourLogService;
+    private static final Logger logger = LoggerFactory.getLogger(GlobalTourLogController.class);
 
     public GlobalTourLogController(TourLogService tourLogService) {
         this.tourLogService = tourLogService;
@@ -23,6 +26,7 @@ public class GlobalTourLogController {
 
     @GetMapping
     public ResponseEntity<List<ResponseTourLogDto>> readAllGlobal(@AuthenticationPrincipal User loggedInUser) {
+        logger.info("User '{}' requests to fetch all tour logs.", loggedInUser.getUsername());
         List<ResponseTourLogDto> allLogs = tourLogService.findAllByUsername(loggedInUser.getUsername());
         return new ResponseEntity<>(allLogs, HttpStatus.OK);
     }
