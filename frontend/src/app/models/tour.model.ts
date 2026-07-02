@@ -1,4 +1,4 @@
-import { routeInformation } from "./routeInformation.model";
+import { RouteInformation } from "./routeInformation.model";
 
 export interface Tour {
     id: string,
@@ -9,7 +9,7 @@ export interface Tour {
     transportType: string,
     distance: number,
     estimatedTime: string,
-    routeInformation: routeInformation,
+    route: RouteInformation | null,
     rating: number,
     author: string
 }

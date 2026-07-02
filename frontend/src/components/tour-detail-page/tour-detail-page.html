@@ -33,7 +33,9 @@
             </div>
             
             <!-- MAP -->
-            <map [routeInformation] = "vm.selectedTour()?.routeInformation"></map>
+            @if (vm.selectedTour()?.route; as route) {
+                <map [routeInformation]="route"></map>
+            }
             
             <div>
                 <p class="font-bold text-xs md:text-base">Description:</p>
