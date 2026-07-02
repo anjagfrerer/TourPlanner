@@ -25,9 +25,9 @@ public class GlobalTourLogController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ResponseTourLogDto>> readAllGlobal(@AuthenticationPrincipal User loggedInUser) {
-        logger.info("User '{}' requests to fetch all tour logs.", loggedInUser.getUsername());
-        List<ResponseTourLogDto> allLogs = tourLogService.findAllByUsername(loggedInUser.getUsername());
+    public ResponseEntity<List<ResponseTourLogDto>> readAllGlobal(@AuthenticationPrincipal User loggedInUser, @RequestParam(value = "search", required = false) String search) {
+        logger.info("User '{}' requests to fetch tour logs with search term '{}'.", loggedInUser.getUsername(), search);
+        List<ResponseTourLogDto> allLogs = tourLogService.findAllByUsername(loggedInUser.getUsername(), search);
         return new ResponseEntity<>(allLogs, HttpStatus.OK);
     }
 }

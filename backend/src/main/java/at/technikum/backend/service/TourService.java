@@ -21,9 +21,9 @@ public class TourService {
         return tourRepository.save(tour);
     }
 
-    public List<Tour> getAllTours(){
+    /**public List<Tour> getAllTours(){
         return tourRepository.findAll();
-    }
+    }**/
 
     public Tour getTourById(UUID id){
         return tourRepository.findById(id).orElseThrow(()->new TourNotFoundException(id));
@@ -31,5 +31,13 @@ public class TourService {
 
     public void deleteTourById(UUID id){
         tourRepository.deleteById(id);
+    }
+
+    // anja für fulltextsearch
+    public List<Tour> getAllTours(String search) {
+        if (search != null && !search.isEmpty()) {
+            return tourRepository.searchTours(search);
+        }
+        return tourRepository.findAll();
     }
 }

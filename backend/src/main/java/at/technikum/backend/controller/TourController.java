@@ -26,8 +26,8 @@ public class TourController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<Tour> getAllTours() {
-        return tourService.getAllTours();
+    public List<Tour> getAllTours(@RequestParam(value = "search", required = false) String search) {
+        return tourService.getAllTours(search);
     }
 
     @PostMapping

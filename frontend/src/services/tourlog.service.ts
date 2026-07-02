@@ -1,14 +1,15 @@
 import { Injectable, signal, computed, inject, Optional } from '@angular/core';
 import { TourLog } from '../app/models/tour-log.model';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from './auth.service';
+import { environment } from '../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class TourLogService {
 
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = "http://localhost:8080/tour"
+  private readonly apiUrl = `${environment.apiUrl}/tour`;
 
   // Zustand im Frontend
   private readonly _logs = signal<TourLog[]>([]);
@@ -18,27 +19,37 @@ export class TourLogService {
   private logToEdit = signal<TourLog | null>(null);
   public readonly activeLogForEdit = this.logToEdit.asReadonly();
 
-  async getLogsByTourId(tourId: string): Promise<void> {
+  async getLogsByTourId(tourId: string, search?: string): Promise<void> {
     try {
+      let params = new HttpParams();
+      if (search && search.trim() !== '') {
+        params = params.set('search', search.trim());
+      }
+
       const serverLogs = await firstValueFrom(
-        this.http.get<TourLog[]>(`${this.apiUrl}/${tourId}/logs`)
+        this.http.get<TourLog[]>(`${this.apiUrl}/${tourId}/logs`, { params })
       );
       this._logs.set(serverLogs);
-    } catch(error: any) {
+    } catch (error: any) {
       console.error(`Failed to load Logs of this Tour ${tourId}:`, error);
     }
   }
 
-  async getAllTourLogsByUser(): Promise<void> {
-  try {
-    const allServerLogs = await firstValueFrom(
-      this.http.get<TourLog[]>("http://localhost:8080/tourlogs")
-    );
-    this._logs.set(allServerLogs);
-  } catch(error: any) {
-    console.error("Failed to load TourLogs:", error);
+  async getAllTourLogsByUser(search?: string): Promise<void> {
+    try {
+      let params = new HttpParams();
+      if (search && search.trim() !== '') {
+        params = params.set('search', search.trim());
+      }
+
+      const allServerLogs = await firstValueFrom(
+        this.http.get<TourLog[]>(`${environment.apiUrl}/tourlogs`, { params })
+      );
+      this._logs.set(allServerLogs);
+    } catch (error: any) {
+      console.error("Failed to load TourLogs:", error);
+    }
   }
-}
 
   async updateTourLog(tourId: string, updatedLog: TourLog): Promise<void> {
     try {
@@ -46,7 +57,7 @@ export class TourLogService {
         this.http.put<TourLog>(`${this.apiUrl}/${tourId}/logs/${updatedLog.tourLogId}`, updatedLog)
       );
 
-      this._logs.update(currentLogs => 
+      this._logs.update(currentLogs =>
         currentLogs.map(log => {
           if (log.tourLogId === response.tourLogId) {
             return response;
@@ -54,8 +65,9 @@ export class TourLogService {
           return log;
         })
       );
-    } catch(error: any) {
+    } catch (error: any) {
       console.error('Failed to update TourLog:', error);
+      throw error;
     }
   }
 
@@ -65,7 +77,7 @@ export class TourLogService {
         this.http.post<TourLog>(`${this.apiUrl}/${tourId}/logs`, newLog)
       );
       this._logs.update(current => [...current, response]);
-    } catch(error: any) {
+    } catch (error: any) {
       console.error('Failed to create TourLog:', error);
     }
   }
@@ -90,7 +102,7 @@ export class TourLogService {
   clearEdit() {
     this.logToEdit.set(null);
   }
-  
+
 
   startNewLog(tourId: string) {
     this.logToEdit.set(this.getEmptyLog(tourId));

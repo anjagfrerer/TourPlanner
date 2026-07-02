@@ -51,32 +51,48 @@ public class TourLogService {
         return mapper.toResponseDto(savedEntity);
     }
 
+    // von anja: alte methode
     @Transactional(readOnly = true)
     public List<ResponseTourLogDto> findAll(UUID tourId) {
         logger.info("BL: Fetching all tour logs for tour ID '{}'", tourId);
-        Tour tour = tourRepository.findById(tourId).orElseThrow(() -> {
-            logger.warn("BL: Fetch all failed. Tour with ID '{}' not found", tourId);
-            return new TourNotFoundException(tourId);
-        });
+        tourRepository.findById(tourId).orElseThrow(() -> new TourNotFoundException(tourId));
 
         List<TourLog> logs = tourLogRepository.findByTour_Id(tourId);
-        logger.info("BL: Found {} tour logs for tour ID '{}'", logs.size(), tourId);
-
-        return logs.stream()
-                .map(mapper::toResponseDto)
-                .toList();
+        return logs.stream().map(mapper::toResponseDto).toList();
     }
 
+    // von anja: neue methode für fulltextsearch
+    @Transactional(readOnly = true)
+    public List<ResponseTourLogDto> findAll(UUID tourId, String search) {
+        if (search == null || search.isEmpty()) {
+            return findAll(tourId);
+        }
+        logger.info("BL: Fetching filtered tour logs for tour ID '{}' with search term '{}'", tourId, search);
+        tourRepository.findById(tourId).orElseThrow(() -> new TourNotFoundException(tourId));
+
+        List<TourLog> logs = tourLogRepository.searchByTourIdAndTerm(tourId, search.trim());
+        return logs.stream().map(mapper::toResponseDto).toList();
+    }
+
+    // von anja: alte methode
     @Transactional(readOnly = true)
     public List<ResponseTourLogDto> findAllByUsername(String username) {
         logger.info("BL: Fetching all tour logs created by user '{}'", username);
 
         List<TourLog> logs = tourLogRepository.findAllByAuthor_Username(username);
-        logger.info("BL: Found {} tour logs for user '{}'", logs.size(), username);
+        return logs.stream().map(mapper::toResponseDto).toList();
+    }
 
-        return logs.stream()
-                .map(mapper::toResponseDto)
-                .toList();
+    // von anja: neue methode für fulltextsearch
+    @Transactional(readOnly = true)
+    public List<ResponseTourLogDto> findAllByUsername(String username, String search) {
+        if (search == null || search.isEmpty()) {
+            return findAllByUsername(username);
+        }
+        logger.info("BL: Fetching filtered tour logs for user '{}' with search term '{}'", username, search);
+
+        List<TourLog> logs = tourLogRepository.searchByUsernameAndTerm(username, search.trim());
+        return logs.stream().map(mapper::toResponseDto).toList();
     }
 
     @Transactional(readOnly = true)
@@ -90,7 +106,6 @@ public class TourLogService {
     public ResponseTourLogDto update(UUID tourId, UUID tourLogId, RequestTourLogDto requestTourLogDto, String username) {
         logger.info("BL: Updating tour log ID '{}' for tour ID '{}' by user '{}'", tourLogId, tourId, username);
         TourLog existingTourLog = findAndValidateLog(tourId, tourLogId);
-
         //darf der Nutze überhaupt bearbeiten?
         if(!existingTourLog.getAuthor().getUsername().equals(username)) {
             logger.warn("BL: Unauthorized update attempt! User '{}' tried to edit a log owned by '{}'", username, existingTourLog.getAuthor().getUsername());
@@ -115,9 +130,9 @@ public class TourLogService {
         TourLog log = tourLogRepository.findById(tourLogId).orElseThrow(() -> {
             logger.warn("BL: Validation failed. Tour log with ID '{}' does not exist", tourLogId);
             return new LogNotFoundException(tourLogId);
-        });
+        });        
         // Schauen, ob diese tour zu diesem log gehört
-        if(!log.getTour().getId().equals(tourId)) {
+        if(!log.getTour().getId().equals(tourId)) {            
             logger.warn("BL: Mismatch! Tour log ID '{}' does not belong to tour ID '{}'", tourLogId, tourId);
             throw new LogTourMismatchException(tourId, tourLogId);
         }

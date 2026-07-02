@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { TourLogService } from '../../../services/tourlog.service';
 import { TourService } from "../../../services/tour.service";
 import { TRANSPORT_TYPES } from "../../../app/constants/transport-type.enum";
+import { AuthService } from "../../../services/auth.service";
 
 
 @Injectable()
@@ -11,6 +12,7 @@ export class TourLogItemViewModel {
   private readonly service = inject(TourLogService)
   private readonly router = inject(Router);
   private readonly tourService = inject(TourService)
+  private readonly authService = inject(AuthService);
 
   public tourLog = signal<TourLog | null>(null);
   logs = this.service.logs;
@@ -31,9 +33,14 @@ export class TourLogItemViewModel {
   }
 
   async deleteLog(): Promise<void> {
+    if (!this.canModify()) {
+      window.alert("You are not authorized to delete this log! Only the author may do so.");
+      return;
+    }
+
     const currentLog = this.tourLog();
     if (currentLog) {
-      if (window.confirm("Are you sure you want to delete this tour?")) {
+      if (window.confirm("Are you sure you want to delete this tour log?")) {
         try {
           await this.service.deleteTourLog(currentLog.tourId, currentLog.tourLogId);
           window.alert('Successfully deleted log!');
@@ -42,12 +49,15 @@ export class TourLogItemViewModel {
           window.alert('Failed to delete Log. Please try again.');
         }
       }
-    } else {
-      console.error("No log selected for deletion");
     }
   }
 
  editLog() {
+    if (!this.canModify()) {
+      window.alert("You are not authorized to edit this log! Only the author may do so.");
+      return;
+    }
+    
     const currentLog = this.tourLog();
     if (currentLog) {
       this.service.startEdit(currentLog);
@@ -92,4 +102,14 @@ export class TourLogItemViewModel {
   init() {
     this.tourService.loadToursIfEmpty();
   }
+
+  // computed-Signal, das prüft, ob der Log mir gehört
+  public canModify = computed(() => {
+    const log = this.tourLog();
+    const loggedInUser = this.authService.username(); // Holt den entschlüsselten Namen
+    
+    if (!log || !loggedInUser) return false;
+    
+    return log.author === loggedInUser;
+  });
 }

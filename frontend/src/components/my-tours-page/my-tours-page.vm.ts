@@ -1,7 +1,8 @@
-import { computed, Injectable, signal, inject } from "@angular/core";
+import { computed, Injectable, signal, inject, effect } from "@angular/core";
 import { Tour } from "../../app/models/tour.model";
 import { TourService } from "../../services/tour.service";
 import { ExportService } from "../../services/export.service";
+import { SearchService } from "../../services/search.service";
 
 @Injectable()
 export class MyToursPageViewModel {
@@ -9,6 +10,7 @@ export class MyToursPageViewModel {
     //tours = signal<Tour[] | null>(null);
     selectedTour = signal<Tour | null>(null);
     public tourStatus = signal<'idle' | 'loading' | 'success' | 'error'>('idle'); // für potenziellen ladebalken
+    private readonly searchService = inject(SearchService);
 
     //HERE TO FIX THE READ-DATA-FROM-BACKEND ISSUE
     //tours = computed(() => {
@@ -27,7 +29,47 @@ export class MyToursPageViewModel {
         //this.tourService.startNewTour()
     }
 
-    // Anja für import einer tour
+    // ↓↓↓ UNTEN ALLES VON ANJA
+
+    // anja: (musste leider subscribe auflösen und es so machen, weil sonst die backend suche nicht geklappt hat in den tours)
+    constructor() {
+        effect(() => {
+            const currentSearchTerm = this.searchService.searchTerm();
+            this.tourService.getAllTours(currentSearchTerm);
+        });
+    }
+    tours = computed(() => {
+        const allTours = this.tourService.tours();
+        const filters = this.searchService.activeFilters();
+
+        return allTours.filter(tour => {
+            const matchesAuthor = tour.author === "Anja";
+            if (!matchesAuthor) return false;
+
+            if (filters.transport && tour.transportType !== filters.transport) {
+                return false;
+            }
+
+            if (filters.ratings && filters.ratings.length > 0) {
+                if (!filters.ratings.includes(tour.rating)) {
+                    return false;
+                }
+            }
+
+            if (filters.maxDistance && tour.distance > filters.maxDistance) {
+                return false;
+            }
+
+            if (filters.maxDuration) {
+                const durationAsNumber = parseInt(tour.estimatedTime, 10) || 0;
+                if (durationAsNumber > filters.maxDuration) {
+                    return false;
+                }
+            }
+            return true;
+        });
+    });
+    // anja: für import einer tour
     public onFileSelected(event: Event): void {
 
         // "das ist ein Input Element, wo man files auswählen kann!"
@@ -68,31 +110,27 @@ export class MyToursPageViewModel {
         };
 
         reader.readAsText(file);
-
-        // Input zurücksetzen, damit dieselbe Datei sofort wieder gewählt werden könnte
         input.value = '';
     }
 
-    private saveImportedTour(tourData: any): void {
+    private async saveImportedTour(tourData: any): Promise<void> {
         this.tourStatus.set("loading");
 
-        // destructuring
         const { id, createdBy, routeInformation, ...cleanTourData } = tourData;
         const finalPayload = { ...cleanTourData, routeInformation: null };
 
-        this.tourService.createTour(finalPayload).subscribe({
-            next: (savedTour) => {
-                console.log('Successfully imported:', savedTour);
-                this.tourStatus.set("success");
-                // lädt die gesamtliste neu:
-                this.tourService.getAllTours().subscribe();
-            },
-            error: (err) => {
-                this.tourStatus.set("error");
-                console.error('Backend error during import:', err);
-                alert('Error saving the imported tour in the backend.');
-            }
-        });
+        try {
+            const savedTour = await this.tourService.createTour(finalPayload);
+            console.log('Successfully imported:', savedTour);
+            this.tourStatus.set("success");
+
+            await this.tourService.getAllTours(this.searchService.searchTerm());
+
+        } catch (err) {
+            this.tourStatus.set("error");
+            console.error('Backend error during import:', err);
+            alert('Error saving the imported tour in the backend.');
+        }
     }
 }
 
