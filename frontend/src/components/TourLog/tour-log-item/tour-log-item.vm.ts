@@ -21,7 +21,16 @@ export class TourLogItemViewModel {
   public selectedTour = computed(() => {
     const log = this.tourLog();
     if (!log || !log.tourId) return null;
-    return this.tourService.tours().find(t => t.id === log.tourId) || null;
+
+    const allTours = this.tourService.tours();
+
+    // wenn Tourenliste noch leer -> triggern Laden im Hintergrund
+    if (allTours.length === 0) {
+      this.tourService.loadToursIfEmpty();
+      return null;
+    }
+
+    return allTours.find(t => t.id === log.tourId) || null;
   });
 
   rating() {
@@ -52,12 +61,12 @@ export class TourLogItemViewModel {
     }
   }
 
- editLog() {
+  editLog() {
     if (!this.canModify()) {
       window.alert("You are not authorized to edit this log! Only the author may do so.");
       return;
     }
-    
+
     const currentLog = this.tourLog();
     if (currentLog) {
       this.service.startEdit(currentLog);
@@ -81,19 +90,19 @@ export class TourLogItemViewModel {
 
     const tour = this.tourService.tours().find(t => t.id === log.tourId);
     const type = tour?.transportType;
-  
+
     if (!type) return 'route';
 
     switch (type) {
-      case TRANSPORT_TYPES.BIKING: 
+      case TRANSPORT_TYPES.BIKING:
         return 'directions_bike';
-      case TRANSPORT_TYPES.HIKING: 
+      case TRANSPORT_TYPES.HIKING:
         return 'hiking';
-      case TRANSPORT_TYPES.RUNNING: 
+      case TRANSPORT_TYPES.RUNNING:
         return 'directions_run';
-      case TRANSPORT_TYPES.VACATION: 
+      case TRANSPORT_TYPES.VACATION:
         return 'luggage';
-      default: 
+      default:
         return 'route';
     }
   });
@@ -107,9 +116,9 @@ export class TourLogItemViewModel {
   public canModify = computed(() => {
     const log = this.tourLog();
     const loggedInUser = this.authService.username(); // Holt den entschlüsselten Namen
-    
+
     if (!log || !loggedInUser) return false;
-    
+
     return log.author === loggedInUser;
   });
 }
