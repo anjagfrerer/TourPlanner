@@ -18,6 +18,11 @@ public interface TourLogRepository extends JpaRepository<TourLog, UUID> {
 
     @Query("SELECT l FROM TourLog l WHERE l.author.username = :username AND " +
             "(LOWER(l.comment) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "LOWER(CAST(l.totalDistanceKm AS string)) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "LOWER(CAST(l.rating AS string)) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "LOWER(CAST(l.totalTimeMin AS string)) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "LOWER(CAST(l.difficulty AS string)) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "LOWER(CAST(l.time AS string)) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
             "LOWER(l.tour.name) LIKE LOWER(CONCAT('%', :search, '%')))")
     List<TourLog> searchByUsernameAndTerm(@Param("username") String username, @Param("search") String search);
 
