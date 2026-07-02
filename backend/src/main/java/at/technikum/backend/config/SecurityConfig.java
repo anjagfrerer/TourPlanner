@@ -37,10 +37,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         // Routen für Registrierung und Login erlauben
-                        .requestMatchers("/users/register", "/users/login", "/users/register",
-                                "/users/login",
-                                "/swagger-ui/**",
-                                "/v3/api-docs/**", "/docs").permitAll()
+                        .requestMatchers("/users/register", "/users/login").permitAll()
                         // Alles andere (Touren, Logs etc.) erfordert ein gültiges JWT
                         .anyRequest().authenticated()
                 )
