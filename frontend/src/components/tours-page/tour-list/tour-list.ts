@@ -7,8 +7,7 @@ import { Tour } from "../../../app/models/tour.model";
 @Component({
     selector: 'tour-list',
     templateUrl: './tour-list.html',
-    imports: [TourCard],
-    providers: [TourListViewModel]
+    imports: [TourCard]
 })
 
 export class TourList implements OnInit{

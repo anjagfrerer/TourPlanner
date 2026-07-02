@@ -53,7 +53,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of("http://localhost:4200"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With", "Accept"));
+        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With", "Accept")); // HTTP header, die Angular bei Anfragen mitsendet z.B. json datentyp oder accept: was angular sich als rückgabetyp erwartet, X-Requested-With: AJAX Anfrage
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -66,10 +66,6 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    /*
-     * Den AuthenticationManager lassen wir uns von Spring geben.
-     * Er findet automatisch deinen UserService und den PasswordEncoder!
-     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();

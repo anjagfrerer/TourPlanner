@@ -34,7 +34,7 @@ public class TourController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TourResponse>> getAllTours() {
+    public ResponseEntity<List<TourResponse>> getAllTours(@RequestParam(value = "search", required = false) String search) {
         List<TourResponse> tours = tourService.getAllTours().stream()
                 .map(mapper::toTourResponse)
                 .toList();

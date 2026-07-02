@@ -2,6 +2,7 @@ import { Component, computed, inject, OnInit, signal } from "@angular/core";
 import { TourList } from "../tours-page/tour-list/tour-list";
 import { MyToursPageViewModel } from "./my-tours-page.vm";
 import { AddTourPopupComponent } from "./add-tour-popup/add-tour-popup";
+import { TourService } from "../../services/tour.service";
 
 // ViewModel
 @Component({
@@ -12,11 +13,16 @@ import { AddTourPopupComponent } from "./add-tour-popup/add-tour-popup";
     providers: [MyToursPageViewModel]
 })
 
-export class MyToursPageComponent implements OnInit{
-    vm = inject(MyToursPageViewModel);
-    author = signal<string>("Anja");
+export class MyToursPageComponent implements OnInit { 
+  vm = inject(MyToursPageViewModel); 
+  private readonly tourService = inject(TourService); 
+  author = signal<string>("Anja"); 
 
-    ngOnInit(){
-        //this.vm.tours();
-    }
+  ngOnInit() { 
+    this.loadInitialTours();
+  } 
+
+  private async loadInitialTours() {
+    await this.tourService.getAllTours();
+  }
 }
