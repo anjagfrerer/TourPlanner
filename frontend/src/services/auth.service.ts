@@ -22,7 +22,6 @@ export class AuthService {
 
     async login(credentials: AuthDto): Promise<void> {
         const response = await firstValueFrom(
-            // 1. Hier 'credentials' DIREKT ohne extra geschweifte Klammern übergeben!
             this.http.post<{ token: string }>(`${this.apiUrl}/login`, credentials)
         );
 

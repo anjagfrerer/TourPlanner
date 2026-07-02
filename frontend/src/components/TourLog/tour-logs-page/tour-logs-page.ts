@@ -18,7 +18,7 @@ import { TourLogsViewModel } from "./tour-logs-page.vm";
 export class TourLogsPageComponent {
   public readonly vm = inject(TourLogsViewModel)
 
-  ngOnInit() {
+  /**ngOnInit() {
         this.vm.getAllTourLogsByUser();
-  }
+  }**/
 }
