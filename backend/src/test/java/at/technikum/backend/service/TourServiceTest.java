@@ -65,7 +65,7 @@ class TourServiceTest {
     void getAllTours_returnsAllTours() {
         when(tourRepository.findAll()).thenReturn(List.of(sampleTour));
 
-        List<Tour> result = tourService.getAllTours();
+        List<Tour> result = tourService.getAllTours("");
 
         assertThat(result).hasSize(1).containsExactly(sampleTour);
     }

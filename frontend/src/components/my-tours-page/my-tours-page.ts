@@ -13,12 +13,16 @@ import { TourService } from "../../services/tour.service";
     providers: [MyToursPageViewModel]
 })
 
-export class MyToursPageComponent implements OnInit {
-    vm = inject(MyToursPageViewModel);
-    private readonly tourService = inject(TourService);
-    author = signal<string>("Anja");
+export class MyToursPageComponent implements OnInit { 
+  vm = inject(MyToursPageViewModel); 
+  private readonly tourService = inject(TourService); 
+  author = signal<string>("Anja"); 
 
-    ngOnInit() {
-        this.tourService.getAllTours().subscribe();
-    }
+  ngOnInit() { 
+    this.loadInitialTours();
+  } 
+
+  private async loadInitialTours() {
+    await this.tourService.getAllTours();
+  }
 }

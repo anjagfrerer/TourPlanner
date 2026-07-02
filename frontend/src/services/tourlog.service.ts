@@ -1,6 +1,6 @@
 import { Injectable, signal, computed, inject, Optional } from '@angular/core';
 import { TourLog } from '../app/models/tour-log.model';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from './auth.service';
 import { environment } from '../environments/environment';
@@ -19,10 +19,15 @@ export class TourLogService {
   private logToEdit = signal<TourLog | null>(null);
   public readonly activeLogForEdit = this.logToEdit.asReadonly();
 
-  async getLogsByTourId(tourId: string): Promise<void> {
+  async getLogsByTourId(tourId: string, search?: string): Promise<void> {
     try {
+      let params = new HttpParams();
+      if (search && search.trim() !== '') {
+        params = params.set('search', search.trim());
+      }
+
       const serverLogs = await firstValueFrom(
-        this.http.get<TourLog[]>(`${this.apiUrl}/${tourId}/logs`)
+        this.http.get<TourLog[]>(`${this.apiUrl}/${tourId}/logs`, { params })
       );
       this._logs.set(serverLogs);
     } catch (error: any) {
@@ -30,10 +35,15 @@ export class TourLogService {
     }
   }
 
-  async getAllTourLogsByUser(): Promise<void> {
+  async getAllTourLogsByUser(search?: string): Promise<void> {
     try {
+      let params = new HttpParams();
+      if (search && search.trim() !== '') {
+        params = params.set('search', search.trim());
+      }
+
       const allServerLogs = await firstValueFrom(
-        this.http.get<TourLog[]>("http://localhost:8080/tourlogs")
+        this.http.get<TourLog[]>(`${environment.apiUrl}/tourlogs`, { params })
       );
       this._logs.set(allServerLogs);
     } catch (error: any) {

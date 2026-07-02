@@ -1,4 +1,4 @@
-import { Injectable, inject, signal, Signal, computed } from "@angular/core";
+import { Injectable, inject, signal, Signal, computed, effect } from "@angular/core";
 import { TourService } from "../../../services/tour.service";
 import { Tour } from "../../../app/models/tour.model";
 import { LoadingState } from "../../../app/models/loading-state.model";
@@ -14,51 +14,45 @@ export class TourLogsViewModel {
   private tourService = inject(TourService);
   private readonly searchService = inject(SearchService);
 
-  public getAllTourLogsByUser() {
-    this.tourLogsService.getAllTourLogsByUser();
+  constructor() {
+    effect(() => {
+      const currentSearchTerm = this.searchService.searchTerm();
+      this.tourLogsService.getAllTourLogsByUser(currentSearchTerm);
+    });
   }
 
-  filteredLogs = computed(() => {
-    const search = this.searchService.searchTerm().toLowerCase().trim();
-    const filters = this.searchService.activeFilters();
-    let result = this.tourLogsService.logs();
+  public getAllTourLogsByUser() {
+    this.tourLogsService.getAllTourLogsByUser(this.searchService.searchTerm());
+  }
 
-    if (search) {
-      result = result.filter(log =>
-        (log.comment?.toLowerCase().includes(search)) ||
-        (log.date?.includes(search)) ||
-        (log.author?.toLowerCase().includes(search)) ||
-        (log.totalDistanceKm?.toString().includes(search)) ||
-        (log.totalTimeMin?.toString().includes(search))
-      );
-    }
+  filteredLogs = computed(() => { 
+    const filters = this.searchService.activeFilters(); 
+    
+    let result = this.tourLogsService.logs(); 
 
-    if (filters.transport && filters.transport !== '') {
-      result = result.filter(log => {
-        const associatedTour = this.tourService.tours().find(t => t.id === log.tourId);
+    if (filters.transport && filters.transport !== '') { 
+      result = result.filter(log => { 
+        const associatedTour = this.tourService.tours().find(t => t.id === log.tourId); 
+        return associatedTour?.transportType === filters.transport; 
+      }); 
+    } 
 
-        return associatedTour?.transportType === filters.transport;
-      });
-    }
+    if (filters.ratings && filters.ratings.length > 0) { 
+      result = result.filter(log => filters.ratings.includes(log.rating)); 
+    } 
 
-    if (filters.ratings && filters.ratings.length > 0) {
-      result = result.filter(log => filters.ratings.includes(log.rating));
-    }
+    if (filters.maxDistance) { 
+      result = result.filter(log => log.totalDistanceKm <= filters.maxDistance); 
+    } 
 
-    if (filters.maxDistance) {
-      result = result.filter(log => log.totalDistanceKm <= filters.maxDistance);
-    }
+    if (filters.maxDuration) { 
+      const maxMinutes = filters.maxDuration * 60; 
+      result = result.filter(log => { 
+        const logMinutes = log.totalTimeMin || 0; 
+        return logMinutes <= maxMinutes; 
+      }); 
+    } 
 
-    // slider liefert Stunden, aber Log speichert Minuten (* 60)
-    if (filters.maxDuration) {
-      const maxMinutes = filters.maxDuration * 60;
-
-      result = result.filter(log => {
-        const logMinutes = log.totalTimeMin || 0;
-        return logMinutes <= maxMinutes;
-      });
-    }
-
-    return result;
+    return result; 
   });
 }
