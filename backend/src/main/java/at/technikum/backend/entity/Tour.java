@@ -21,7 +21,7 @@ public class Tour {
     TransportType transportType;
     Double distance;
     String estimatedTime;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "tour_route_information")
     Route routeInformation;
     Integer rating;

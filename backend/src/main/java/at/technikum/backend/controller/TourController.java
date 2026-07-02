@@ -1,50 +1,69 @@
 package at.technikum.backend.controller;
 
+import at.technikum.backend.dto.request.TourRequest;
 import at.technikum.backend.dto.response.TourResponse;
+import at.technikum.backend.entity.Tour;
 import at.technikum.backend.entity.User;
 import at.technikum.backend.mapper.TourMapper;
-import at.technikum.backend.entity.Tour;
 import at.technikum.backend.service.TourService;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/tour")
+@CrossOrigin(origins = "http://localhost:4200")
 public class TourController {
     private final TourService tourService;
     private final TourMapper mapper;
 
-    public TourController(TourService tourService,  TourMapper mapper) {
+    public TourController(TourService tourService, TourMapper mapper) {
         this.tourService = tourService;
         this.mapper = mapper;
     }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public List<Tour> getAllTours() {
-        return tourService.getAllTours();
+    public ResponseEntity<List<TourResponse>> getAllTours() {
+        List<TourResponse> tours = tourService.getAllTours().stream()
+                .map(mapper::toTourResponse)
+                .toList();
+
+        return ResponseEntity.ok(tours);
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public TourResponse addTour(@RequestBody Tour tour, @AuthenticationPrincipal User user) {
+    public ResponseEntity<TourResponse> addTour(@RequestBody TourRequest request, @AuthenticationPrincipal User user) {
+        Tour tour = mapper.toTour(request);
         tour.setCreatedBy(user);
-        return mapper.toTourResponse(tourService.addTour(tour));
+        TourResponse response = mapper.toTourResponse(tourService.addTour(tour));
+
+        return ResponseEntity
+                .created(URI.create("/tour/" + response.id()))
+                .body(response);
     }
 
     @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public Tour getTour(@PathVariable UUID id) {
-        return tourService.getTourById(id);
+    public ResponseEntity<TourResponse> getTour(@PathVariable UUID id) {
+        TourResponse response = mapper.toTourResponse(tourService.getTourById(id));
+
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteTour(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteTour(@PathVariable UUID id) {
         tourService.deleteTourById(id);
+
+        return ResponseEntity.noContent().build();
     }
 }

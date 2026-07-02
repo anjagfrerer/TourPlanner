@@ -1,6 +1,12 @@
 package at.technikum.backend.dto.request;
 
-import java.util.UUID;
+import at.technikum.backend.constants.TransportType;
 
-public record TourRequest(UUID id) {
-}
+public record TourRequest(
+        String name,
+        String description,
+        String startLocation,
+        String destinationLocation,
+        TransportType transportType,
+        Integer rating
+) {}

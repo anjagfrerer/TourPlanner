@@ -28,7 +28,6 @@ export class TourDetailPageViewModel {
         ).subscribe({
             next: (response) => {
                 this.selectedTour.set(response);
-                // von Anja hinzugefügt um Logs zu laden zur Tour
                 this.tourLogService.getLogsByTourId(response.id);
                 this.tourStatus.set("success");
             },
@@ -37,6 +36,7 @@ export class TourDetailPageViewModel {
                 console.error(err);
             } 
         });
+        console.log("selected tour", this.selectedTour);
     }
     
 

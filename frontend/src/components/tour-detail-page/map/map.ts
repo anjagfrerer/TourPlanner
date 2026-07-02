@@ -1,7 +1,7 @@
 import { Component, AfterViewInit, input } from "@angular/core";
 import { MapViewModel } from "./map.vm";
 import * as L from 'leaflet';
-import { routeInformation } from "../../../app/models/routeInformation.model";
+import { RouteInformation } from "../../../app/models/routeInformation.model";
 
 @Component({
     selector: 'map',
@@ -11,25 +11,27 @@ import { routeInformation } from "../../../app/models/routeInformation.model";
 })
 
 export class Map implements AfterViewInit{
-    routeInformation = input.required<routeInformation>();
+    routeInformation = input.required<RouteInformation | undefined>();
     map: L.Map | null = null;
 
     private readonly ROUTE_COLOR = '#321904'; //brown
     private readonly ROUTE_ZOOM = 15;
 
     ngAfterViewInit(){
+
+        
         this.map = L.map('map').setView([50.0, -0.10], this.ROUTE_ZOOM);
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(this.map);
 
         //Draw markers and route on map
-        /*L.circleMarker(L.latLng(this.routeInformation().startLat,
-                                this.routeInformation().startLong), 
+        L.circleMarker(L.latLng(this.routeInformation().start.lat,
+                                this.routeInformation().start.lng), 
                                 {color: this.ROUTE_COLOR}).addTo(this.map);
 
         L.polyline([], {color: this.ROUTE_COLOR}).addTo(this.map);
 
-        L.circleMarker(L.latLng(this.routeInformation().endLat,
-                                this.routeInformation().endLong), 
-                                {color: this.ROUTE_COLOR}).addTo(this.map);*/
+        L.circleMarker(L.latLng(this.routeInformation().end.lat,
+                                this.routeInformation().end.lng), 
+                                {color: this.ROUTE_COLOR}).addTo(this.map);
     }
 }

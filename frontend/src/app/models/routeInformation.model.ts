@@ -1,8 +1,12 @@
-export interface routeInformation {
-    viewport: [number, number],
-    startLat: number,
-    startLong: number,
-    endLat: number,
-    endLong: number,
-    route: [[number, number]]
+export interface Coordinates {
+  lat: number;
+  lng: number;
+}
+
+export interface RouteInformation {
+  start: Coordinates;
+  end: Coordinates;
+  distance: number;
+  duration: number | null;
+  geometry: Coordinates[];
 }

@@ -4,5 +4,10 @@ import at.technikum.backend.dto.Coordinates;
 
 import java.util.List;
 
-public record RouteResponse(List<Coordinates> coordinates) {
-}
+public record RouteResponse(
+        Coordinates start,
+        Coordinates end,
+        Double distance,
+        Double duration,
+        List<Coordinates> geometry
+) {}
