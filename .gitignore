@@ -28,3 +28,4 @@ Thumbs.db
 
 # --- Lokale Umgebungsvariablen für unterschiedliche Ports ---
 .env
+backend/src/main/resources/application-local.properties

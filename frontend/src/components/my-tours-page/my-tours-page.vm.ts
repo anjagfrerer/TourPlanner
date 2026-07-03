@@ -11,6 +11,7 @@ export class MyToursPageViewModel {
     selectedTour = signal<Tour | null>(null);
     public tourStatus = signal<'idle' | 'loading' | 'success' | 'error'>('idle'); // für potenziellen ladebalken
     private readonly searchService = inject(SearchService);
+    private exportService = inject(ExportService);
 
     //HERE TO FIX THE READ-DATA-FROM-BACKEND ISSUE
     //tours = computed(() => {
@@ -43,8 +44,8 @@ export class MyToursPageViewModel {
         const filters = this.searchService.activeFilters();
 
         return allTours.filter(tour => {
-            const matchesAuthor = tour.author === "Anja";
-            if (!matchesAuthor) return false;
+            //const matchesAuthor = tour.author === "Anja";
+            //if (!matchesAuthor) return false;
 
             if (filters.transport && tour.transportType !== filters.transport) {
                 return false;
@@ -70,7 +71,7 @@ export class MyToursPageViewModel {
         });
     });
     // anja: für import einer tour
-    public onFileSelected(event: Event): void {
+    public async onFileSelected(event: Event): Promise<void> {
 
         // "das ist ein Input Element, wo man files auswählen kann!"
         const input = event.target as HTMLInputElement;
@@ -87,49 +88,26 @@ export class MyToursPageViewModel {
             return;
         }
 
-        // asynchroner file reader
-        const reader = new FileReader();
-        reader.onload = () => {
-            try {
-                const importedTour = JSON.parse(reader.result as string);
-
-                // Minimale Validierung der Pflichtfelder
-                if (!importedTour.name) {
-                    alert('Invalid tour format: Name missing.');
-                    return;
-                }
-
-                // Tour ans Backend übertragen
-                this.saveImportedTour(importedTour);
-
-
-            } catch (error) {
-                console.error('Error parsing the JSON file:', error);
-                alert('The file could not be read.');
-            }
-        };
-
-        reader.readAsText(file);
-        input.value = '';
-    }
-
-    private async saveImportedTour(tourData: any): Promise<void> {
-        this.tourStatus.set("loading");
-
-        const { id, createdBy, routeInformation, ...cleanTourData } = tourData;
-        const finalPayload = { ...cleanTourData, routeInformation: null };
-
         try {
-            const savedTour = await this.tourService.createTour(finalPayload);
+            this.tourStatus.set("loading");
+
+            // logik an den ExportService übergeben
+            const preparedTourPayload = await this.exportService.importTourFromJson(file);
+
+            // an den TourService zur Backend-Übertragung übergeben
+            const savedTour = await this.tourService.createTour(preparedTourPayload);
             console.log('Successfully imported:', savedTour);
+
             this.tourStatus.set("success");
 
+            // liste neu laden, damit importierte Tour gleich sichtbar wird
             await this.tourService.getAllTours(this.searchService.searchTerm());
 
-        } catch (err) {
+        } catch (error: any) {
             this.tourStatus.set("error");
-            console.error('Backend error during import:', err);
-            alert('Error saving the imported tour in the backend.');
+            console.error('Import failed:', error);
+            const message = error?.error?.message || error?.message || (typeof error === 'string' ? error : 'Unknown Error during Import.');
+            alert(message);
         }
     }
 }

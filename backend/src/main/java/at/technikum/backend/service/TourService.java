@@ -38,7 +38,7 @@ public class TourService {
         route.setEndLong(routeResponse.end().lng());
 
         tour.setRouteInformation(route);
-        tour.setDistance(routeResponse.distance());
+        tour.setDistance(Math.round((routeResponse.distance() / 1000.0) * 100.0) / 100.0);
         tour.setEstimatedTime(formatDuration(routeResponse.duration()));
 
         return tourRepository.save(tour);
@@ -47,6 +47,14 @@ public class TourService {
     /**public List<Tour> getAllTours(){
         return tourRepository.findAll();
     }**/
+
+    // anja
+    public List<Tour> getAllTours(String search) {
+        if (search == null || search.trim().isEmpty()) {
+            return tourRepository.findAll();
+        }
+        return tourRepository.searchTours(search.trim());
+    }
 
     public Tour getTourById(UUID id){
         return tourRepository.findById(id).orElseThrow(()->new TourNotFoundException(id));

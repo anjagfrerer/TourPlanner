@@ -15,6 +15,12 @@ export class ExportService {
         // Jedes Mal, wenn ein Schlüssel (Key) mit einem dieser Namen auftaucht, 'undefined' zurückgeben
         const jsonString = JSON.stringify(tour, (key, value) => {
             const forbiddenKeys = [
+                'id',
+                'createdBy',
+                'route',
+                'routeInformation',
+                'distance',
+                'estimatedTime',
                 'password',
                 'authorities',
                 'accountNonExpired',
@@ -47,5 +53,29 @@ export class ExportService {
 
         // löscht link wieder aus html 
         myExportAnchor.remove();
+    }
+
+    importTourFromJson(file: File): Promise<any> {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+
+            reader.onload = () => {
+                try {
+                    const tourData = JSON.parse(reader.result as string);
+
+                    if (!tourData || !tourData.name) {
+                        reject('Invalid tour format: Name missing.');
+                        return;
+                    }
+
+                    resolve(tourData);
+                } catch (error) {
+                    reject('The file could not be parsed as valid JSON.');
+                }
+            };
+
+            reader.onerror = () => reject('Error occurred while reading the file.');
+            reader.readAsText(file);
+        });
     }
 }
