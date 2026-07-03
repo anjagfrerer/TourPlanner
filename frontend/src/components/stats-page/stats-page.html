@@ -4,20 +4,20 @@
     <div class="flex flex-wrap justify-center gap-6">
 
     <stats-card 
-      value="10 Tours" 
+      [value]="vm.completedToursCount() + ' Tours'"
       description="Number of completed Tours"
       imgPath="assets/stats_1.jpg">
     </stats-card>
     
     <stats-card 
-      value="5 km" 
+      [value]="vm.totalDistanceKm() + ' km'"
       description="Total distance"
       imgPath="assets/stats_2.jpg">
     </stats-card>
 
     <stats-card 
-      value="100 Min." 
-      description="Total minutes"
+      [value]="vm.totalHours() + ' h'"
+      description="Total hours"
       imgPath="assets/stats_3.jpg">
     </stats-card>
 
