@@ -44,9 +44,9 @@ public class TourService {
         return tourRepository.save(tour);
     }
 
-    /**public List<Tour> getAllTours(){
+    public List<Tour> getAllTours(){
         return tourRepository.findAll();
-    }**/
+    }
 
     // anja
     public List<Tour> getAllTours(String search) {
