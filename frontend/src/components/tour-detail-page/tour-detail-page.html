@@ -58,9 +58,12 @@
                     </span>
                 </button>
             </div>
-            <div id="map"
-                class="flex justify-center items-center w-full h-64 rounded-md text-xs border overflow-hidden"> map
-                placeholder</div>
+            
+            <!-- MAP -->
+            @if (vm.selectedTour()?.route; as route) {
+                <map [routeInformation]="route"></map>
+            }
+            
             <div>
                 <p class="font-bold text-xs md:text-base">Description:</p>
                 <p class="text-xs">{{vm.selectedTour()?.description}}</p>

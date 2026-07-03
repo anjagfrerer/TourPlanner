@@ -1,9 +1,4 @@
-enum TransportType {
-    BIKING,
-    HIKING,
-    RUNNING,
-    VACATION
-}
+import { RouteInformation } from "./routeInformation.model";
 
 export interface Tour {
     id: string,
@@ -14,7 +9,7 @@ export interface Tour {
     transportType: string,
     distance: number,
     estimatedTime: string,
-    routeInformation: null,
+    route: RouteInformation | null,
     rating: number,
     author: string
 }

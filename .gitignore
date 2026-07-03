@@ -13,7 +13,7 @@ backend/target/
 backend/.mvn/wrapper/maven-wrapper.jar
 backend/build/
 backend/bin/
-
+backend/application-local.properties
 # --- Frontend (Angular) ---
 frontend/node_modules/
 frontend/.angular/
@@ -28,11 +28,3 @@ Thumbs.db
 
 # --- Lokale Umgebungsvariablen für unterschiedliche Ports ---
 .env
-
-# Angular cache
-frontend/.angular/
-
-# Dependency directories
-frontend/node_modules/
-
-backend/target/

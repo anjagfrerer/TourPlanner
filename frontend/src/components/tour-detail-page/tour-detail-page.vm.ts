@@ -19,8 +19,8 @@ export class TourDetailPageViewModel {
 
     readonly transportTypeConst = TRANSPORT_TYPES;
 
-    loadTourById(id: string) {
-        if (!id.length) return;
+    loadTourById(id : string) {
+        if(!id.length) return;
 
         this.tourStatus.set("loading");
         this.tourService.getTourById(id).pipe(
@@ -29,18 +29,16 @@ export class TourDetailPageViewModel {
             })
         ).subscribe({
             next: (response) => {
-                console.log(response);
                 this.selectedTour.set(response);
-                this.tourStatus.set("success");
-
-                // von Anja hinzugefügt um Logs zu laden zur Tour
                 this.tourLogService.getLogsByTourId(response.id);
+                this.tourStatus.set("success");
             },
             error: (err) => {
                 this.tourStatus.set("error");
                 console.error(err);
             }
         });
+        console.log("selected tour", this.selectedTour);
     }
 
 
