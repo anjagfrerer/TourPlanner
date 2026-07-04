@@ -80,14 +80,12 @@ public class OpenRouteService {
     }
 
     private String toOpenRouteProfile(TransportType transportType) {
-        if (transportType == null) {
-            return "driving-car";
-        }
 
         return switch (transportType) {
             case BIKING -> "cycling-regular";
-            case HIKING, RUNNING -> "foot-walking";
-            case VACATION -> "driving-car";
+            case HIKING -> "foot-hiking";
+            case RUNNING -> "foot-walking";
+            default -> throw new IllegalArgumentException("Invalid transportType for OpenRouteService");
         };
     }
 
