@@ -5,6 +5,7 @@ import at.technikum.backend.entity.Route;
 import at.technikum.backend.entity.Tour;
 import at.technikum.backend.exceptions.TourNotFoundException;
 import at.technikum.backend.repository.TourRepository;
+import tools.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -16,10 +17,12 @@ import java.util.UUID;
 public class TourService {
     private final TourRepository tourRepository;
     private final OpenRouteService openRouteService;
+    private final ObjectMapper mapper;
 
-    public TourService(TourRepository tourRepository, OpenRouteService openRouteService) {
+    public TourService(TourRepository tourRepository, OpenRouteService openRouteService, ObjectMapper mapper) {
         this.tourRepository = tourRepository;
         this.openRouteService = openRouteService;
+        this.mapper = mapper;
     }
 
     public Tour addTour(Tour tour){
@@ -36,6 +39,12 @@ public class TourService {
         route.setStartLong(routeResponse.start().lng());
         route.setEndLat(routeResponse.end().lat());
         route.setEndLong(routeResponse.end().lng());
+
+        try {
+            route.setGeometryJson(mapper.writeValueAsString(routeResponse.geometry()));
+        } catch (Exception e) {
+            throw new RuntimeException("Save route geometry failed: ", e);
+        }
 
         tour.setRouteInformation(route);
         tour.setDistance(Math.round((routeResponse.distance() / 1000.0) * 100.0) / 100.0);
@@ -64,12 +73,14 @@ public class TourService {
         tourRepository.deleteById(id);
     }
 
+    // HELPER FUNCTIONS
+
     private void validateLocations(Tour tour) {
-        if (!StringUtils.hasText(tour.getStartLocation())) {
+        if (tour.getStartLocation() == null ||tour.getStartLocation().isEmpty()) {
             throw new IllegalArgumentException("Start location is required");
         }
 
-        if (!StringUtils.hasText(tour.getDestinationLocation())) {
+        if (tour.getDestinationLocation() == null ||tour.getDestinationLocation().isEmpty()) {
             throw new IllegalArgumentException("Destination location is required");
         }
 

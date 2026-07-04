@@ -1,9 +1,12 @@
 package at.technikum.backend.service;
 
+import at.technikum.backend.constants.TransportType;
+import at.technikum.backend.dto.Coordinates;
+import at.technikum.backend.dto.response.RouteResponse;
 import at.technikum.backend.entity.Tour;
 import at.technikum.backend.exceptions.TourNotFoundException;
 import at.technikum.backend.repository.TourRepository;
-import jakarta.persistence.EntityNotFoundException;
+import tools.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,6 +36,12 @@ class TourServiceTest {
     @Mock
     private TourRepository tourRepository;
 
+    @Mock
+    private OpenRouteService openRouteService;
+
+    @Mock
+    private ObjectMapper objectMapper;
+
     @InjectMocks
     private TourService tourService;
 
@@ -45,6 +54,9 @@ class TourServiceTest {
         sampleTour = new Tour();
         sampleTour.setId(tourId);
         sampleTour.setName("Wienerwald Runde");
+        sampleTour.setStartLocation("Biosphärenpark Wienerwald Kernzone Mauerbach");
+        sampleTour.setDestinationLocation("Biosphärenpark Wienerwald Kernzone Waldschafferin");
+        sampleTour.setTransportType(TransportType.BIKING);
         sampleTour.setDescription("Schöne Runde durch den Wienerwald");
         sampleTour.setDistance(12.5);
     }
@@ -52,6 +64,23 @@ class TourServiceTest {
     @Test
     @DisplayName("addTour speichert die Tour über das Repository und gibt sie zurück")
     void addTour_savesAndReturnsTour() {
+        RouteResponse routeResponse = new RouteResponse(
+                new Coordinates(16.189691,48.258316),
+                new Coordinates(16.259671,48.239545),
+                12500.0,
+                3600.0,
+                List.of()
+        );
+
+        when(openRouteService.getDirections(
+                sampleTour.getStartLocation(),
+                sampleTour.getDestinationLocation(),
+                sampleTour.getTransportType()
+        )).thenReturn(routeResponse);
+
+        when(objectMapper.writeValueAsString(routeResponse.geometry()))
+                .thenReturn("[]");
+
         when(tourRepository.save(sampleTour)).thenReturn(sampleTour);
 
         Tour result = tourService.addTour(sampleTour);

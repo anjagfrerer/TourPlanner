@@ -6,12 +6,21 @@ import at.technikum.backend.dto.response.RouteResponse;
 import at.technikum.backend.dto.response.TourResponse;
 import at.technikum.backend.entity.Route;
 import at.technikum.backend.entity.Tour;
+
 import org.springframework.stereotype.Component;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
 @Component
 public class TourMapper {
+    private final ObjectMapper objectMapper;
+
+    public TourMapper(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
     public Tour toTour(TourRequest request) {
         Tour tour = new Tour();
         tour.setName(request.name());
@@ -50,7 +59,22 @@ public class TourMapper {
                 new Coordinates(route.getEndLat(), route.getEndLong()),
                 tour.getDistance(),
                 null,
-                List.of()
+                readGeometry(route)
         );
+    }
+
+    private List<Coordinates> readGeometry(Route route) {
+        if (route.getGeometryJson() == null || route.getGeometryJson().isBlank()) {
+            return List.of();
+        }
+
+        try {
+            return objectMapper.readValue(
+                    route.getGeometryJson(),
+                    new TypeReference<List<Coordinates>>() {}
+            );
+        } catch (Exception e) {
+            return List.of();
+        }
     }
 }

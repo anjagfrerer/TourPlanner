@@ -39,6 +39,7 @@ public class TourController {
     public ResponseEntity<TourResponse> addTour(@RequestBody TourRequest request, @AuthenticationPrincipal User user) {
         Tour tour = mapper.toTour(request);
         tour.setCreatedBy(user);
+
         TourResponse response = mapper.toTourResponse(tourService.addTour(tour));
 
         return ResponseEntity
@@ -49,6 +50,7 @@ public class TourController {
     @GetMapping("/{id}")
     public ResponseEntity<TourResponse> getTour(@PathVariable UUID id) {
         TourResponse response = mapper.toTourResponse(tourService.getTourById(id));
+
 
         return ResponseEntity.ok(response);
     }

@@ -1,17 +1,10 @@
 package at.technikum.backend.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.UUID;
 
-/**
- * distance and time will be retrieved
- * by a REST request using the OpenRouteservice.org
- * */
 @Entity
 @Getter
 @Setter
@@ -23,4 +16,6 @@ public class Route {
     private UUID id;
     private Double startLat, startLong;
     private Double endLat, endLong;
+    @Lob
+    private String geometryJson;
 }
