@@ -3,8 +3,10 @@
 </section>
 
 @if (router.url !== '/stats') {
-  <search-input
-    (searchChanged)="handleSearch($event)"
-    (filterChanged)="handleFilter($event)">
-  </search-input>
+  <div class="relative z-10 -mt-12 pb-4">
+    <search-input
+      (searchChanged)="handleSearch($event)"
+      (filterChanged)="handleFilter($event)">
+    </search-input>
+  </div>
 }

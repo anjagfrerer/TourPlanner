@@ -27,6 +27,7 @@ public class Tour {
     Integer rating;
     Boolean childFriendly;
     Boolean popular;
+    Boolean publicTour = true;
 
     @ManyToOne
     @JoinColumn(name = "created_by_id")
