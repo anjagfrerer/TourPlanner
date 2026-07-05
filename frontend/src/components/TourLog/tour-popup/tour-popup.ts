@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { TourPopupViewModel } from '../../TourLog/tour-popup/tour-popup.vm';
 
 @Component({
-  selector: 'app-tour-popup',
+  selector: 'tourlog-popup',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './tour-popup.html',

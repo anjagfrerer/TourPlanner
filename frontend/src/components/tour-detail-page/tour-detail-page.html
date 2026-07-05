@@ -93,5 +93,7 @@
         }
         }
     </div>
-    <app-tour-popup></app-tour-popup>
+    @if (vm.isAddPopupOpen()) {
+        <tourlog-popup (close)="vm.closeAddLogPopup()"></tourlog-popup>
+    }
 </section>

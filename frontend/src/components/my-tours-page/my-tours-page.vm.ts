@@ -7,30 +7,13 @@ import { SearchService } from "../../services/search.service";
 @Injectable()
 export class MyToursPageViewModel {
     private tourService = inject(TourService);
-    //tours = signal<Tour[] | null>(null);
+    isAddPopupOpen = signal(false);
     selectedTour = signal<Tour | null>(null);
+    
     public tourStatus = signal<'idle' | 'loading' | 'success' | 'error'>('idle'); // für potenziellen ladebalken
+    
     private readonly searchService = inject(SearchService);
     private exportService = inject(ExportService);
-
-    //HERE TO FIX THE READ-DATA-FROM-BACKEND ISSUE
-    //tours = computed(() => {
-    //const allTours = this.tourService.getAllTours()(); // Signal auslesen 
-    //return allTours.filter(tour => tour.author === "Anja");
-    //});
-
-    /*loadTourById(id: number) {
-        const loadedTour = this.tourService.getTourById(id);
-        //DEBUG console.log("getTourById(id) triggered: "+ id);
-        this.selectedTour.set(loadedTour);
-    }*/
-
-    openAddLogPopup() {
-        //const currentTour = this.selectedTour()
-        //this.tourService.startNewTour()
-    }
-
-    // ↓↓↓ UNTEN ALLES VON ANJA
 
     // anja: (musste leider subscribe auflösen und es so machen, weil sonst die backend suche nicht geklappt hat in den tours)
     constructor() {
@@ -39,6 +22,7 @@ export class MyToursPageViewModel {
             this.tourService.getAllTours(currentSearchTerm);
         });
     }
+
     tours = computed(() => {
         const allTours = this.tourService.tours();
         const filters = this.searchService.activeFilters();
@@ -70,6 +54,7 @@ export class MyToursPageViewModel {
             return true;
         });
     });
+    
     // anja: für import einer tour
     public async onFileSelected(event: Event): Promise<void> {
 
@@ -109,6 +94,14 @@ export class MyToursPageViewModel {
             const message = error?.error?.message || error?.message || (typeof error === 'string' ? error : 'Unknown Error during Import.');
             alert(message);
         }
+    }
+
+    openAddPopup() {
+        this.isAddPopupOpen.set(true);
+    }
+
+    closeAddPopup() {
+        this.isAddPopupOpen.set(false);
     }
 }
 
