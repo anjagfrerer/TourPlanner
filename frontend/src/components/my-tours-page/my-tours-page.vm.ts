@@ -24,10 +24,10 @@ export class MyToursPageViewModel {
     }
 
     tours = computed(() => {
-        const allTours = this.tourService.tours();
+        const myTours = this.tourService.myTours();
         const filters = this.searchService.activeFilters();
 
-        return allTours.filter(tour => {
+        return myTours.filter(tour => {
             if (filters.transport && tour.transportType !== filters.transport) {
                 return false;
             }

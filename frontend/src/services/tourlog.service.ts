@@ -1,8 +1,7 @@
-import { Injectable, signal, computed, inject, Optional } from '@angular/core';
+import { Injectable, signal, inject } from '@angular/core';
 import { TourLog } from '../app/models/tour-log.model';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { AuthService } from './auth.service';
 import { environment } from '../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -11,9 +10,13 @@ export class TourLogService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/tour`;
 
-  // Zustand im Frontend
-  private readonly _logs = signal<TourLog[]>([]);
-  public readonly logs = this._logs.asReadonly();
+  // Logs for a specific tour detail page
+  private readonly _tourLogs = signal<TourLog[]>([]);
+  public readonly tourLogs = this._tourLogs.asReadonly();
+
+  // Logs created by the currently logged-in user
+  private readonly _myLogs = signal<TourLog[]>([]);
+  public readonly myLogs = this._myLogs.asReadonly();
 
   // welcher log grad bearbeitet wird  
   private logToEdit = signal<TourLog | null>(null);
@@ -29,7 +32,7 @@ export class TourLogService {
       const serverLogs = await firstValueFrom(
         this.http.get<TourLog[]>(`${this.apiUrl}/${tourId}/logs`, { params })
       );
-      this._logs.set(serverLogs);
+      this._tourLogs.set(serverLogs);
     } catch (error: any) {
       console.error(`Failed to load Logs of this Tour ${tourId}:`, error);
     }
@@ -45,7 +48,7 @@ export class TourLogService {
       const allServerLogs = await firstValueFrom(
         this.http.get<TourLog[]>(`${environment.apiUrl}/tourlogs`, { params })
       );
-      this._logs.set(allServerLogs);
+      this._myLogs.set(allServerLogs);
     } catch (error: any) {
       console.error("Failed to load TourLogs:", error);
     }
@@ -57,7 +60,15 @@ export class TourLogService {
         this.http.put<TourLog>(`${this.apiUrl}/${tourId}/logs/${updatedLog.tourLogId}`, updatedLog)
       );
 
-      this._logs.update(currentLogs =>
+      this._tourLogs.update(currentLogs =>
+        currentLogs.map(log => {
+          if (log.tourLogId === response.tourLogId) {
+            return response;
+          }
+          return log;
+        })
+      );
+      this._myLogs.update(currentLogs =>
         currentLogs.map(log => {
           if (log.tourLogId === response.tourLogId) {
             return response;
@@ -76,7 +87,8 @@ export class TourLogService {
       const response = await firstValueFrom(
         this.http.post<TourLog>(`${this.apiUrl}/${tourId}/logs`, newLog)
       );
-      this._logs.update(current => [...current, response]);
+      this._tourLogs.update(current => [...current, response]);
+      this._myLogs.update(current => [...current, response]);
     } catch (error: any) {
       console.error('Failed to create TourLog:', error);
     }
@@ -87,7 +99,8 @@ export class TourLogService {
       const response = await firstValueFrom(
         this.http.delete<TourLog>(`${this.apiUrl}/${tourId}/logs/${tourLogId}`)
       );
-      this._logs.update(current => current.filter(log => log.tourLogId !== tourLogId));
+      this._tourLogs.update(current => current.filter(log => log.tourLogId !== tourLogId));
+      this._myLogs.update(current => current.filter(log => log.tourLogId !== tourLogId));
     } catch (error) {
       console.error('Failed to delete TourLog:', error);
     }

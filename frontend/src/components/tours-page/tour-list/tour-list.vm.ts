@@ -16,16 +16,16 @@ export class TourListViewModel {
 
     //tours = signal<Tour[]>([]);
     // von Anja geändert: damit es eine single source of truth gibt und die daten aus dem service geladen werden
-    public readonly tours = this.tourService.tours;
+    public readonly tours = this.tourService.allTours;
 
-    public getAllTourLogsByUser() {
+    public loadAllTours() {
         this.tourService.getAllTours(this.searchService.searchTerm());
     }
 
     async loadTours() {
         this._tourStatus.set("loading");
         try {
-            await this.tourService.getAllTours();
+            await this.tourService.getAllTours(this.searchService.searchTerm());
             this._tourStatus.set("success");
         } catch (err) {
             this._tourStatus.set("error");
@@ -38,7 +38,7 @@ export class TourListViewModel {
     // von Anja für Suche:
     filteredTours = computed(() => {
         const filters = this.searchService.activeFilters();
-        let result = this.tourService.tours();
+        let result = this.tourService.allTours();
 
         if (filters.transport) {
             result = result.filter(tour => tour.transportType === filters.transport);

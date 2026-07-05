@@ -46,7 +46,7 @@ export class TourDetailPageViewModel {
     tourLogs = computed(() => {
         const tour = this.selectedTour();
         if (!tour) return [];
-        return this.tourLogService.logs();
+        return this.tourLogService.tourLogs();
     });
 
     /*loadTourById(id: number) {

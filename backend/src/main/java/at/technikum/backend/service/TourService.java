@@ -91,13 +91,13 @@ public class TourService {
     public List<Tour> getToursCreatedBy(User user, String search) {
         if (search == null || search.trim().isEmpty()) {
             log.debug("Fetching tours created by user '{}'", user.getUsername());
-            return tourRepository.findByCreatedBy(user);
+            return tourRepository.findByCreatedBy_Username(user.getUsername());
         }
 
         String trimmedSearch = search.trim();
         log.debug("Searching tours created by user '{}' with term '{}'", user.getUsername(), trimmedSearch);
 
-        List<Tour> tours = tourRepository.searchToursByCreatedBy(user, trimmedSearch);
+        List<Tour> tours = tourRepository.searchToursByCreatedByUsername(user.getUsername(), trimmedSearch);
 
         log.debug("Found {} tours created by user '{}' for search term '{}'",
                 tours.size(),

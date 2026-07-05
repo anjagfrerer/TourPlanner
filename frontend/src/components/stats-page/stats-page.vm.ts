@@ -10,7 +10,7 @@ export class StatsPageViewModel {
         this.tourLogService.getAllTourLogsByUser();
     }
 
-    private readonly logs = this.tourLogService.logs;
+    private readonly logs = this.tourLogService.myLogs;
 
     readonly completedToursCount = computed(() => {
         const uniqueTourIds = new Set(this.logs().map(log => log.tourId));

@@ -1,8 +1,5 @@
-import { Injectable, inject, signal, Signal, computed, effect } from "@angular/core";
+import { Injectable, inject, computed, effect } from "@angular/core";
 import { TourService } from "../../../services/tour.service";
-import { Tour } from "../../../app/models/tour.model";
-import { LoadingState } from "../../../app/models/loading-state.model";
-import { finalize, Observable } from "rxjs";
 import { TourLogService } from "../../../services/tourlog.service";
 import { SearchService } from "../../../services/search.service";
 
@@ -15,6 +12,8 @@ export class TourLogsViewModel {
   private readonly searchService = inject(SearchService);
 
   constructor() {
+    this.tourService.loadToursIfEmpty();
+
     effect(() => {
       const currentSearchTerm = this.searchService.searchTerm();
       this.tourLogsService.getAllTourLogsByUser(currentSearchTerm);
@@ -28,11 +27,11 @@ export class TourLogsViewModel {
   filteredLogs = computed(() => { 
     const filters = this.searchService.activeFilters(); 
     
-    let result = this.tourLogsService.logs(); 
+    let result = this.tourLogsService.myLogs();
 
     if (filters.transport && filters.transport !== '') { 
       result = result.filter(log => { 
-        const associatedTour = this.tourService.tours().find(t => t.id === log.tourId); 
+        const associatedTour = this.tourService.allTours().find(t => t.id === log.tourId);
         return associatedTour?.transportType === filters.transport; 
       }); 
     } 

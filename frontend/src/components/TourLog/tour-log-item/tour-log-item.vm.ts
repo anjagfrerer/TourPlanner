@@ -15,14 +15,14 @@ export class TourLogItemViewModel {
   private readonly authService = inject(AuthService);
 
   public tourLog = signal<TourLog | null>(null);
-  logs = this.service.logs;
+  logs = this.service.myLogs;
 
   // Selektierte Tour abfragen
   public selectedTour = computed(() => {
     const log = this.tourLog();
     if (!log || !log.tourId) return null;
 
-    const allTours = this.tourService.tours();
+    const allTours = this.tourService.allTours();
 
     // wenn Tourenliste noch leer -> triggern Laden im Hintergrund
     if (allTours.length === 0) {
@@ -88,7 +88,7 @@ export class TourLogItemViewModel {
     const log = this.tourLog();
     if (!log) return 'route';
 
-    const tour = this.tourService.tours().find(t => t.id === log.tourId);
+    const tour = this.tourService.allTours().find(t => t.id === log.tourId);
     const type = tour?.transportType;
 
     if (!type) return 'route';

@@ -1,7 +1,9 @@
-import { Component, inject } from "@angular/core";
+import { Component, effect, inject } from "@angular/core";
 import { TourList } from "./tour-list/tour-list";
 import { TourListViewModel } from "./tour-list/tour-list.vm";
 import { BannerComponent } from "../banner/banner";
+import { SearchService } from "../../services/search.service";
+import { TourService } from "../../services/tour.service";
 
 // ViewModel
 @Component({
@@ -12,4 +14,13 @@ import { BannerComponent } from "../banner/banner";
 
 export class ToursPage {
     tourVm = inject(TourListViewModel);
+    private readonly searchService = inject(SearchService);
+    private readonly tourService = inject(TourService);
+
+    constructor() {
+        effect(() => {
+            const currentSearchTerm = this.searchService.searchTerm();
+            this.tourService.getAllTours(currentSearchTerm);
+        });
+    }
 }

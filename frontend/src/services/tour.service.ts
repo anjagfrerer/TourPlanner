@@ -10,9 +10,11 @@ export class TourService {
   private readonly apiUrl = `${environment.apiUrl}/tour`;
   private readonly usersApiUrl = `${environment.apiUrl}/users`;
 
-  // von Anja hinzugefügt: Zentraler Zustand für das gesamte Frontend
-  private readonly _tours = signal<Tour[]>([]);
-  public readonly tours = this._tours.asReadonly();
+  private readonly _allTours = signal<Tour[]>([]);
+  public readonly allTours = this._allTours.asReadonly();
+
+  private readonly _myTours = signal<Tour[]>([]);
+  public readonly myTours = this._myTours.asReadonly();
 
   async getAllTours(search?: string): Promise<void> {
     try {
@@ -26,7 +28,7 @@ export class TourService {
         this.http.get<Tour[]>(this.apiUrl, { params })
       );
 
-      this._tours.set(serverTours);
+      this._allTours.set(serverTours);
     } catch (error) {
       console.error("Failed to load Tours:", error);
     }
@@ -43,7 +45,7 @@ export class TourService {
         this.http.get<Tour[]>(`${this.usersApiUrl}/me/tours`, { params })
       );
 
-      this._tours.set(serverTours);
+      this._myTours.set(serverTours);
     } catch (error) {
       console.error("Failed to load my Tours:", error);
     }
@@ -55,7 +57,7 @@ export class TourService {
 
   // anja:
   loadToursIfEmpty(): void {
-    if (this._tours().length === 0) {
+    if (this._allTours().length === 0) {
       this.getAllTours(); // Startet den async-Prozess
     }
   }
@@ -67,7 +69,7 @@ export class TourService {
         this.http.post<Tour>(this.apiUrl, tourData)
       );
 
-      this._tours.update(current => [...current, newTour]);
+      this._myTours.update(current => [...current, newTour]);
 
       return newTour;
     } catch (error) {
