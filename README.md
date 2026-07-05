@@ -1,15 +1,16 @@
 # TourPlanner
 
 Software Engineering 2 Semester Project (SS26)
+- [Link to development protocol](./frontend/docs/protocol.pdf)
 
 ## Features
 
 - User registration and login
-- Create, edit and delete tours
+- Create, edit and delete tours and logs
 - Display routes of tours
 - Rate tours and comment
 - Search and filter options for tours and logs
-- Current weather information of tour via Open-Meteo
+- Current weather information of tour via Open-Meteo (unique feature)
 - Statistics page for tour overview data
 - JSON export for tour data
 
