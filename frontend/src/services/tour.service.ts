@@ -70,10 +70,45 @@ export class TourService {
       );
 
       this._myTours.update(current => [...current, newTour]);
+      this._allTours.update(current => [...current, newTour]);
 
       return newTour;
     } catch (error) {
       console.error('Failed to create Tour:', error);
+      throw error;
+    }
+  }
+
+  async updateTour(tourId: string, tourData: any): Promise<Tour> {
+    try {
+      const updatedTour = await firstValueFrom(
+        this.http.put<Tour>(`${this.apiUrl}/${tourId}`, tourData)
+      );
+
+      this._myTours.update(current =>
+        current.map(tour => tour.id === updatedTour.id ? updatedTour : tour)
+      );
+      this._allTours.update(current =>
+        current.map(tour => tour.id === updatedTour.id ? updatedTour : tour)
+      );
+
+      return updatedTour;
+    } catch (error) {
+      console.error('Failed to update Tour:', error);
+      throw error;
+    }
+  }
+
+  async deleteTour(tourId: string): Promise<void> {
+    try {
+      await firstValueFrom(
+        this.http.delete<void>(`${this.apiUrl}/${tourId}`)
+      );
+
+      this._myTours.update(current => current.filter(tour => tour.id !== tourId));
+      this._allTours.update(current => current.filter(tour => tour.id !== tourId));
+    } catch (error) {
+      console.error('Failed to delete Tour:', error);
       throw error;
     }
   }

@@ -37,10 +37,10 @@
     </div>
     @if (vm.isEditable()) {
         <div class="flex justify-end pr-4 gap-4">
-            <button (click)="vm.deleteTour(1)" class="hover:scale-110 transition-transform cursor-pointer" title="Löschen">
+            <button type="button" (click)="onDelete($event)" class="hover:scale-110 transition-transform cursor-pointer" title="Delete">
                 <img class="w-6" src="assets/deleteIcon.svg" alt="deleteIcon">
             </button>
-            <button (click)="vm.modifyTour()"  class="hover:scale-110 transition-transform cursor-pointer" title="Bearbeiten">
+            <button type="button" (click)="onEdit($event)"  class="hover:scale-110 transition-transform cursor-pointer" title="Edit">
                 <img class="w-6" src="assets/editIcon.svg" alt="editIcon">
             </button>
         </div>

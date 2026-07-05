@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from "@angular/core";
+import { Component, computed, inject, input, output } from "@angular/core";
 import { TourCard } from "../tour-card/tour-card";
 import { TourListViewModel } from "./tour-list.vm";
 import { Tour } from "../../../app/models/tour.model";
@@ -12,6 +12,8 @@ import { Tour } from "../../../app/models/tour.model";
 export class TourList {
     vm = inject(TourListViewModel);
     tours = input<Tour[] | null>(null);
+    editTour = output<Tour>();
+    deleteTour = output<Tour>();
     
     displayedTours = computed(() => this.tours() ?? this.vm.filteredTours());
 }

@@ -98,11 +98,35 @@ export class MyToursPageViewModel {
     }
 
     openAddPopup() {
+        this.selectedTour.set(null);
         this.isAddPopupOpen.set(true);
     }
 
     closeAddPopup() {
         this.isAddPopupOpen.set(false);
+        this.selectedTour.set(null);
+    }
+
+    openEditPopup(tour: Tour) {
+        this.selectedTour.set(tour);
+        this.isAddPopupOpen.set(true);
+    }
+
+    async deleteTour(tour: Tour): Promise<void> {
+        if (!window.confirm(`Are you sure you want to delete "${tour.name}"?`)) {
+            return;
+        }
+
+        try {
+            this.tourStatus.set("loading");
+            await this.tourService.deleteTour(tour.id);
+            this.tourStatus.set("success");
+        } catch (error: any) {
+            this.tourStatus.set("error");
+            console.error('Delete failed:', error);
+            const message = error?.error?.message || error?.message || 'Unknown Error during Delete.';
+            alert(message);
+        }
     }
 }
 

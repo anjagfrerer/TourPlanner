@@ -4,6 +4,7 @@ import at.technikum.backend.constants.TransportType;
 import at.technikum.backend.dto.Coordinates;
 import at.technikum.backend.dto.response.RouteResponse;
 import at.technikum.backend.entity.Tour;
+import at.technikum.backend.entity.User;
 import at.technikum.backend.exceptions.TourNotFoundException;
 import at.technikum.backend.repository.TourRepository;
 import tools.jackson.databind.ObjectMapper;
@@ -46,11 +47,16 @@ class TourServiceTest {
     private TourService tourService;
 
     private Tour sampleTour;
+    private User sampleUser;
     private UUID tourId;
 
     @BeforeEach
     void setUp() {
         tourId = UUID.randomUUID();
+        sampleUser = new User();
+        sampleUser.setId(UUID.randomUUID());
+        sampleUser.setUsername("maxmustermann");
+
         sampleTour = new Tour();
         sampleTour.setId(tourId);
         sampleTour.setName("Wienerwald Runde");
@@ -59,6 +65,7 @@ class TourServiceTest {
         sampleTour.setTransportType(TransportType.BIKING);
         sampleTour.setDescription("Schöne Runde durch den Wienerwald");
         sampleTour.setDistance(12.5);
+        sampleTour.setCreatedBy(sampleUser);
     }
 
     @Test
@@ -122,8 +129,10 @@ class TourServiceTest {
     @Test
     @DisplayName("deleteTourById delegiert das Löschen korrekt an das Repository")
     void deleteTourById_delegatesToRepository() {
-        tourService.deleteTourById(tourId);
+        when(tourRepository.findById(tourId)).thenReturn(Optional.of(sampleTour));
 
-        verify(tourRepository, times(1)).deleteById(tourId);
+        tourService.deleteTourById(tourId, sampleUser);
+
+        verify(tourRepository, times(1)).delete(sampleTour);
     }
 }

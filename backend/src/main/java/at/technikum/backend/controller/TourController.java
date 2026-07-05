@@ -68,10 +68,23 @@ public class TourController {
         return ResponseEntity.ok(response);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<TourResponse> updateTour(
+            @PathVariable UUID id,
+            @RequestBody TourRequest request,
+            @AuthenticationPrincipal User user) {
+        log.info("User '{}' updates tour with ID '{}'", user.getUsername(), id);
+
+        Tour tour = mapper.toTour(request);
+        TourResponse response = mapper.toTourResponse(tourService.updateTour(id, tour, user));
+
+        return ResponseEntity.ok(response);
+    }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTour(@PathVariable UUID id) {
-        log.info("Deleting tour with ID '{}'", id);
-        tourService.deleteTourById(id);
+    public ResponseEntity<Void> deleteTour(@PathVariable UUID id, @AuthenticationPrincipal User user) {
+        log.info("User '{}' deletes tour with ID '{}'", user.getUsername(), id);
+        tourService.deleteTourById(id, user);
 
         log.info("Deleted tour with ID '{}'", id);
         return ResponseEntity.noContent().build();

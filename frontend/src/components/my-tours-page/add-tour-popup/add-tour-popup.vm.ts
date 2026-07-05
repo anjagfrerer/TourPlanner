@@ -1,6 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { TRANSPORT_TYPES } from '../../../app/constants/transport-type.enum';
 import { TourService } from '../../../services/tour.service';
+import { Tour } from '../../../app/models/tour.model';
 
 type TransportType = (typeof TRANSPORT_TYPES)[keyof typeof TRANSPORT_TYPES];
 
@@ -22,11 +23,27 @@ export class AddTourPopupViewModel {
   readonly saveStatus = signal<'idle' | 'saving' | 'error'>('idle');
   readonly form = signal<AddTourForm>(this.createEmptyForm());
 
-  async saveTour(): Promise<void> {
+  setTourToEdit(tour: Tour): void {
+    this.form.set({
+      name: tour.name,
+      description: tour.description,
+      startLocation: tour.startLocation,
+      destinationLocation: tour.destinationLocation,
+      transportType: tour.transportType as TransportType,
+      rating: tour.rating,
+      childFriendly: tour.childFriendly,
+    });
+  }
+
+  async saveTour(tourId?: string): Promise<void> {
     this.saveStatus.set('saving');
 
     try {
-      await this.service.createTour(this.form());
+      if (tourId) {
+        await this.service.updateTour(tourId, this.form());
+      } else {
+        await this.service.createTour(this.form());
+      }
       this.saveStatus.set('idle');
       this.resetForm();
     } catch (error) {

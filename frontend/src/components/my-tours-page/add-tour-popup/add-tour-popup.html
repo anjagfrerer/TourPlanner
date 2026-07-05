@@ -1,9 +1,8 @@
 <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-  <!-- Modal -->
   <div class="w-full max-w-2xl rounded-2xl bg-secondary p-6 shadow-xl text-white">
     <div class="mb-4 flex items-center justify-between border-b pb-2">
-      <h2 class="text-xl font-semibold">Add new Tour</h2>
-      <button type="button" (click)="onCancel()" class="text-gray-500 hover:text-accent text-2xl px-2">✕</button>
+      <h2 class="text-xl font-semibold">{{ tourToEdit() ? 'Edit Tour' : 'Add new Tour' }}</h2>
+      <button type="button" (click)="onCancel()" class="text-gray-500 hover:text-accent text-2xl px-2">x</button>
     </div>
 
     <form (submit)="onSubmit($event)" class="space-y-4">
@@ -70,7 +69,7 @@
           type="submit"
           class="px-4 py-2 bg-accent text-white rounded-xl font-bold hover:bg-blue-700 transition-colors disabled:opacity-60"
           [disabled]="vm.saveStatus() === 'saving'">
-          {{ vm.saveStatus() === 'saving' ? 'Saving...' : 'Add Tour' }}
+          {{ vm.saveStatus() === 'saving' ? 'Saving...' : (tourToEdit() ? 'Save Changes' : 'Add Tour') }}
         </button>
       </div>
     </form>

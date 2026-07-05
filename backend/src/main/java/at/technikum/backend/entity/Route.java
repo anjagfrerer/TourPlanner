@@ -16,6 +16,6 @@ public class Route {
     private UUID id;
     private Double startLat, startLong;
     private Double endLat, endLong;
-    @Lob
-    private String geometryJson;
+    @Column(columnDefinition = "TEXT")
+    private String geometryJson; //could get long potentially, this is why text was used
 }

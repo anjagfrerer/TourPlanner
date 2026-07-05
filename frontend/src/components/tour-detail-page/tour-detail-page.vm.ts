@@ -16,7 +16,6 @@ export class TourDetailPageViewModel {
     private exportService = inject(ExportService);
     private readonly tourStatus = signal<LoadingState>('idle'); // Maybe globalize and reusable??
     selectedTour = signal<Tour | null>(null);
-    isAddPopupOpen = signal(false);
 
 
     readonly transportTypeConst = TRANSPORT_TYPES;
@@ -57,14 +56,9 @@ export class TourDetailPageViewModel {
 
     // von Anja wieder *un*-auskommentiert
     openAddLogPopup() {
-        this.isAddPopupOpen.set(true);
         const currentTour = this.selectedTour()
         if (!currentTour) return;
         this.tourLogService.startNewLog(currentTour.id)
-    }
-
-    closeAddLogPopup() {
-        this.isAddPopupOpen.set(false);
     }
 
     // von Anja: exportieren

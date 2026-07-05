@@ -53,13 +53,15 @@
     </div>
 
     <div class="flex justify-end items-center pt-4 gap-4">
-      <button (click)="vm.deleteLog()" class="hover:scale-110 transition-transform cursor-pointer" title="Löschen">
-        <img class="w-6" src="assets/deleteIcon.svg" alt="deleteIcon">
-      </button>
-      
-      <button (click)="vm.editLog()" class="hover:scale-110 transition-transform cursor-pointer" title="Bearbeiten">
-        <img class="w-6" src="assets/editIcon.svg" alt="editIcon">
-      </button>
+      @if (vm.canModify()) {
+        <button (click)="vm.deleteLog()" class="hover:scale-110 transition-transform cursor-pointer" title="Delete">
+          <img class="w-6" src="assets/deleteIcon.svg" alt="deleteIcon">
+        </button>
+        
+        <button (click)="vm.editLog()" class="hover:scale-110 transition-transform cursor-pointer" title="Edit">
+          <img class="w-6" src="assets/editIcon.svg" alt="editIcon">
+        </button>
+      }
       
       @if (!hideTourContext()) {
         <button 

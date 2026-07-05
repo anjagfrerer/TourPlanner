@@ -5,14 +5,14 @@ import at.technikum.backend.entity.Route;
 import at.technikum.backend.entity.Tour;
 import at.technikum.backend.entity.User;
 import at.technikum.backend.exceptions.TourNotFoundException;
+import at.technikum.backend.exceptions.UnauthorizedAccessException;
 import at.technikum.backend.repository.TourRepository;
 import lombok.extern.slf4j.Slf4j;
 import tools.jackson.databind.ObjectMapper;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -115,14 +115,81 @@ public class TourService {
         });
     }
 
-    public void deleteTourById(UUID id){
+    public Tour updateTour(UUID id, Tour updatedTour, User user) {
+        Tour existingTour = getTourById(id);
+        validateTourOwner(existingTour, user);
+        validateLocations(updatedTour);
+
+        boolean routeRelevantDataChanged =
+                !Objects.equals(existingTour.getStartLocation(), updatedTour.getStartLocation()) ||
+                !Objects.equals(existingTour.getDestinationLocation(), updatedTour.getDestinationLocation()) ||
+                existingTour.getTransportType() != updatedTour.getTransportType();
+
+        existingTour.setName(updatedTour.getName());
+        existingTour.setDescription(updatedTour.getDescription());
+        existingTour.setStartLocation(updatedTour.getStartLocation());
+        existingTour.setDestinationLocation(updatedTour.getDestinationLocation());
+        existingTour.setTransportType(updatedTour.getTransportType());
+        existingTour.setRating(updatedTour.getRating());
+        existingTour.setChildFriendly(updatedTour.getChildFriendly());
+
+        if (routeRelevantDataChanged) {
+            updateRouteInformation(existingTour);
+        }
+
+        Tour savedTour = tourRepository.save(existingTour);
+        log.info("Updated tour with ID '{}'", savedTour.getId());
+
+        return savedTour;
+    }
+
+    public void deleteTourById(UUID id, User user){
+        Tour tour = getTourById(id);
+        validateTourOwner(tour, user);
 
         log.info("Deleting tour with ID '{}'", id);
-        tourRepository.deleteById(id);
+        tourRepository.delete(tour);
         log.info("Deleted tour with ID '{}'", id);
     }
 
     // HELPER FUNCTIONS
+
+    private void updateRouteInformation(Tour tour) {
+        validateLocations(tour);
+
+        RouteResponse routeResponse = openRouteService.getDirections(
+                tour.getStartLocation(),
+                tour.getDestinationLocation(),
+                tour.getTransportType()
+        );
+
+        Route route = tour.getRouteInformation();
+        if (route == null) {
+            route = new Route();
+            tour.setRouteInformation(route);
+        }
+
+        route.setStartLat(routeResponse.start().lat());
+        route.setStartLong(routeResponse.start().lng());
+        route.setEndLat(routeResponse.end().lat());
+        route.setEndLong(routeResponse.end().lng());
+
+        try {
+            route.setGeometryJson(mapper.writeValueAsString(routeResponse.geometry()));
+        } catch (Exception e) {
+            log.error("Failed to serialize route geometry for tour '{}'", tour.getId(), e);
+            throw new RuntimeException("Save route geometry failed: ", e);
+        }
+
+        tour.setDistance(Math.round((routeResponse.distance() / 1000.0) * 100.0) / 100.0);
+        tour.setEstimatedTime(formatDuration(routeResponse.duration()));
+    }
+
+    private void validateTourOwner(Tour tour, User user) {
+        if (tour.getCreatedBy() == null || !tour.getCreatedBy().getId().equals(user.getId())) {
+            throw new UnauthorizedAccessException();
+        }
+    }
 
     private void validateLocations(Tour tour) {
         if (tour.getStartLocation() == null ||tour.getStartLocation().isEmpty()) {

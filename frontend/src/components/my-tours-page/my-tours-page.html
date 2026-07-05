@@ -22,9 +22,13 @@
       </svg>
     </label>
   </div>
-  <tour-list [tours]="vm.tours()"></tour-list>
+  <tour-list
+    [tours]="vm.tours()"
+    (editTour)="vm.openEditPopup($event)"
+    (deleteTour)="vm.deleteTour($event)">
+  </tour-list>
   
   @if (vm.isAddPopupOpen()) {
-    <add-tour-popup (close)="vm.closeAddPopup()"></add-tour-popup>
+    <add-tour-popup [tourToEdit]="vm.selectedTour()" (close)="vm.closeAddPopup()"></add-tour-popup>
   }
 </section>
