@@ -1,43 +1,48 @@
 package at.technikum.backend.repository;
 
-import at.technikum.backend.dto.TourLogDto;
-import at.technikum.backend.model.TourLog;
+import at.technikum.backend.entity.TourLog;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.UUID;
 
 @Repository
-public class TourLogRepository {
-    private static final List<TourLog> tourLogs = new ArrayList<>();
-    private static final AtomicLong idGenerator = new AtomicLong(1);
+public interface TourLogRepository extends JpaRepository<TourLog, UUID> {
+        List<TourLog> findByTour_Id(UUID tourId);
 
-    public TourLog save(TourLog tourLog) {
-        // Add
-        if (tourLog.getTourLogId() == null) {
-            tourLog.setTourLogId(idGenerator.getAndIncrement());
-            tourLogs.add(tourLog);
-        } else {
-            // Update
-            tourLogs.removeIf(log -> log.getTourLogId().equals(tourLog.getTourLogId()));
-            tourLogs.add(tourLog);
-        }
-        return tourLog;
-    }
+        TourLog findByTourLogId(UUID tourLogId);
 
-    public List<TourLog> findAll() {
-        return new ArrayList<>(tourLogs);
-    }
+        List<TourLog> findAllByAuthor_Username(String username);
 
-    public TourLog getById(Long id) {
-        return tourLogs.stream()
-                .filter(log -> log.getTourLogId().equals(id))
-                .findFirst()
-                .orElse(null);
-    }
+        long countByTour_Id(UUID tourId);
 
-    public void deleteById(Long id) {
-        tourLogs.removeIf(log -> log.getTourLogId().equals(id));
-    }
+        @Query("SELECT l FROM TourLog l WHERE l.author.username = :username AND "
+                        + "(LOWER(l.comment) LIKE LOWER(CONCAT('%', :search, '%')) OR "
+                        + "LOWER(CAST(l.totalDistanceKm AS string)) LIKE LOWER(CONCAT('%', :search, '%')) OR "
+                        + "LOWER(CAST(l.rating AS string)) LIKE LOWER(CONCAT('%', :search, '%')) OR "
+                        + "LOWER(CAST(l.totalTimeMin AS string)) LIKE LOWER(CONCAT('%', :search, '%')) OR "
+                        + "LOWER(CAST(l.difficulty AS string)) LIKE LOWER(CONCAT('%', :search, '%')) OR "
+                        + "LOWER(CAST(l.time AS string)) LIKE LOWER(CONCAT('%', :search, '%')) OR "
+                        + "LOWER(l.tour.name) LIKE LOWER(CONCAT('%', :search, '%')) OR "
+                        + "(l.tour.popular = true AND LOWER('popular') LIKE LOWER(CONCAT('%', :search, '%'))) OR "
+                        + "(l.tour.childFriendly = true AND ("
+                        + "LOWER('child friendly') LIKE LOWER(CONCAT('%', :search, '%')) OR "
+                        + "LOWER('child-friendly') LIKE LOWER(CONCAT('%', :search, '%')))))")
+        List<TourLog> searchByUsernameAndTerm(@Param("username") String username, @Param("search") String search);
+
+        @Query("SELECT l FROM TourLog l WHERE l.tour.id = :tourId AND "
+                        + "(LOWER(l.comment) LIKE LOWER(CONCAT('%', :search, '%')) OR "
+                        + "LOWER(CAST(l.totalDistanceKm AS string)) LIKE LOWER(CONCAT('%', :search, '%')) OR "
+                        + "LOWER(CAST(l.rating AS string)) LIKE LOWER(CONCAT('%', :search, '%')) OR "
+                        + "LOWER(CAST(l.totalTimeMin AS string)) LIKE LOWER(CONCAT('%', :search, '%')) OR "
+                        + "LOWER(CAST(l.difficulty AS string)) LIKE LOWER(CONCAT('%', :search, '%')) OR "
+                        + "LOWER(CAST(l.time AS string)) LIKE LOWER(CONCAT('%', :search, '%')) OR "
+                        + "(l.tour.popular = true AND LOWER('popular') LIKE LOWER(CONCAT('%', :search, '%'))) OR "
+                        + "(l.tour.childFriendly = true AND ("
+                        + "LOWER('child friendly') LIKE LOWER(CONCAT('%', :search, '%')) OR "
+                        + "LOWER('child-friendly') LIKE LOWER(CONCAT('%', :search, '%')))))")
+        List<TourLog> searchByTourIdAndTerm(@Param("tourId") UUID tourId, @Param("search") String search);
 }

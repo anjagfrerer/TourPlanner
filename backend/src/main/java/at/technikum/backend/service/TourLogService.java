@@ -1,77 +1,196 @@
 package at.technikum.backend.service;
 
-import at.technikum.backend.dto.TourLogDto;
-import at.technikum.backend.model.TourLog;
+import at.technikum.backend.controller.GlobalTourLogController;
+import at.technikum.backend.dto.request.RequestTourLogDto;
+import at.technikum.backend.dto.response.ResponseTourLogDto;
+import at.technikum.backend.entity.Tour;
+import at.technikum.backend.entity.TourLog;
+import at.technikum.backend.entity.User;
+import at.technikum.backend.exceptions.*;
+import at.technikum.backend.mapper.TourLogMapper;
 import at.technikum.backend.repository.TourLogRepository;
+import at.technikum.backend.repository.TourRepository;
+import at.technikum.backend.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.apache.juli.logging.LogConfigurationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class TourLogService {
 
-    private final TourLogRepository repository;
+    private final TourLogRepository tourLogRepository;
+    private final TourLogMapper mapper;
+    private final TourRepository tourRepository;
+    private final UserRepository userRepository;
+    private static final Logger logger = LoggerFactory.getLogger(GlobalTourLogController.class);
 
-    public TourLogService(TourLogRepository repository) {
-        this.repository = repository;
+    @Transactional
+    public ResponseTourLogDto save(UUID tourId, RequestTourLogDto requestTourLogDto, String username) {
+        logger.info("BL: Creating new tour log for tour ID '{}' by user '{}'", tourId, username);
+        Tour tour = tourRepository.findById(tourId).orElseThrow(() -> {
+            logger.warn("BL: Creation failed. Tour with ID '{}' not found", tourId);
+            return new TourNotFoundException(tourId);
+        });
+        User currentUser = userRepository.findByUsername(username).orElseThrow(() -> {
+            logger.warn("BL: Creation failed. User '{}' not found", username);
+            return new UserNotFoundException(username);
+        });
+        validateTourAccessible(tour, currentUser);
+        TourLog entity = mapper.toEntity(requestTourLogDto);
+        entity.setTour(tour);
+        entity.setAuthor(currentUser);
+        TourLog savedEntity = tourLogRepository.save(entity);
+        updatePopularFlag(tour); //To count logs for popular tags
+        logger.info("BL: Successfully created tour log with ID '{}'", savedEntity.getTourLogId());
+        return mapper.toResponseDto(savedEntity);
     }
 
-    public TourLogDto save(TourLogDto dto) {
-        TourLog entity = mapToEntity(dto);
-        TourLog savedEntity = repository.save(entity);
-        return mapToDto(savedEntity);
+    // von anja: alte methode
+    @Transactional(readOnly = true)
+    public List<ResponseTourLogDto> findAll(UUID tourId) {
+        logger.info("BL: Fetching all tour logs for tour ID '{}'", tourId);
+        tourRepository.findById(tourId).orElseThrow(() -> new TourNotFoundException(tourId));
+
+        List<TourLog> logs = tourLogRepository.findByTour_Id(tourId);
+        return logs.stream().map(mapper::toResponseDto).toList();
     }
 
-    public List<TourLogDto> findAll() {
-        List<TourLogDto> allTourLogDtos = new ArrayList<>();
-        for(TourLog tourLog : repository.findAll()) {
-            allTourLogDtos.add(this.mapToDto(tourLog));
+    @Transactional(readOnly = true)
+    public List<ResponseTourLogDto> findAllForUser(UUID tourId, String username) {
+        logger.info("BL: Fetching all tour logs for tour ID '{}' as user '{}'", tourId, username);
+        Tour tour = tourRepository.findById(tourId).orElseThrow(() -> new TourNotFoundException(tourId));
+        User currentUser = findUser(username);
+        validateTourAccessible(tour, currentUser);
+
+        List<TourLog> logs = tourLogRepository.findByTour_Id(tourId);
+        return logs.stream().map(mapper::toResponseDto).toList();
+    }
+
+    // von anja: neue methode für fulltextsearch
+    @Transactional(readOnly = true)
+    public List<ResponseTourLogDto> findAll(UUID tourId, String search) {
+        if (search == null || search.isEmpty()) {
+            return findAll(tourId);
         }
-        return allTourLogDtos;
+        logger.info("BL: Fetching filtered tour logs for tour ID '{}' with search term '{}'", tourId, search);
+        tourRepository.findById(tourId).orElseThrow(() -> new TourNotFoundException(tourId));
+
+        List<TourLog> logs = tourLogRepository.searchByTourIdAndTerm(tourId, search.trim());
+        return logs.stream().map(mapper::toResponseDto).toList();
     }
 
-    public TourLogDto update(Long id, TourLogDto dto) {
-        dto.setTourLogId(id);
-        return save(dto);
+    // von anja: alte methode
+    @Transactional(readOnly = true)
+    public List<ResponseTourLogDto> findAllByUsername(String username) {
+        logger.info("BL: Fetching all tour logs created by user '{}'", username);
+
+        List<TourLog> logs = tourLogRepository.findAllByAuthor_Username(username);
+        return logs.stream().map(mapper::toResponseDto).toList();
     }
 
-    public TourLogDto getById(Long id) {
-        return mapToDto(repository.getById(id));
+    // von anja: neue methode für fulltextsearch
+    @Transactional(readOnly = true)
+    public List<ResponseTourLogDto> findAllByUsername(String username, String search) {
+        if (search == null || search.isEmpty()) {
+            return findAllByUsername(username);
+        }
+        logger.info("BL: Fetching filtered tour logs for user '{}' with search term '{}'", username, search);
+
+        List<TourLog> logs = tourLogRepository.searchByUsernameAndTerm(username, search.trim());
+        return logs.stream().map(mapper::toResponseDto).toList();
     }
 
-    public void delete(Long id) {
-        repository.deleteById(id);
+    @Transactional(readOnly = true)
+    public ResponseTourLogDto getById(UUID tourId, UUID tourLogId) {
+        logger.info("BL: Fetching tour log ID '{}' for tour ID '{}'", tourLogId, tourId);
+        TourLog tourLog = findAndValidateLog(tourId, tourLogId);
+        return mapper.toResponseDto(tourLog);
     }
 
-    private TourLog mapToEntity(TourLogDto dto) {
-        TourLog tourLog = new TourLog();
-        tourLog.setTourLogId(dto.getTourLogId());
-        tourLog.setTourId(dto.getTourId());
-        tourLog.setAuthor(dto.getAuthor());
-        tourLog.setDate(dto.getDate());
-        tourLog.setTime(dto.getTime());
-        tourLog.setRating(dto.getRating());
-        tourLog.setDifficulty(dto.getDifficulty());
-        tourLog.setTotalDistanceKm(dto.getTotalDistanceKm());
-        tourLog.setTotalTimeMin(dto.getTotalTimeMin());
-        tourLog.setComment(dto.getComment());
-        return tourLog;
+    @Transactional(readOnly = true)
+    public ResponseTourLogDto getById(UUID tourId, UUID tourLogId, String username) {
+        logger.info("BL: Fetching tour log ID '{}' for tour ID '{}' as user '{}'", tourLogId, tourId, username);
+        TourLog tourLog = findAndValidateLog(tourId, tourLogId);
+        validateTourAccessible(tourLog.getTour(), findUser(username));
+        return mapper.toResponseDto(tourLog);
     }
 
-    private TourLogDto mapToDto(TourLog tourLog) {
-        TourLogDto dto = new TourLogDto();
-        dto.setTourLogId(tourLog.getTourLogId());
-        dto.setTourId(tourLog.getTourId());
-        dto.setAuthor(tourLog.getAuthor());
-        dto.setDate(tourLog.getDate());
-        dto.setTime(tourLog.getTime());
-        dto.setRating(tourLog.getRating());
-        dto.setDifficulty(tourLog.getDifficulty());
-        dto.setTotalDistanceKm(tourLog.getTotalDistanceKm());
-        dto.setTotalTimeMin(tourLog.getTotalTimeMin());
-        dto.setComment(tourLog.getComment());
-        return dto;
+    @Transactional
+    public ResponseTourLogDto update(UUID tourId, UUID tourLogId, RequestTourLogDto requestTourLogDto, String username) {
+        logger.info("BL: Updating tour log ID '{}' for tour ID '{}' by user '{}'", tourLogId, tourId, username);
+        TourLog existingTourLog = findAndValidateLog(tourId, tourLogId);
+        //darf der Nutze überhaupt bearbeiten?
+        if(!existingTourLog.getAuthor().getUsername().equals(username)) {
+            logger.warn("BL: Unauthorized update attempt! User '{}' tried to edit a log owned by '{}'", username, existingTourLog.getAuthor().getUsername());
+            throw new UnauthorizedAccessException();
+        }
+        //existingTourLog.setAuthor(requestTourLogDto.getAuthor());
+        existingTourLog.setDate(requestTourLogDto.getDate());
+        existingTourLog.setTime(requestTourLogDto.getTime());
+        existingTourLog.setRating(requestTourLogDto.getRating());
+        existingTourLog.setDifficulty(requestTourLogDto.getDifficulty());
+        existingTourLog.setTotalDistanceKm(requestTourLogDto.getTotalDistanceKm());
+        existingTourLog.setTotalTimeMin(requestTourLogDto.getTotalTimeMin());
+        existingTourLog.setComment(requestTourLogDto.getComment());
+
+        logger.info("BL: Successfully updated tour log ID '{}'", tourLogId);
+
+        return mapper.toResponseDto(tourLogRepository.save(existingTourLog));
+    }
+
+    public TourLog findAndValidateLog(UUID tourId, UUID tourLogId) {
+        // Schauen, ob ein log mit dieser tourLogId existiert
+        TourLog log = tourLogRepository.findById(tourLogId).orElseThrow(() -> {
+            logger.warn("BL: Validation failed. Tour log with ID '{}' does not exist", tourLogId);
+            return new LogNotFoundException(tourLogId);
+        });        
+        // Schauen, ob diese tour zu diesem log gehört
+        if(!log.getTour().getId().equals(tourId)) {            
+            logger.warn("BL: Mismatch! Tour log ID '{}' does not belong to tour ID '{}'", tourLogId, tourId);
+            throw new LogTourMismatchException(tourId, tourLogId);
+        }
+        return log;
+    }
+
+    @Transactional
+    public ResponseTourLogDto delete(UUID tourId, UUID tourLogId, String username) {
+        logger.info("BL: Request to delete tour log ID '{}' by user '{}'", tourLogId, username);
+        TourLog tourLog = findAndValidateLog(tourId, tourLogId);
+        if(!tourLog.getAuthor().getUsername().equals(username)) {
+            logger.warn("BL: Unauthorized deletion attempt! User '{}' tried to delete a log owned by '{}'", username, tourLog.getAuthor().getUsername());
+            throw new UnauthorizedAccessException();
+        }
+        tourLogRepository.delete(tourLog);
+        logger.info("BL: Successfully deleted tour log ID '{}'", tourLogId);
+        return mapper.toResponseDto(tourLog);
+    }
+
+    // Helper
+    private void updatePopularFlag(Tour tour) {
+        long logCount = tourLogRepository.countByTour_Id(tour.getId());
+        tour.setPopular(logCount > 5);
+        tourRepository.save(tour);
+    }
+
+    private User findUser(String username) {
+        return userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
+    }
+
+    private void validateTourAccessible(Tour tour, User user) {
+        if (!Boolean.FALSE.equals(tour.getPublicTour())) {
+            return;
+        }
+
+        if (tour.getCreatedBy() == null || !tour.getCreatedBy().getId().equals(user.getId())) {
+            throw new UnauthorizedAccessException();
+        }
     }
 }

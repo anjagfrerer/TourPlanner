@@ -1,4 +1,12 @@
+<section class="banner">
+  <img src="assets/banner.png" alt="" class="banner-image" />
+</section>
 
-    <section class="w-full overflow-hidden">
-        <img src="assets/banner.png" class="w-full h-80 object-cover"/>
-    </section>
+@if (router.url !== '/stats') {
+  <div class="relative z-10 -mt-12">
+    <search-input
+      (searchChanged)="handleSearch($event)"
+      (filterChanged)="handleFilter($event)">
+    </search-input>
+  </div>
+}

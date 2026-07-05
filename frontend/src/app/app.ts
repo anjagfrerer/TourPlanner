@@ -1,5 +1,5 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet, RouterModule } from '@angular/router';
+import { Component, signal, inject } from '@angular/core';
+import { RouterOutlet, RouterModule, Router } from '@angular/router';
 import { SidebarComponent } from "../components/sidebar/sidebar";
 import { HeaderComponent } from "../components/header/header";
 import { BannerComponent } from '../components/banner/banner';
@@ -14,5 +14,6 @@ import { BannerComponent } from '../components/banner/banner';
   styleUrl: './app.css'
 })
 export class App {
+   router = inject(Router);
   protected readonly title = signal('TourPlanner');
 }

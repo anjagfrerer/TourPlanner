@@ -1,4 +1,25 @@
 <!-- View -->
 <section class="stats-page">
-    <h1 class="text-4xl font-bold text-gray-900 mb-6">Stats</h1>
+    <h1 class="text-4xl font-bold text-gray-900 mb-6 mt-[2vw]">Stats</h1>
+    <div class="flex flex-wrap justify-center gap-6">
+
+    <stats-card 
+      [value]="vm.completedToursCount() + ' Tours'"
+      description="Number of completed Tours"
+      imgPath="assets/stats_1.jpg">
+    </stats-card>
+    
+    <stats-card 
+      [value]="vm.totalDistanceKm() + ' km'"
+      description="Total distance"
+      imgPath="assets/stats_2.jpg">
+    </stats-card>
+
+    <stats-card 
+      [value]="vm.totalHours() + ' h'"
+      description="Total hours"
+      imgPath="assets/stats_3.jpg">
+    </stats-card>
+
+  </div>
 </section>
