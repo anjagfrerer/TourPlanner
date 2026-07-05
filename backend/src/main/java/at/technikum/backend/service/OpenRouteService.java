@@ -7,12 +7,14 @@ import at.technikum.backend.service.client.OpenRouteServiceClient;
 import at.technikum.backend.service.client.dto.OpenRouteDirectionsResponse;
 import at.technikum.backend.service.client.dto.OpenRouteGeocodeResponse;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Slf4j
 public class OpenRouteService {
     private final String openRouteServiceApiKey;
     private final OpenRouteServiceClient openRouteServiceClient;
@@ -23,14 +25,24 @@ public class OpenRouteService {
     }
 
     public Coordinates getCoordinatesFrom(String text) {
+        log.debug("Requesting coordinates from OpenRouteService for '{}'", text);
+
         OpenRouteGeocodeResponse result = openRouteServiceClient.geocodeSearch(openRouteServiceApiKey, text, 1);
         List<OpenRouteGeocodeResponse.Feature> features = featuresOf(result);
 
         if (features.isEmpty()) {
+            log.warn("No coordinates found for '{}'", text);
             throw new EntityNotFoundException("No coordinates found for: " + text);
         }
 
-        return toCoordinates(features.getFirst().geometry().coordinates());
+        Coordinates coordinates = toCoordinates(features.getFirst().geometry().coordinates());
+
+        log.debug("Resolved '{}' to coordinates lat={}, lng={}",
+                text,
+                coordinates.lat(),
+                coordinates.lng());
+
+        return coordinates;
     }
 
     public RouteResponse getDirections(String startText, String endText) {
@@ -38,13 +50,20 @@ public class OpenRouteService {
     }
 
     public RouteResponse getDirections(String startText, String endText, TransportType transportType) {
+        log.info("Requesting route from '{}' to '{}' using transport type '{}'",
+                startText,
+                endText,
+                transportType);
+
         Coordinates start = getCoordinatesFrom(startText);
         Coordinates end = getCoordinatesFrom(endText);
         String orsStart = toOpenRouteCoordinate(start);
         String orsEnd = toOpenRouteCoordinate(end);
+        String profile = toOpenRouteProfile(transportType);
+
 
         OpenRouteDirectionsResponse result = openRouteServiceClient.routeSearch(
-                toOpenRouteProfile(transportType),
+                profile,
                 openRouteServiceApiKey,
                 orsStart,
                 orsEnd
@@ -52,13 +71,28 @@ public class OpenRouteService {
 
         OpenRouteDirectionsResponse.Feature route = featuresOf(result).stream()
                 .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("No route found from " + startText + " to " + endText));
+                .orElseThrow(() -> {
+                    log.warn("No route found from '{}' to '{}' using profile '{}'",
+                            startText,
+                            endText,
+                            profile);
+                    return new EntityNotFoundException("No route found from " + startText + " to " + endText);
+                });
+
+        Double distance = route.properties().summary().distance();
+        Double duration = route.properties().summary().duration();
+
+        log.info("Route found from '{}' to '{}': distance={}m, duration={}s",
+                startText,
+                endText,
+                distance,
+                duration);
 
         return new RouteResponse(
                 start,
                 end,
-                route.properties().summary().distance(),
-                route.properties().summary().duration(),
+                distance,
+                duration,
                 route.geometry().coordinates().stream()
                         .map(this::toCoordinates)
                         .toList()
@@ -67,6 +101,7 @@ public class OpenRouteService {
 
     private Coordinates toCoordinates(List<Double> openRouteCoordinate) {
         if (openRouteCoordinate == null || openRouteCoordinate.size() < 2) {
+            log.warn("Invalid coordinate response from OpenRouteService: {}", openRouteCoordinate);
             throw new IllegalArgumentException("Invalid coordinates");
         }
 
@@ -85,7 +120,10 @@ public class OpenRouteService {
             case BIKING -> "cycling-regular";
             case HIKING -> "foot-hiking";
             case RUNNING -> "foot-walking";
-            default -> throw new IllegalArgumentException("Invalid transportType for OpenRouteService");
+            default ->  {
+                log.warn("Unsupported transport type for OpenRouteService: '{}'", transportType);
+                throw new IllegalArgumentException("Invalid transportType for OpenRouteService");
+            }
         };
     }
 

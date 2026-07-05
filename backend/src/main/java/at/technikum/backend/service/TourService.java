@@ -5,6 +5,7 @@ import at.technikum.backend.entity.Route;
 import at.technikum.backend.entity.Tour;
 import at.technikum.backend.exceptions.TourNotFoundException;
 import at.technikum.backend.repository.TourRepository;
+import lombok.extern.slf4j.Slf4j;
 import tools.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class TourService {
     private final TourRepository tourRepository;
     private final OpenRouteService openRouteService;
@@ -26,6 +28,11 @@ public class TourService {
     }
 
     public Tour addTour(Tour tour){
+        log.info("Creating tour from '{}' to '{}' with transport type '{}'",
+                tour.getStartLocation(),
+                tour.getDestinationLocation(),
+                tour.getTransportType());
+
         validateLocations(tour);
 
         RouteResponse routeResponse = openRouteService.getDirections(
@@ -33,6 +40,10 @@ public class TourService {
                 tour.getDestinationLocation(),
                 tour.getTransportType()
         );
+
+        log.debug("Route calculated: distance={}m, duration={}s",
+                routeResponse.distance(),
+                routeResponse.duration());
 
         Route route = new Route();
         route.setStartLat(routeResponse.start().lat());
@@ -43,6 +54,11 @@ public class TourService {
         try {
             route.setGeometryJson(mapper.writeValueAsString(routeResponse.geometry()));
         } catch (Exception e) {
+            log.error("Failed to serialize route geometry for tour from '{}' to '{}'",
+                    tour.getStartLocation(),
+                    tour.getDestinationLocation(),
+                    e);
+
             throw new RuntimeException("Save route geometry failed: ", e);
         }
 
@@ -50,27 +66,41 @@ public class TourService {
         tour.setDistance(Math.round((routeResponse.distance() / 1000.0) * 100.0) / 100.0);
         tour.setEstimatedTime(formatDuration(routeResponse.duration()));
 
-        return tourRepository.save(tour);
+        Tour savedTour = tourRepository.save(tour);
+        log.info("Created tour with ID '{}'", savedTour.getId());
+
+        return savedTour;
     }
 
-    public List<Tour> getAllTours(){
-        return tourRepository.findAll();
-    }
-
-    // anja
     public List<Tour> getAllTours(String search) {
         if (search == null || search.trim().isEmpty()) {
+            log.debug("Fetching all tours without search filter");
             return tourRepository.findAll();
         }
-        return tourRepository.searchTours(search.trim());
+
+        String trimmedSearch = search.trim();
+        log.debug("Searching tours with term '{}'", trimmedSearch);
+
+        List<Tour> tours = tourRepository.searchTours(trimmedSearch);
+
+        log.debug("Found {} tours for search term '{}'", tours.size(), trimmedSearch);
+        return tours;
     }
 
     public Tour getTourById(UUID id){
-        return tourRepository.findById(id).orElseThrow(()->new TourNotFoundException(id));
+        log.debug("Fetching specific tour with ID '{}'", id);
+
+        return tourRepository.findById(id).orElseThrow(() -> {
+            log.warn("Tour with ID '{}' was not found", id);
+            return new TourNotFoundException(id);
+        });
     }
 
     public void deleteTourById(UUID id){
+
+        log.info("Deleting tour with ID '{}'", id);
         tourRepository.deleteById(id);
+        log.info("Deleted tour with ID '{}'", id);
     }
 
     // HELPER FUNCTIONS
