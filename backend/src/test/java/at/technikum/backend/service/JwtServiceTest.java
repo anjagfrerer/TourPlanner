@@ -1,8 +1,11 @@
 package at.technikum.backend.service;
 
 import at.technikum.backend.entity.User;
+import lombok.Value;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.UUID;
 
@@ -17,6 +20,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 class JwtServiceTest {
 
     private final JwtService jwtService = new JwtService();
+    private static final String TEST_SECRET =
+            "5367566859703373367639792F423F452848284D6251655468576D5A71347437";
+    @BeforeEach
+    void setUp() {
+        ReflectionTestUtils.setField(
+                jwtService,
+                "secret",
+                TEST_SECRET
+        );
+    }
 
     @Test
     @DisplayName("generateToken erzeugt ein nicht-leeres Token")

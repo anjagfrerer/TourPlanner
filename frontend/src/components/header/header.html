@@ -8,8 +8,6 @@
     </span>
 
     <div class="dropdown-menu shadow-lg" [class.show]="isDropdownOpen()">
-        <a class="dropdown-item" routerLink="/tourLogs" (click)="closeDropdown()" routerLinkActive="active">Account</a>
-        <hr class="dropdown-divider">
         @if (isLoggedIn()) {
             <button (click)="logout()" class="dropdown-item w-full text-left cursor-pointer">
                 Log out
