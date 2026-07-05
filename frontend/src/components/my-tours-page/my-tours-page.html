@@ -22,7 +22,7 @@
       </svg>
     </label>
   </div>
-  <tour-list></tour-list>
+  <tour-list [tours]="vm.tours()"></tour-list>
   
   @if (vm.isAddPopupOpen()) {
     <add-tour-popup (close)="vm.closeAddPopup()"></add-tour-popup>

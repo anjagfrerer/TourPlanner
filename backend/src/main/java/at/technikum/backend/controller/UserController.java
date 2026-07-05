@@ -1,8 +1,11 @@
 package at.technikum.backend.controller;
 
 import at.technikum.backend.dto.AuthDto;
+import at.technikum.backend.dto.response.TourResponse;
 import at.technikum.backend.entity.User;
+import at.technikum.backend.mapper.TourMapper;
 import at.technikum.backend.service.JwtService;
+import at.technikum.backend.service.TourService;
 import at.technikum.backend.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,9 +13,11 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -24,6 +29,8 @@ public class UserController {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final TourService tourService;
+    private final TourMapper tourMapper;
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @PostMapping("/register")
@@ -52,5 +59,20 @@ public class UserController {
 
         logger.warn("Failed login attempt for username: '{}' - Invalid password or username", dto.getUsername());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password!");
+    }
+
+    @GetMapping("/me/tours")
+    public ResponseEntity<List<TourResponse>> getMyTours(
+            @AuthenticationPrincipal User user,
+            @RequestParam(value = "search", required = false) String search
+    ) {
+        logger.info("Fetching tours created by user '{}' with search term '{}'", user.getUsername(), search);
+
+        List<TourResponse> tours = tourService.getToursCreatedBy(user, search).stream()
+                .map(tourMapper::toTourResponse)
+                .toList();
+
+        logger.debug("Found {} tours created by user '{}'", tours.size(), user.getUsername());
+        return ResponseEntity.ok(tours);
     }
 }

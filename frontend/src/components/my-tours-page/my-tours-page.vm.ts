@@ -19,7 +19,7 @@ export class MyToursPageViewModel {
     constructor() {
         effect(() => {
             const currentSearchTerm = this.searchService.searchTerm();
-            this.tourService.getAllTours(currentSearchTerm);
+            this.tourService.getMyTours(currentSearchTerm);
         });
     }
 
@@ -28,9 +28,6 @@ export class MyToursPageViewModel {
         const filters = this.searchService.activeFilters();
 
         return allTours.filter(tour => {
-            //const matchesAuthor = tour.author === "Anja";
-            //if (!matchesAuthor) return false;
-
             if (filters.transport && tour.transportType !== filters.transport) {
                 return false;
             }
@@ -56,6 +53,10 @@ export class MyToursPageViewModel {
     });
     
     // anja: für import einer tour
+    async loadMyTours(): Promise<void> {
+        await this.tourService.getMyTours(this.searchService.searchTerm());
+    }
+
     public async onFileSelected(event: Event): Promise<void> {
 
         // "das ist ein Input Element, wo man files auswählen kann!"
@@ -86,7 +87,7 @@ export class MyToursPageViewModel {
             this.tourStatus.set("success");
 
             // liste neu laden, damit importierte Tour gleich sichtbar wird
-            await this.tourService.getAllTours(this.searchService.searchTerm());
+            await this.tourService.getMyTours(this.searchService.searchTerm());
 
         } catch (error: any) {
             this.tourStatus.set("error");

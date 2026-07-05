@@ -1,4 +1,4 @@
-import { Injectable, inject, signal, Signal, computed, effect } from "@angular/core";
+import { Injectable, inject, signal, computed } from "@angular/core";
 import { TourService } from "../../../services/tour.service";
 import { Tour } from "../../../app/models/tour.model";
 import { LoadingState } from "../../../app/models/loading-state.model";
@@ -17,13 +17,6 @@ export class TourListViewModel {
     //tours = signal<Tour[]>([]);
     // von Anja geändert: damit es eine single source of truth gibt und die daten aus dem service geladen werden
     public readonly tours = this.tourService.tours;
-
-    constructor() {
-        effect(() => {
-            const currentSearchTerm = this.searchService.searchTerm();
-            this.tourService.getAllTours(currentSearchTerm);
-        });
-    }
 
     public getAllTourLogsByUser() {
         this.tourService.getAllTours(this.searchService.searchTerm());

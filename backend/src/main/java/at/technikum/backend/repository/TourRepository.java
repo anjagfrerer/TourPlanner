@@ -1,5 +1,6 @@
 package at.technikum.backend.repository;
 import at.technikum.backend.entity.Tour;
+import at.technikum.backend.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -9,6 +10,7 @@ import java.util.*;
 
 @Repository
 public interface TourRepository extends JpaRepository<Tour,UUID> {
+    List<Tour> findByCreatedBy(User createdBy);
 
     @Query("SELECT DISTINCT t FROM Tour t " +
             "LEFT JOIN TourLog l ON l.tour = t " +
@@ -26,4 +28,22 @@ public interface TourRepository extends JpaRepository<Tour,UUID> {
             "    LOWER('child friendly') LIKE LOWER(CONCAT('%', :search, '%')) OR\n" +
             "    LOWER('child-friendly') LIKE LOWER(CONCAT('%', :search, '%'))))")
     List<Tour> searchTours(@Param("search") String search);
+
+    @Query("SELECT DISTINCT t FROM Tour t " +
+            "LEFT JOIN TourLog l ON l.tour = t " +
+            "WHERE t.createdBy = :createdBy AND (" +
+            "LOWER(t.name) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "LOWER(t.description) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "LOWER(t.startLocation) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "LOWER(t.destinationLocation) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "LOWER(CAST(t.transportType AS string)) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "LOWER(l.comment) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "LOWER(CAST(t.distance AS string)) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "LOWER(CAST(t.rating AS string)) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "LOWER(CAST(t.estimatedTime AS string)) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "(t.popular = true AND LOWER('popular') LIKE LOWER(CONCAT('%', :search, '%'))) OR " +
+            "(t.childFriendly = true AND (" +
+            "LOWER('child friendly') LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "LOWER('child-friendly') LIKE LOWER(CONCAT('%', :search, '%')))))")
+    List<Tour> searchToursByCreatedBy(@Param("createdBy") User createdBy, @Param("search") String search);
 }

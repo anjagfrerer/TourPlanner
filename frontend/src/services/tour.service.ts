@@ -8,6 +8,7 @@ import { environment } from '../environments/environment';
 export class TourService {
   private http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/tour`;
+  private readonly usersApiUrl = `${environment.apiUrl}/users`;
 
   // von Anja hinzugefügt: Zentraler Zustand für das gesamte Frontend
   private readonly _tours = signal<Tour[]>([]);
@@ -28,6 +29,23 @@ export class TourService {
       this._tours.set(serverTours);
     } catch (error) {
       console.error("Failed to load Tours:", error);
+    }
+  }
+
+  async getMyTours(search?: string): Promise<void> {
+    try {
+      let params = new HttpParams();
+      if (search && search.trim() !== '') {
+        params = params.set('search', search.trim());
+      }
+
+      const serverTours = await firstValueFrom(
+        this.http.get<Tour[]>(`${this.usersApiUrl}/me/tours`, { params })
+      );
+
+      this._tours.set(serverTours);
+    } catch (error) {
+      console.error("Failed to load my Tours:", error);
     }
   }
 
