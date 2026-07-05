@@ -11,7 +11,6 @@ export class TourCardViewModel {
 
     isEditable() {
         const link = this.activatedRoute.snapshot.url[0]?.path;
-        console.log("link", link);
         return link === "myTours";
     }
 

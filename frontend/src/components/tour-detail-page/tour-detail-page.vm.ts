@@ -40,7 +40,6 @@ export class TourDetailPageViewModel {
                 console.error(err);
             }
         });
-        console.log("selected tour", this.selectedTour);
     }
 
 
