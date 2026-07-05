@@ -25,6 +25,9 @@ public class Tour {
     @JoinColumn(name = "tour_route_information")
     Route routeInformation;
     Integer rating;
+    Boolean childFriendly;
+    Boolean popular;
+
     @ManyToOne
     @JoinColumn(name = "created_by_id")
     User createdBy;

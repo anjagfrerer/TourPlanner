@@ -20,6 +20,10 @@ public interface TourRepository extends JpaRepository<Tour,UUID> {
             "LOWER(l.comment) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
             "LOWER(CAST(t.distance AS string)) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
             "LOWER(CAST(t.rating AS string)) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-            "LOWER(CAST(t.estimatedTime AS string)) LIKE LOWER(CONCAT('%', :search, '%'))")
+            "LOWER(CAST(t.estimatedTime AS string)) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "(t.popular = true AND LOWER('popular') LIKE LOWER(CONCAT('%', :search, '%'))) OR\n" +
+            "(t.childFriendly = true AND (\n" +
+            "    LOWER('child friendly') LIKE LOWER(CONCAT('%', :search, '%')) OR\n" +
+            "    LOWER('child-friendly') LIKE LOWER(CONCAT('%', :search, '%'))))")
     List<Tour> searchTours(@Param("search") String search);
 }

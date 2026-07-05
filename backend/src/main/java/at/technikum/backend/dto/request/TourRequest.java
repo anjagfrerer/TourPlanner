@@ -8,5 +8,6 @@ public record TourRequest(
         String startLocation,
         String destinationLocation,
         TransportType transportType,
-        Integer rating
+        Integer rating,
+        Boolean childFriendly
 ) {}

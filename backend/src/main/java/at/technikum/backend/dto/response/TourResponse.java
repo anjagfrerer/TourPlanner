@@ -14,5 +14,7 @@ public record TourResponse(
         Double distance,
         String estimatedTime,
         Integer rating,
-        RouteResponse route
+        RouteResponse route,
+        Boolean childFriendly,
+        Boolean popular
 ) {}

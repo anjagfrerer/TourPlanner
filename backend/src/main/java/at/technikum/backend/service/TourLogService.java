@@ -47,6 +47,7 @@ public class TourLogService {
         entity.setTour(tour);
         entity.setAuthor(currentUser);
         TourLog savedEntity = tourLogRepository.save(entity);
+        updatePopularFlag(tour); //To count logs for popular tags
         logger.info("BL: Successfully created tour log with ID '{}'", savedEntity.getTourLogId());
         return mapper.toResponseDto(savedEntity);
     }
@@ -150,5 +151,12 @@ public class TourLogService {
         tourLogRepository.delete(tourLog);
         logger.info("BL: Successfully deleted tour log ID '{}'", tourLogId);
         return mapper.toResponseDto(tourLog);
+    }
+
+    // Helper
+    private void updatePopularFlag(Tour tour) {
+        long logCount = tourLogRepository.countByTour_Id(tour.getId());
+        tour.setPopular(logCount > 5);
+        tourRepository.save(tour);
     }
 }

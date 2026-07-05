@@ -15,6 +15,7 @@ public interface TourLogRepository extends JpaRepository<TourLog, UUID> {
     List<TourLog> findByTour_Id(UUID tourId);
     TourLog findByTourLogId(UUID tourLogId);
     List<TourLog> findAllByAuthor_Username(String username);
+    long countByTour_Id(UUID tourId);
 
     @Query("SELECT l FROM TourLog l WHERE l.author.username = :username AND " +
             "(LOWER(l.comment) LIKE LOWER(CONCAT('%', :search, '%')) OR " +

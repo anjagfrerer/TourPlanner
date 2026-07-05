@@ -94,14 +94,12 @@ public class TourService {
             return null;
         }
 
-        long totalMinutes = Math.round(durationInSeconds / 60);
-        long hours = totalMinutes / 60;
-        long minutes = totalMinutes % 60;
+        long totalSeconds = Math.round(durationInSeconds);
 
-        if (hours == 0) {
-            return minutes + " min";
-        }
+        long hours = totalSeconds / 3600;
+        long minutes = (totalSeconds % 3600) / 60;
+        long seconds = totalSeconds % 60;
 
-        return hours + " h " + minutes + " min";
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 }

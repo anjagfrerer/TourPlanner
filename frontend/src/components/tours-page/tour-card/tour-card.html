@@ -20,14 +20,18 @@
             <div class="flex gap-4 items-center">
                 <h2 class="text-xl font-semibold">{{tour().name}}</h2>
                 <star-rating [stars]=tour().rating></star-rating>
+                <div class="flex gap-2 mt-1">
+                    @if (tour().popular) {
+                        <span class="rounded bg-warning px-4 py-1 text-xs text-black">Popular</span>
+                    }
+
+                    @if (tour().childFriendly) {
+                        <span class="rounded bg-secondary px-4 py-1 text-xs text-white">Child-friendly</span>
+                    }
+                </div>
             </div>
-            <div>
+            <div class="flex items-center gap-2">
                 <span class="text-xs"> {{tour().estimatedTime}} |  {{tour().distance}}km</span>
-                <!--<ul> tag liste
-                    <li>
-                        <tag></tag>
-                    </li>
-                </ul>-->
             </div>
         </div>
     </div>

@@ -11,5 +11,7 @@ export interface Tour {
     estimatedTime: string,
     route: RouteInformation | null,
     rating: number,
+    childFriendly: boolean,
+    popular: boolean,
     author: string
 }

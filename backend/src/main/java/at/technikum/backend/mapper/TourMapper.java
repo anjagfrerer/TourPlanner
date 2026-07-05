@@ -29,6 +29,9 @@ public class TourMapper {
         tour.setDestinationLocation(request.destinationLocation());
         tour.setTransportType(request.transportType());
         tour.setRating(request.rating());
+        tour.setChildFriendly(Boolean.TRUE.equals(request.childFriendly()));
+        tour.setPopular(false);
+
         return tour;
     }
 
@@ -43,7 +46,9 @@ public class TourMapper {
                 tour.getDistance(),
                 tour.getEstimatedTime(),
                 tour.getRating(),
-                toRouteResponse(tour)
+                toRouteResponse(tour),
+                tour.getChildFriendly(),
+                tour.getPopular()
         );
     }
 
