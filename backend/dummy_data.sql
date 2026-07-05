@@ -44,6 +44,7 @@ CREATE TABLE IF NOT EXISTS tour_log (
                                         author_id UUID REFERENCES users(id)
 );
 
+-- USERS (Passwort lautet: password123)
 INSERT INTO users (id, username, password)
 VALUES
     ('a1111111-1111-1111-1111-111111111111'::uuid, 'anja', '$2a$10$vHUoR1o21nxUD0.BQyV5N.qEjJH7.PK89kxlJelnYfVCMu9yDQpgG'),
