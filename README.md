@@ -1,60 +1,116 @@
 # TourPlanner
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.4.
+Software Engineering 2 Semester Project (SS26)
 
-## Development server
+## Features
 
-To start a local development server, run:
+- User registration and login
+- Create, edit and delete tours
+- Display routes of tours
+- Rate tours and comment
+- Search and filter options for tours and logs
+- Current weather information of tour via Open-Meteo
+- Statistics page for tour overview data
+- JSON export for tour data
 
-```bash
-ng serve
+## Tech Stack
+
+- **Frontend:** Angular, TypeScript, Tailwind CSS, Leaflet, Vitest
+- **Backend:** Spring Boot, Java, Spring Security, Spring Data JPA
+- **Database:** PostgreSQL
+- **External APIs:** OpenRouteService, Open-Meteo
+
+## Project Structure
+
+```text
+TourPlanner/
++-- backend/    Spring Boot REST API
++-- frontend/   Angular application
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Getting Started
 
-## Code scaffolding
+### Prerequisites
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- Node.js and npm
+- Java 23
+- Docker or a local PostgreSQL installation
+- OpenRouteService API key
 
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+### 1. Start the database
 
 ```bash
-ng build
+cd backend
+docker compose up -d
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+The default database configuration uses:
 
-## Running unit tests
+- Database: `tourplanner`
+- User: `admin`
+- Password: `admin`
+- Port: `5432`
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+### 2. Configure the backend
+
+Create or update `backend/src/main/resources/application-local.properties`:
+
+```properties
+openrouteservice.api-key=YOUR_OPENROUTESERVICE_API_KEY
+```
+
+### 3. Run the backend
 
 ```bash
-ng test
+cd backend
+./mvnw spring-boot:run
 ```
 
-## Running end-to-end tests
+On Windows PowerShell:
 
-For end-to-end (e2e) testing, run:
+```powershell
+cd backend
+.\mvnw.cmd spring-boot:run
+```
+
+The API runs on `http://localhost:8080`.
+
+Swagger UI is available at:
+
+```text
+http://localhost:8080/docs
+```
+
+### 4. Run the frontend
 
 ```bash
-ng e2e
+cd frontend
+npm install
+npm start
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+The frontend runs on:
 
-## Additional Resources
+```text
+http://localhost:4200
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
-# TourPlanner
+## Tests
+
+Backend tests:
+
+```bash
+cd backend
+./mvnw test
+```
+
+Frontend tests:
+
+```bash
+cd frontend
+npm test
+```
+
+## Notes
+
+Open-Meteo does not require an API key. OpenRouteService is used for geocoding and route calculation, so the backend needs a valid API key before tours with route data can be created.
