@@ -10,10 +10,12 @@ import java.util.*;
 @Repository
 public interface TourRepository extends JpaRepository<Tour,UUID> {
     List<Tour> findByCreatedBy_Username(String username);
+    List<Tour> findByPublicTourTrueOrPublicTourIsNull();
 
     @Query("SELECT DISTINCT t FROM Tour t " +
             "LEFT JOIN TourLog l ON l.tour = t " +
-            "WHERE LOWER(t.name) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "WHERE (t.publicTour = true OR t.publicTour IS NULL) AND (" +
+            "LOWER(t.name) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
             "LOWER(t.description) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
             "LOWER(t.startLocation) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
             "LOWER(t.destinationLocation) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
@@ -22,10 +24,10 @@ public interface TourRepository extends JpaRepository<Tour,UUID> {
             "LOWER(CAST(t.distance AS string)) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
             "LOWER(CAST(t.rating AS string)) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
             "LOWER(CAST(t.estimatedTime AS string)) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-            "(t.popular = true AND LOWER('popular') LIKE LOWER(CONCAT('%', :search, '%'))) OR\n" +
-            "(t.childFriendly = true AND (\n" +
-            "    LOWER('child friendly') LIKE LOWER(CONCAT('%', :search, '%')) OR\n" +
-            "    LOWER('child-friendly') LIKE LOWER(CONCAT('%', :search, '%'))))")
+            "(t.popular = true AND LOWER('popular') LIKE LOWER(CONCAT('%', :search, '%'))) OR " +
+            "(t.childFriendly = true AND (" +
+            "LOWER('child friendly') LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "LOWER('child-friendly') LIKE LOWER(CONCAT('%', :search, '%')))))")
     List<Tour> searchTours(@Param("search") String search);
 
     @Query("SELECT DISTINCT t FROM Tour t " +

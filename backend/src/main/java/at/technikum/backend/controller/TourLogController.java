@@ -35,16 +35,21 @@ public class TourLogController {
     }
 
     @GetMapping("/{tourLogId}")
-    public ResponseEntity<ResponseTourLogDto> read(@PathVariable UUID tourId, @PathVariable UUID tourLogId) {
+    public ResponseEntity<ResponseTourLogDto> read(
+            @PathVariable UUID tourId,
+            @PathVariable UUID tourLogId,
+            @AuthenticationPrincipal User loggedInUser) {
         logger.info("Request to fetch tour log ID: {} for tour ID: {}", tourLogId, tourId);
-        ResponseTourLogDto responseTourLogDto = tourLogService.getById(tourId, tourLogId);
+        ResponseTourLogDto responseTourLogDto = tourLogService.getById(tourId, tourLogId, loggedInUser.getUsername());
         return new ResponseEntity<>(responseTourLogDto, HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<List<ResponseTourLogDto>> readAll(@PathVariable UUID tourId) {
+    public ResponseEntity<List<ResponseTourLogDto>> readAll(
+            @PathVariable UUID tourId,
+            @AuthenticationPrincipal User loggedInUser) {
         logger.info("Request to fetch all tour logs for tour ID: {}", tourId);
-        List<ResponseTourLogDto> responseTourLogDtoList = tourLogService.findAll(tourId);
+        List<ResponseTourLogDto> responseTourLogDtoList = tourLogService.findAllForUser(tourId, loggedInUser.getUsername());
         return new ResponseEntity<>(responseTourLogDtoList, HttpStatus.OK);
     }
 

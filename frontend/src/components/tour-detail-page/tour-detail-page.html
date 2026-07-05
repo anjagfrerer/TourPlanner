@@ -42,7 +42,16 @@
                         <div class="flex items-center gap-3">
                             <h3 class="text-xs md:text-xl">{{vm.selectedTour()?.name}}</h3>
                             @if (vm.selectedTour(); as tour) {
-                            <star-rating [stars]="tour.rating"></star-rating>
+                                <star-rating [stars]="tour.rating"></star-rating>
+                                <div class="flex gap-2">
+                                    @if (tour.popular) {
+                                        <span class="rounded bg-warning px-4 py-1 text-xs text-black">Popular</span>
+                                    }
+
+                                    @if (tour.childFriendly) {
+                                        <span class="rounded bg-secondary px-4 py-1 text-xs text-white">Child-friendly</span>
+                                    }
+                                </div>
                             }
                         </div>
                         <span class="text-xs"> {{vm.selectedTour()?.startLocation}} -

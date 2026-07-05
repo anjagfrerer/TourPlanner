@@ -97,9 +97,9 @@ class TourServiceTest {
     }
 
     @Test
-    @DisplayName("getAllTours gibt alle Touren aus dem Repository zurück")
+    @DisplayName("getAllTours gibt alle oeffentlichen Touren aus dem Repository zurueck")
     void getAllTours_returnsAllTours() {
-        when(tourRepository.findAll()).thenReturn(List.of(sampleTour));
+        when(tourRepository.findByPublicTourTrueOrPublicTourIsNull()).thenReturn(List.of(sampleTour));
 
         List<Tour> result = tourService.getAllTours("");
 

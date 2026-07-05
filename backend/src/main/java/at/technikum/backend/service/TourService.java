@@ -75,8 +75,8 @@ public class TourService {
 
     public List<Tour> getAllTours(String search) {
         if (search == null || search.trim().isEmpty()) {
-            log.debug("Fetching all tours without search filter");
-            return tourRepository.findAll();
+            log.debug("Fetching public tours without search filter");
+            return tourRepository.findByPublicTourTrueOrPublicTourIsNull();
         }
 
         String trimmedSearch = search.trim();
@@ -115,6 +115,17 @@ public class TourService {
         });
     }
 
+    public Tour getAccessibleTourById(UUID id, User user) {
+        Tour tour = getTourById(id);
+
+        if (!Boolean.FALSE.equals(tour.getPublicTour())) {
+            return tour;
+        }
+
+        validateTourOwner(tour, user);
+        return tour;
+    }
+
     public Tour updateTour(UUID id, Tour updatedTour, User user) {
         Tour existingTour = getTourById(id);
         validateTourOwner(existingTour, user);
@@ -132,6 +143,7 @@ public class TourService {
         existingTour.setTransportType(updatedTour.getTransportType());
         existingTour.setRating(updatedTour.getRating());
         existingTour.setChildFriendly(updatedTour.getChildFriendly());
+        existingTour.setPublicTour(updatedTour.getPublicTour());
 
         if (routeRelevantDataChanged) {
             updateRouteInformation(existingTour);

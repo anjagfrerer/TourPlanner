@@ -43,6 +43,7 @@ public class TourLogService {
             logger.warn("BL: Creation failed. User '{}' not found", username);
             return new UserNotFoundException(username);
         });
+        validateTourAccessible(tour, currentUser);
         TourLog entity = mapper.toEntity(requestTourLogDto);
         entity.setTour(tour);
         entity.setAuthor(currentUser);
@@ -57,6 +58,17 @@ public class TourLogService {
     public List<ResponseTourLogDto> findAll(UUID tourId) {
         logger.info("BL: Fetching all tour logs for tour ID '{}'", tourId);
         tourRepository.findById(tourId).orElseThrow(() -> new TourNotFoundException(tourId));
+
+        List<TourLog> logs = tourLogRepository.findByTour_Id(tourId);
+        return logs.stream().map(mapper::toResponseDto).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ResponseTourLogDto> findAllForUser(UUID tourId, String username) {
+        logger.info("BL: Fetching all tour logs for tour ID '{}' as user '{}'", tourId, username);
+        Tour tour = tourRepository.findById(tourId).orElseThrow(() -> new TourNotFoundException(tourId));
+        User currentUser = findUser(username);
+        validateTourAccessible(tour, currentUser);
 
         List<TourLog> logs = tourLogRepository.findByTour_Id(tourId);
         return logs.stream().map(mapper::toResponseDto).toList();
@@ -100,6 +112,14 @@ public class TourLogService {
     public ResponseTourLogDto getById(UUID tourId, UUID tourLogId) {
         logger.info("BL: Fetching tour log ID '{}' for tour ID '{}'", tourLogId, tourId);
         TourLog tourLog = findAndValidateLog(tourId, tourLogId);
+        return mapper.toResponseDto(tourLog);
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseTourLogDto getById(UUID tourId, UUID tourLogId, String username) {
+        logger.info("BL: Fetching tour log ID '{}' for tour ID '{}' as user '{}'", tourLogId, tourId, username);
+        TourLog tourLog = findAndValidateLog(tourId, tourLogId);
+        validateTourAccessible(tourLog.getTour(), findUser(username));
         return mapper.toResponseDto(tourLog);
     }
 
@@ -158,5 +178,19 @@ public class TourLogService {
         long logCount = tourLogRepository.countByTour_Id(tour.getId());
         tour.setPopular(logCount > 5);
         tourRepository.save(tour);
+    }
+
+    private User findUser(String username) {
+        return userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
+    }
+
+    private void validateTourAccessible(Tour tour, User user) {
+        if (!Boolean.FALSE.equals(tour.getPublicTour())) {
+            return;
+        }
+
+        if (tour.getCreatedBy() == null || !tour.getCreatedBy().getId().equals(user.getId())) {
+            throw new UnauthorizedAccessException();
+        }
     }
 }

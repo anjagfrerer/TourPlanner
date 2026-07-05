@@ -13,5 +13,6 @@ export interface Tour {
     rating: number,
     childFriendly: boolean,
     popular: boolean,
+    publicTour: boolean,
     author: string
 }

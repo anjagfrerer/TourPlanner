@@ -59,10 +59,10 @@ public class TourController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TourResponse> getTour(@PathVariable UUID id) {
+    public ResponseEntity<TourResponse> getTour(@PathVariable UUID id, @AuthenticationPrincipal User user) {
         log.info("Fetching tour with ID '{}'", id);
 
-        TourResponse response = mapper.toTourResponse(tourService.getTourById(id));
+        TourResponse response = mapper.toTourResponse(tourService.getAccessibleTourById(id, user));
 
 
         return ResponseEntity.ok(response);

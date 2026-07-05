@@ -54,6 +54,12 @@
             Child Friendly
           </label>
         </div>
+        <div class="flex items-center justify-between">
+          <label class="flex items-center gap-2 text-sm font-medium">
+            <input type="checkbox" name="PublicTour" [checked]="vm.form().publicTour" (change)="vm.updatePublicTour($event)" class="rounded border-gray-300 text-accent focus:ring-accent" />
+            Public
+          </label>
+        </div>
         <div class="flex items-end">
           @if (vm.saveStatus() === 'error') {
             <p class="text-sm text-red-600">Could not save tour.</p>

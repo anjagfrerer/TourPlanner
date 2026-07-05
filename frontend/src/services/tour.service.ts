@@ -70,7 +70,9 @@ export class TourService {
       );
 
       this._myTours.update(current => [...current, newTour]);
-      this._allTours.update(current => [...current, newTour]);
+      if (newTour.publicTour) {
+        this._allTours.update(current => [...current, newTour]);
+      }
 
       return newTour;
     } catch (error) {
@@ -89,7 +91,11 @@ export class TourService {
         current.map(tour => tour.id === updatedTour.id ? updatedTour : tour)
       );
       this._allTours.update(current =>
-        current.map(tour => tour.id === updatedTour.id ? updatedTour : tour)
+        updatedTour.publicTour
+          ? (current.some(tour => tour.id === updatedTour.id)
+            ? current.map(tour => tour.id === updatedTour.id ? updatedTour : tour)
+            : [...current, updatedTour])
+          : current.filter(tour => tour.id !== updatedTour.id)
       );
 
       return updatedTour;

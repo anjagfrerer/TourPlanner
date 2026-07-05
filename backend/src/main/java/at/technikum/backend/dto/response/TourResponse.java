@@ -16,5 +16,6 @@ public record TourResponse(
         Integer rating,
         RouteResponse route,
         Boolean childFriendly,
-        Boolean popular
+        Boolean popular,
+        Boolean publicTour
 ) {}

@@ -13,6 +13,7 @@ interface AddTourForm {
   transportType: TransportType;
   rating: number;
   childFriendly: boolean;
+  publicTour: boolean;
 }
 
 @Injectable()
@@ -32,6 +33,7 @@ export class AddTourPopupViewModel {
       transportType: tour.transportType as TransportType,
       rating: tour.rating,
       childFriendly: tour.childFriendly,
+      publicTour: tour.publicTour,
     });
   }
 
@@ -87,7 +89,10 @@ export class AddTourPopupViewModel {
     this.updateForm({ childFriendly: isChecked });
   }
 
-  
+  updatePublicTour(event: Event): void {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    this.updateForm({ publicTour: isChecked });
+  }
 
   private updateForm(changes: Partial<AddTourForm>): void {
     this.form.update(currentForm => ({
@@ -109,6 +114,7 @@ export class AddTourPopupViewModel {
       transportType: TRANSPORT_TYPES.HIKING,
       rating: 0,
       childFriendly: false,
+      publicTour: true,
     };
 }
 }

@@ -30,6 +30,7 @@ public class TourMapper {
         tour.setTransportType(request.transportType());
         tour.setRating(request.rating());
         tour.setChildFriendly(Boolean.TRUE.equals(request.childFriendly()));
+        tour.setPublicTour(!Boolean.FALSE.equals(request.publicTour()));
         tour.setPopular(false);
 
         return tour;
@@ -48,7 +49,8 @@ public class TourMapper {
                 tour.getRating(),
                 toRouteResponse(tour),
                 tour.getChildFriendly(),
-                tour.getPopular()
+                tour.getPopular(),
+                !Boolean.FALSE.equals(tour.getPublicTour())
         );
     }
 
