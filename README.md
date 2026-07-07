@@ -87,7 +87,7 @@ http://localhost:8080/docs
 ```bash
 cd frontend
 npm install
-npm start
+npm run start
 ```
 
 The frontend runs on:
